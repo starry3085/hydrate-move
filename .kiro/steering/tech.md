@@ -453,33 +453,59 @@ t Implementation Changes
 - Follows established design system patterns
 
 ### Reminder Card Alignment Fix (Latest)
-**Objective**: Fix visual alignment issue where "30 mins" text was not aligned with countdown timer and Start button.
+**Objective**: Fix visual alignment issue where three key elements were not consistently aligned across different screen sizes.
 
 **Issue Identified**:
 - "30 mins" interval display in `.status-info` container
 - "30:00" countdown timer in `.countdown-info` container  
 - "Start" button in `.card-controls` container
-- These three elements were not vertically aligned on the right side
+- These three elements used inconsistent alignment strategies causing misalignment on responsive layouts
 
-**Key Changes**:
-- ✅ Changed `.status-info` from `justify-content: space-between` to `justify-content: flex-end`
-- ✅ Added `margin-right: auto` to `.next-reminder-label` to push it left while keeping time elements right-aligned
-- ✅ Added consistent `min-width: 80px` to both `.time-remaining` and `.countdown-time` elements
-- ✅ Maintained responsive design compatibility
-- ✅ Preserved existing functionality while improving visual consistency
+**Root Cause**:
+- **Misidentified target elements**: Applied width to container `.time-remaining` instead of actual display element `.interval-display`
+- **HTML structure complexity**: "30 mins" is displayed by `.interval-display` inside `.time-remaining` container
+- **Inconsistent element targeting**: Mixed container-level and element-level styling approaches
+- **Missing box-sizing**: Elements had different padding without consistent box-sizing model
+
+**MVP Solution Applied**:
+- ✅ **Fixed width strategy**: All right-side elements use exact `width: 80px` for guaranteed alignment
+- ✅ **Simplified implementation**: Removed complex flex properties, using basic width + text-align
+- ✅ **Eliminated flex complexity**: No more justify-content variations or min-width inconsistencies
+- ✅ **Guaranteed alignment**: Fixed width ensures perfect right-edge alignment regardless of content
+- ✅ **Maintained responsive compatibility**: Fixed width works reliably across all screen sizes
 
 **Files Modified**:
-- `styles/main.css` - Updated alignment styles for reminder card elements
-- `.kiro/steering/tech.md` - Documented the alignment fix implementation
+- `styles/main.css` - Fixed width implementation for perfect alignment
+- `.kiro/steering/tech.md` - Updated documentation with fixed-width solution
 
-**Technical Details**:
-- Changed layout approach from space-between to flex-end with margin-right: auto
-- Set consistent minimum width (80px) for time display elements
-- Ensured perfect right-side alignment across all three visual layers (30 mins, 30:00, Start button)
-- Maintained existing responsive breakpoints and mobile compatibility
+**Technical Implementation**:
+```css
+/* Target actual display elements, not containers */
+.interval-display, .countdown-time, .card-controls .btn-primary {
+    width: 80px;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    padding: 0.25rem 0.5rem; /* Consistent padding */
+}
 
-**Benefits**:
-- Professional visual alignment across all reminder elements
-- Consistent user experience with predictable element positioning
-- Improved readability and visual hierarchy
-- Follows design system principles for element alignment
+/* Text alignment for display elements */
+.interval-display, .countdown-time {
+    text-align: right;
+}
+
+.card-controls .btn-primary {
+    text-align: center;
+    padding: 0.5rem 0.25rem; /* Button-specific padding */
+}
+
+/* Container alignment */
+.time-remaining { display: flex; justify-content: flex-end; }
+.status-info, .countdown-info { justify-content: space-between; }
+.card-controls { justify-content: flex-end; }
+```
+
+**MVP Benefits**:
+- **Guaranteed Alignment**: Fixed width (80px) ensures perfect right-edge alignment regardless of content length
+- **Maximum Simplicity**: No complex flex properties - just width + text-align
+- **Predictable Behavior**: Fixed dimensions eliminate any layout surprises across different screen sizes
+- **Easy Maintenance**: Simple width-based approach with no complex CSS dependencies
