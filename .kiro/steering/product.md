@@ -35,3 +35,4 @@ Office Wellness Reminder is a lightweight, privacy-first web application that he
 - **Color hierarchy**: Demo button uses orange (#f39c12) default state to attract first-time user attention, feedback button uses subtle primary color (#2c3e50) default state to avoid distraction
 - **Hover discoverability**: Both buttons use color inversion on hover - demo button darkens to primary color, feedback button highlights to orange
 - **Icon sizing**: GitHub icon proportionally increased to 28px for better visual balance in 48px circular button
+- **Consistent button styling**: Both buttons follow identical implementation pattern with proper CSS variable usage and consistent shadow/transition effects
