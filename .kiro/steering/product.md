@@ -36,3 +36,4 @@ Office Wellness Reminder is a lightweight, privacy-first web application that he
 - **Hover discoverability**: Both buttons use color inversion on hover - demo button darkens to primary color, feedback button highlights to orange
 - **Icon sizing**: GitHub icon proportionally increased to 28px for better visual balance in 48px circular button
 - **Consistent button styling**: Both buttons follow identical implementation pattern with proper CSS variable usage and consistent shadow/transition effects
+- **Reminder card alignment**: "30 mins" interval display, countdown timer, and Start button are vertically aligned on the right side for consistent visual hierarchy and improved readability

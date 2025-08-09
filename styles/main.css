@@ -340,16 +340,15 @@ body {
 .status-info {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-end;
     gap: 0.5rem;
 }
-
-
 
 .next-reminder-label {
     font-size: 0.85rem;
     color: var(--text-secondary);
     flex-shrink: 0;
+    margin-right: auto; /* Push label to the left, time to the right */
 }
 
 .time-remaining {
@@ -360,7 +359,14 @@ body {
     align-items: center;
     gap: 0.5rem;
     text-align: right;
+    min-width: 80px; /* Ensure consistent width for alignment */
 }
+
+
+
+
+
+
 
 .interval-display {
     font-size: 1.1rem;
@@ -397,7 +403,7 @@ body {
     font-size: 1.1rem;
     font-weight: 600;
     color: var(--primary-color);
-    min-width: 60px;
+    min-width: 80px; /* Match time-remaining width for alignment */
     text-align: right;
 }
 
@@ -449,6 +455,12 @@ body {
     gap: 0.5rem;
     justify-content: flex-end;
     margin-top: 0.5rem;
+}
+
+/* Ensure consistent right alignment for all reminder elements */
+.card-content .time-remaining,
+.card-content .countdown-time {
+    justify-content: flex-end;
 }
 
 /* Button styles */

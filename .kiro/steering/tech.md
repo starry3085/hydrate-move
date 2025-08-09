@@ -451,3 +451,35 @@ t Implementation Changes
 - Easier maintenance through centralized CSS variable usage
 - Professional appearance without visual artifacts
 - Follows established design system patterns
+
+### Reminder Card Alignment Fix (Latest)
+**Objective**: Fix visual alignment issue where "30 mins" text was not aligned with countdown timer and Start button.
+
+**Issue Identified**:
+- "30 mins" interval display in `.status-info` container
+- "30:00" countdown timer in `.countdown-info` container  
+- "Start" button in `.card-controls` container
+- These three elements were not vertically aligned on the right side
+
+**Key Changes**:
+- ✅ Changed `.status-info` from `justify-content: space-between` to `justify-content: flex-end`
+- ✅ Added `margin-right: auto` to `.next-reminder-label` to push it left while keeping time elements right-aligned
+- ✅ Added consistent `min-width: 80px` to both `.time-remaining` and `.countdown-time` elements
+- ✅ Maintained responsive design compatibility
+- ✅ Preserved existing functionality while improving visual consistency
+
+**Files Modified**:
+- `styles/main.css` - Updated alignment styles for reminder card elements
+- `.kiro/steering/tech.md` - Documented the alignment fix implementation
+
+**Technical Details**:
+- Changed layout approach from space-between to flex-end with margin-right: auto
+- Set consistent minimum width (80px) for time display elements
+- Ensured perfect right-side alignment across all three visual layers (30 mins, 30:00, Start button)
+- Maintained existing responsive breakpoints and mobile compatibility
+
+**Benefits**:
+- Professional visual alignment across all reminder elements
+- Consistent user experience with predictable element positioning
+- Improved readability and visual hierarchy
+- Follows design system principles for element alignment
