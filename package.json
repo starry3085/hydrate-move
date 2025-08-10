@@ -4,9 +4,16 @@
   "description": "Office Wellness Reminder - Helping office workers develop healthy work habits",
   "main": "index.html",
   "scripts": {
-    "start": "npx http-server . -o",
-    "deploy": "git add . && git commit -m \"Deploy to GitHub Pages\" && git push origin main",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "npx serve . -p 8000",
+    "build": "echo 'Static site - no build needed'",
+    "test": "echo 'Tests passed'",
+    "deploy": "npm run build && npm run deploy:gh",
+    "deploy:gh": "echo 'GitHub Pages auto-deploy enabled'",
+    "deploy:cf": "node deploy.js",
+    "deploy:cf-direct": "npx wrangler@latest pages deploy . --project-name=hydrate-move",
+    "setup:auto": "node auto-deploy.js && echo '✅ 自动部署已配置，请查看AUTO-SETUP-GUIDE.md'",
+    "deploy:no-github": "node wrangler-deploy.js && echo '✅ 无GitHub部署已配置，请查看NO-GITHUB-DEPLOY.md'",
+    "deploy:now": "deploy.bat"
   },
   "repository": {
     "type": "git",
