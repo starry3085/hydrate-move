@@ -1,4 +1,10 @@
 name = "hydrate-move"
 compatibility_date = "2024-01-01"
+pages_build_output_dir = "."
 
 [env.production]
+name = "hydrate-move"
+
+# 自定义域名配置
+# 自定义域名: hydrate-move.lightyearai.info
+# 需要在Cloudflare Dashboard中手动配置
