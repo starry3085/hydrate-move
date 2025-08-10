@@ -1,167 +1,56 @@
-# Hydrate Move – Free Office Wellness Timer
+# Hydrate Move - Smart Health Reminder
 
-🚰💪 A simple, privacy-first web application that helps office workers maintain healthy habits through water and standup reminders every 30 minutes.
+A lightweight web app that reminds you to drink water and take standing breaks during long work sessions.
 
-**🌟 Key Features:**
-- ⏰ **30-minute cycle reminders** for water and movement
-- 📱 **PWA support** - install on desktop/mobile
-- 🔒 **Privacy-first** - all data stays on your device
-- 🌐 **Works offline** - no internet required after loading
-- 🆓 **Completely free** - no registration, no ads
+## 🌟 Features
 
-**🎯 Perfect for:** Remote workers, office professionals, students, anyone spending long hours at a computer.
+### 💧 Water Reminders
+- Personalized daily water intake calculation
+- Smart reminder intervals based on activity
+- Progress tracking with visual indicators
+- Gentle notification sounds
 
-## Features
+### 🏃‍♂️ Stand-up Alerts
+- Customizable break intervals (20-120 min)
+- 20-20-20 rule implementation
+- Progressive reminder intensity
+- Simple stretch suggestions
 
-- **Water Reminders**: Fixed 30-minute intervals to remind you to stay hydrated
-- **Standup Reminders**: Fixed 30-minute intervals to take breaks and move around
-- **Browser Notifications**: Native browser notifications with fallback to in-page alerts
-- **Privacy-First**: All data stays on your device - no external servers or tracking
-- **Mobile Responsive**: Works seamlessly on desktop and mobile devices
-- **Offline Ready**: Functions without internet connection after initial load
+### 📱 Modern Web
+- Responsive design for all devices
+- PWA support (install as app)
+- Offline functionality
+- Dark mode support
 
-## Recent Fixes & Improvements
+## 🚀 Quick Start
 
-### 🐛 Bug Fixes
-- **Fixed "reminder not available" errors**: Added comprehensive initialization state management
-- **Fixed START button responsiveness**: Enhanced event binding and initialization order
-- **Fixed time display inconsistency**: Stand-up reminder now correctly displays 30 minutes instead of 45
-- **Improved initialization reliability**: Added comprehensive error handling and validation
-- **Enhanced DOM readiness**: Ensures all elements are properly loaded before event binding
-- **Fixed async initialization race conditions**: Added proper initialization sequence and state checks
+**Live Demo**: https://8bbd4e25.hydrate-move.pages.dev
 
-### ✨ Improvements
-- **Better error handling**: Added user-friendly error messages and recovery mechanisms
-- **Component validation**: Validates all critical components during initialization
-- **Real-time synchronization**: UI now accurately reflects actual reminder settings
-- **Retry mechanisms**: Automatic retry for failed UI updates
-- **Enhanced logging**: Detailed console logging for debugging and monitoring
-- **Defensive programming**: Added null checks and graceful degradation for all reminder operations
-- **Loading states**: Added visual feedback during initialization
-- **State management**: Improved synchronization between UI and reminder states
-
-## Quick Start
-
-1. Open the application in your web browser
-2. Allow notifications when prompted (optional but recommended)
-3. Adjust reminder intervals using the number inputs (default: Water 30min, Standup 30min)
-4. Click "Start" on the reminders you want to activate
-5. The app will show countdown timers and remind you at the specified intervals
-
-## How It Works
-
-### Water Reminder
-- Default: Every 30 minutes
-- Customizable from 1-60 minutes via inline input
-- Shows countdown timer when active (e.g., "29:45")
-- Shows full interval time when inactive (e.g., "30:00")
-- Browser and in-page notifications
-
-### Standup Reminder
-- Default: Every 30 minutes (aligned with water reminder for consistent user experience)
-- Customizable from 1-60 minutes via inline input
-- Encourages movement and posture breaks
-- Visual and audio notifications
-
-## User Interface
-
-### Reminder Cards
-Each reminder shows:
-- **Remind every**: Editable interval input (1-60 minutes)
-- **Remind after**: Countdown display showing time remaining
-- **Start/Stop button**: Toggle reminder on/off
-
-### Button States
-- **Start** (blue): Click to begin countdown
-- **Stop** (orange): Click to stop active reminder
-
-## Browser Compatibility
-
-- Chrome/Chromium (recommended)
-- Firefox
-- Safari
-- Edge
-
-## Privacy & Data
-
-- **No data collection**: We don't collect any personal information
-- **Local storage only**: Settings saved in your browser's local storage
-- **No external connections**: Works completely offline after loading
-- **No tracking**: No analytics, cookies, or third-party scripts
-
-## Technical Architecture (MVP)
-
-### Core Components
-- **UIController**: Manages DOM updates and user interactions
-- **ReminderManager**: Base class for timer functionality
-- **WaterReminder/StandupReminder**: Specific reminder implementations
-- **NotificationService**: Handles browser and in-page notifications
-- **StorageManager**: Simple localStorage wrapper
-- **ErrorHandler**: Basic error handling and recovery
-
-### Key Features
-- **Simplified State Management**: Direct DOM manipulation without complex state layers
-- **Real-time Updates**: 1-second interval updates for countdown display
-- **Responsive Design**: Mobile-first approach with touch-friendly controls
-- **Error Recovery**: Graceful degradation when features unavailable
-
-## Development
-
-This is a static web application built with vanilla JavaScript following MVP principles.
-
-### Local Development
+**Local Setup**:
 ```bash
-# Serve locally (recommended for testing)
-python -m http.server 8000
-# or
-npx http-server
-
-# Open http://localhost:8000
+git clone https://github.com/starry3085/hydrate-move.git
+cd hydrate-move
+# Open index.html or use any static server
 ```
 
-### Repository Links
-- **GitHub**: https://github.com/starry3085/hydrate-move
-- **Gitee**: https://gitee.com/starry3085/hydrate-move
+## 🎯 Usage
 
-### Configuration
+1. Open the app
+2. Set your weight and activity level
+3. Allow notifications
+4. Start getting healthy reminders
 
-The application uses centralized constants for easy maintenance:
+## 🔧 Tech Stack
 
-```javascript
-// js/constants.js
-REMINDER_CONSTANTS = {
-    DEFAULT_INTERVAL_MINUTES: 30,  // Fixed reminder interval
-    SNOOZE_DURATION_MINUTES: 5,    // Snooze delay
-    UPDATE_INTERVAL_MS: 1000       // UI update frequency
-}
-```
+- **Frontend**: Vanilla HTML/CSS/JavaScript
+- **PWA**: Service Worker + Web Manifest
+- **Storage**: Local Storage
+- **Deployment**: Cloudflare Pages
 
-To modify the reminder interval, update `DEFAULT_INTERVAL_MINUTES` in `js/constants.js`.
+## 📱 Compatibility
 
-### File Structure
-```
-├── index.html              # Main application page
-├── css/styles.css          # All styles and responsive design
-├── js/constants.js         # Application configuration constants
-├── js/
-│   ├── app.js             # Application orchestrator
-│   ├── ui-controller.js   # DOM management and user interactions
-│   ├── reminder-manager.js # Base reminder functionality
-│   ├── water-reminder.js  # Water-specific reminder
-│   ├── standup-reminder.js # Standup-specific reminder
-│   ├── notification-service.js # Notification handling
-│   ├── storage-manager.js # Simple localStorage wrapper
-│   └── error-handler.js   # Basic error handling
-└── README.md              # This file
-```
+Works on all modern browsers and devices.
 
-### Deployment
-Simply upload all files to any static web hosting service:
-- GitHub Pages
-- Netlify
-- Vercel
-- Any web server supporting static files
+## 📄 License
 
-## License
-
-MIT License - feel free to use and modify as needed.
+MIT License
