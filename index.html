@@ -197,17 +197,18 @@
     <script src="js/analytics.js?v=1.0.3" onerror="console.error('Failed to load analytics.js')"></script>
     <script src="js/demo-controller.js?v=1.0.3" onerror="console.error('Failed to load demo-controller.js')"></script>
     <script src="js/error-handler.js?v=1.0.3" onerror="console.error('Failed to load error-handler.js')"></script>
-    <script src="js/storage-manager.js?v=1.0.3" onerror="console.error('Failed to load storage-manager.js')"></script>
-    <script src="js/app-settings.js?v=1.0.3" onerror="console.error('Failed to load app-settings.js')"></script>
-    <script src="js/notification-service.js?v=1.0.3"
+    <script src="js/storage-manager.js?v=1.0.4" onerror="console.error('Failed to load storage-manager.js')"></script>
+    <script src="js/app-settings.js?v=1.0.4" onerror="console.error('Failed to load app-settings.js')"></script>
+    <script src="js/notification-service.js?v=1.0.4"
         onerror="console.error('Failed to load notification-service.js')"></script>
-    <script src="js/reminder-manager.js?v=1.0.3" onerror="console.error('Failed to load reminder-manager.js')"></script>
-    <script src="js/water-reminder.js?v=1.0.3" onerror="console.error('Failed to load water-reminder.js')"></script>
-    <script src="js/standup-reminder.js?v=1.0.3" onerror="console.error('Failed to load standup-reminder.js')"></script>
-    <script src="js/mobile-adapter.js?v=1.0.3" onerror="console.error('Failed to load mobile-adapter.js')"></script>
-    <script src="js/ui-controller.js?v=1.0.3" onerror="console.error('Failed to load ui-controller.js')"></script>
-    <script src="js/feedback-button.js?v=1.0.3" onerror="console.error('Failed to load feedback-button.js')"></script>
-    <script src="js/app.js?v=1.0.3" onerror="console.error('Failed to load app.js')"></script>
+    <script src="js/reminder-manager.js?v=1.0.4" onerror="console.error('Failed to load reminder-manager.js')"></script>
+    <script src="js/water-reminder.js?v=1.0.4" onerror="console.error('Failed to load water-reminder.js')"></script>
+    <script src="js/standup-reminder.js?v=1.0.4" onerror="console.error('Failed to load standup-reminder.js')"></script>
+    <script src="js/mobile-adapter.js?v=1.0.4" onerror="console.error('Failed to load mobile-adapter.js')"></script>
+    <script src="js/ui-controller.js?v=1.0.4" onerror="console.error('Failed to load ui-controller.js')"></script>
+    <script src="js/feedback-button.js?v=1.0.4" onerror="console.error('Failed to load feedback-button.js')"></script>
+    <script src="js/analytics.js?v=1.0.4" onerror="console.error('Failed to load analytics.js')"></script>
+    <script src="js/app.js?v=1.0.4" onerror="console.error('Failed to load app.js')"></script>
 
     <!-- Script Loading Verification -->
     <script>
@@ -232,7 +233,7 @@
         async function initializeApp() {
             try {
                 console.log('Initializing Office Wellness App...');
-
+                
                 // Skip diagnostic checks - debug helper not available
 
                 // Check if required classes exist
@@ -252,6 +253,29 @@
                 const missingClasses = requiredClasses.filter(className => !window[className]);
                 if (missingClasses.length > 0) {
                     console.error('Missing classes:', missingClasses);
+                    
+                    // 尝试清除缓存并重新加载
+                    console.log('Attempting cache refresh...');
+                    if ('caches' in window) {
+                        caches.keys().then(names => {
+                            names.forEach(name => caches.delete(name));
+                        });
+                    }
+                    
+                    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+                        navigator.serviceWorker.controller.postMessage({action: 'SKIP_WAITING'});
+                        navigator.serviceWorker.getRegistrations().then(registrations => {
+                            registrations.forEach(registration => registration.unregister());
+                        });
+                    }
+                    
+                    // 延迟重载，给用户显示错误信息
+                    setTimeout(() => {
+                        if (confirm('检测到缓存问题，是否刷新页面？')) {
+                            location.reload(true);
+                        }
+                    }, 2000);
+                    
                     throw new Error(`Missing required classes: ${missingClasses.join(', ')}`);
                 }
 

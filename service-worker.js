@@ -1,7 +1,7 @@
 // Hydrate Move Service Worker
 // 简单的缓存策略，支持离线使用
 
-const CACHE_NAME = 'hydrate-move-v1.0.1';
+const CACHE_NAME = 'hydrate-move-v1.0.4';
 const urlsToCache = [
   './',
   './index.html',
@@ -18,6 +18,8 @@ const urlsToCache = [
   './js/error-handler.js',
   './js/mobile-adapter.js',
   './js/demo-controller.js',
+  './js/analytics.js',
+  './js/feedback-button.js',
   './manifest.json'
 ];
 
