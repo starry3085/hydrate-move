@@ -886,8 +886,8 @@ input[type="number"] {
 }
 
 .notification-alert.show {
-    opacity: 1;
-    transform: translateX(0);
+    opacity: 1 !important;
+    transform: translateX(0) !important;
 }
 
 .notification-alert .notification-content {
@@ -1419,10 +1419,13 @@ ile-specific enhancements */
         max-width: 400px;
         border-radius: 12px;
         box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        opacity: 0;
+        transition: all 0.3s ease;
     }
     
     .notification-alert.show {
-        transform: translateX(-50%) translateY(0);
+        opacity: 1 !important;
+        transform: translateX(-50%) translateY(0) !important;
     }
     
     /* Fullscreen notification for mobile */
