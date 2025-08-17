@@ -508,10 +508,16 @@ class UIController {
             });
             this.eventListeners.clear();
 
-            // Note: Removed dangerous global timeout clearing that was interfering 
-            // with notification auto-hide timers and other legitimate timeouts
+            // Smart cleanup: Only clear UI-related timeouts, not notification timers
+            // This preserves notification auto-hide functionality while cleaning up UI resources
+            if (this.uiTimeouts && this.uiTimeouts.length > 0) {
+                this.uiTimeouts.forEach(timeoutId => {
+                    clearTimeout(timeoutId);
+                });
+                this.uiTimeouts = [];
+            }
 
-            console.log('UI Controller destroyed with complete cleanup');
+            console.log('UI Controller destroyed with smart cleanup');
         } catch (error) {
             console.error('Error during UI Controller cleanup:', error);
         }
