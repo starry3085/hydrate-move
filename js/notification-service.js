@@ -243,13 +243,15 @@ class NotificationService {
                 this.autoHideTimers.delete(notificationId);
             }
 
-            // Hide with animation
+            // Hide with animation - remove show class to trigger CSS transition
             alertElement.classList.remove('show');
+            
+            // Wait for CSS transition to complete before removing from DOM
             setTimeout(() => {
-                if (alertElement.parentNode) {
+                if (alertElement && alertElement.parentNode) {
                     alertElement.parentNode.removeChild(alertElement);
                 }
-            }, 300); // Wait for fade out animation to complete
+            }, 300); // Match CSS transition duration
         }
     }
 
