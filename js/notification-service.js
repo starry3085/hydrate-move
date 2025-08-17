@@ -13,6 +13,8 @@ class NotificationService {
             default: null
         };
         this.currentCallbacks = null;
+        this.notificationCounter = 0; // Counter for unique notification IDs
+        this.autoHideTimers = new Map(); // Track auto-hide timers for each notification
 
         // Check if permission already granted
         if (this.isSupported && Notification.permission === 'granted') {
@@ -183,13 +185,13 @@ class NotificationService {
      * @param {string} message - Reminder content
      */
     showInPageAlert(type, title, message) {
-        // Remove existing notification
-        this.hideInPageAlert();
+        // Generate unique notification ID
+        const notificationId = `wellness-notification-${++this.notificationCounter}`;
 
-        // Create notification container
+        // Create notification container with unique ID
         const alertContainer = document.createElement('div');
         alertContainer.className = `notification-alert notification-${type}`;
-        alertContainer.id = 'wellness-notification';
+        alertContainer.id = notificationId;
 
         // Simplified layout without buttons
         alertContainer.innerHTML = `
@@ -201,30 +203,77 @@ class NotificationService {
                     <h3 class="notification-title">${title}</h3>
                     <p class="notification-message">${message}</p>
                 </div>
-                <button class="btn btn-close" id="close-btn">×</button>
+                <button class="btn btn-close">×</button>
             </div>
         `;
 
         // Add to page
         document.body.appendChild(alertContainer);
 
-        // Bind close event only
-        const closeBtn = alertContainer.querySelector('#close-btn');
+        // Bind close event for this specific notification
+        const closeBtn = alertContainer.querySelector('.btn-close');
         if (closeBtn) {
             closeBtn.addEventListener('click', () => {
-                this.hideInPageAlert();
+                this.hideSpecificAlert(notificationId);
             });
         }
 
         // Show with animation
         setTimeout(() => alertContainer.classList.add('show'), 100);
 
-        // Auto-hide after 5 seconds
-        setTimeout(() => {
-            if (document.getElementById('wellness-notification')) {
-                this.hideInPageAlert();
-            }
+        // Auto-hide after 5 seconds with proper cleanup
+        const autoHideTimer = setTimeout(() => {
+            this.hideSpecificAlert(notificationId);
         }, 5000);
+
+        // Store timer reference for cleanup
+        this.autoHideTimers.set(notificationId, autoHideTimer);
+    }
+
+    /**
+     * Hide specific notification by ID
+     * @param {string} notificationId - The ID of the notification to hide
+     */
+    hideSpecificAlert(notificationId) {
+        const alertElement = document.getElementById(notificationId);
+        if (alertElement) {
+            // Clear the auto-hide timer
+            if (this.autoHideTimers.has(notificationId)) {
+                clearTimeout(this.autoHideTimers.get(notificationId));
+                this.autoHideTimers.delete(notificationId);
+            }
+
+            // Hide with animation
+            alertElement.classList.remove('show');
+            setTimeout(() => {
+                if (alertElement.parentNode) {
+                    alertElement.parentNode.removeChild(alertElement);
+                }
+            }, 300); // Wait for fade out animation to complete
+        }
+    }
+
+    /**
+     * Hide in-page notification (legacy method - now clears all notifications)
+     */
+    hideInPageAlert() {
+        // Clear all auto-hide timers
+        this.autoHideTimers.forEach((timer, id) => {
+            clearTimeout(timer);
+            this.hideSpecificAlert(id);
+        });
+        this.autoHideTimers.clear();
+
+        // Also remove any notifications with the old ID format for backward compatibility
+        const existingAlert = document.getElementById('wellness-notification');
+        if (existingAlert) {
+            existingAlert.classList.remove('show');
+            setTimeout(() => {
+                if (existingAlert.parentNode) {
+                    existingAlert.parentNode.removeChild(existingAlert);
+                }
+            }, 300);
+        }
     }
 
     /**
@@ -406,21 +455,6 @@ class NotificationService {
         
         // Clear callbacks
         this.currentCallbacks = null;
-    }
-
-    /**
-     * Hide in-page notification
-     */
-    hideInPageAlert() {
-        const existingAlert = document.getElementById('wellness-notification');
-        if (existingAlert) {
-            existingAlert.classList.remove('show');
-            setTimeout(() => {
-                if (existingAlert.parentNode) {
-                    existingAlert.parentNode.removeChild(existingAlert);
-                }
-            }, 300); // Wait for fade out animation to complete
-        }
     }
 
     /**
