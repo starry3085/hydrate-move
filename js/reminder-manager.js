@@ -22,10 +22,9 @@ class ReminderManager {
         this.settings = { ...settings };
         this.notificationService = notificationService;
         
-        // Timer management
+        // Timer management - single timer approach
         this.timerId = null;
-        this.updateTimerId = null;
-        this.updateInterval = REMINDER_CONSTANTS.UPDATE_INTERVAL_MS; // 1 second update frequency
+        this.tickInterval = REMINDER_CONSTANTS.UPDATE_INTERVAL_MS; // 1 second tick frequency
         
         // Time tracking (all in milliseconds)
         this.startTime = null;
@@ -82,7 +81,6 @@ class ReminderManager {
             this.isActive = true;
             
             this.startTimer();
-            this.startUpdateTimer();
             
             console.log(`${this.type} reminder started:`, {
                 interval: this.settings.interval,
@@ -103,7 +101,7 @@ class ReminderManager {
      */
     stop() {
         try {
-            this.clearAllTimers();
+            this.clearTimer();
             
             this.isActive = false;
             this.resetState();
@@ -164,18 +162,13 @@ class ReminderManager {
     }
 
     /**
-     * Clear all timers (unified cleanup)
+     * Clear timer (unified cleanup)
      * @private
      */
-    clearAllTimers() {
+    clearTimer() {
         if (this.timerId) {
-            clearTimeout(this.timerId);
+            clearInterval(this.timerId);
             this.timerId = null;
-        }
-        
-        if (this.updateTimerId) {
-            clearInterval(this.updateTimerId);
-            this.updateTimerId = null;
         }
     }
 
@@ -202,14 +195,10 @@ class ReminderManager {
             () => this.snooze()
         );
         
-        // Auto-restart mechanism
-        setTimeout(() => {
-            if (this.isActive) {
-                this.resetAndRestart();
-            }
-        }, REMINDER_CONSTANTS.AUTO_RESTART_DELAY_MS);
+        // Auto-restart immediately
+        this.resetAndRestart();
         
-        console.log(`${this.type} reminder triggered - will auto-restart`);
+        console.log(`${this.type} reminder triggered and restarted`);
     }
 
     /**
@@ -251,7 +240,7 @@ class ReminderManager {
         this.nextReminderTime = this.startTime + intervalMs;
         this.timeRemaining = intervalMs;
         
-        this.clearAllTimers();
+        this.clearTimer();
         this.startTimer();
     }
 

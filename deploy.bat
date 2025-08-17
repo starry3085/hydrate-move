@@ -24,7 +24,7 @@ git push origin main
 echo.
 echo [5/5] 部署到Cloudflare Pages...
 echo 正在使用Wrangler部署静态文件...
-wrangler pages deploy . --project-name=hydrate-move --compatibility-date=2024-01-01
+wrangler pages deploy . --project-name=hydrate-move
 
 echo.
 echo ========================================
