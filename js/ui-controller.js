@@ -34,6 +34,7 @@ class UIController {
         this.eventListeners = new Map();
         this.resizeObserver = null;
         this.updateInterval = null;
+        this.uiTimeouts = []; // Track UI-specific timeouts for safe cleanup
         
         // Direct reminder references (will be set by app)
         this.waterReminder = null;
