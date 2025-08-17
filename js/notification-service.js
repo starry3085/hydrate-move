@@ -116,17 +116,15 @@ class NotificationService {
         // Try browser notification first
         const browserNotificationShown = this.showBrowserNotification(type, title, message);
         
-        // Only show modal if browser notification failed
-        if (!browserNotificationShown) {
-            this.showModalNotification(type, title, message);
-        }
+        // Always show in-page alert (top-right toast style)
+        this.showInPageAlert(type, title, message);
 
         // Play sound (synchronous)
         if (this.soundEnabled) {
             this.playSound(type);
         }
 
-        return browserNotificationShown;
+        return true; // Always return true since we show in-page alert
     }
 
     /**
@@ -289,7 +287,7 @@ class NotificationService {
         if (type === 'water') {
             return '💧';
         } else if (type === 'standup') {
-            return '🧘';
+            return '🧘‍♀️';
         }
         return '⏰';
     }
