@@ -116,42 +116,27 @@ class ReminderManager {
     }
 
     /**
-     * Start main timer
+     * Start unified timer (ticks every second)
      * @private
      */
     startTimer() {
         if (!this.isActive || this.timerId) return;
         
-        this.timerId = setTimeout(() => {
-            this.timerId = null;
-            if (this.isActive) {
-                this.triggerReminder();
-            }
-        }, this.timeRemaining);
-    }
-
-    /**
-     * Start update timer for UI refresh
-     * @private
-     */
-    startUpdateTimer() {
-        if (!this.isActive || this.updateTimerId) return;
-        
-        this.updateTimerId = setInterval(() => {
+        this.timerId = setInterval(() => {
             if (!this.isActive) {
-                this.clearUpdateTimer();
+                this.clearTimer();
                 return;
             }
             
-            this.updateTimeRemaining();
-        }, this.updateInterval);
+            this.tick();
+        }, this.tickInterval);
     }
 
     /**
-     * Update time remaining
+     * Timer tick - updates time and checks for trigger
      * @private
      */
-    updateTimeRemaining() {
+    tick() {
         if (!this.isActive || !this.startTime) {
             this.timeRemaining = 0;
             return;
@@ -159,6 +144,11 @@ class ReminderManager {
         
         const now = Date.now();
         this.timeRemaining = Math.max(0, this.nextReminderTime - now);
+        
+        // Check if time is up
+        if (this.timeRemaining <= 0) {
+            this.triggerReminder();
+        }
     }
 
     /**
