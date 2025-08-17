@@ -378,6 +378,16 @@
         }
 
 
+        // Clean up old service worker registrations
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function(registrations) {
+                for(let registration of registrations) {
+                    console.log('Unregistering old service worker:', registration);
+                    registration.unregister();
+                }
+            });
+        }
+
         // Initialize app when DOM is ready
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => {
