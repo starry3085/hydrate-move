@@ -508,12 +508,8 @@ class UIController {
             });
             this.eventListeners.clear();
 
-            // Clear any remaining intervals/timeouts
-            const highestTimeoutId = setTimeout(() => {});
-            for (let i = 0; i < highestTimeoutId; i++) {
-                clearTimeout(i);
-                clearInterval(i);
-            }
+            // Note: Removed dangerous global timeout clearing that was interfering 
+            // with notification auto-hide timers and other legitimate timeouts
 
             console.log('UI Controller destroyed with complete cleanup');
         } catch (error) {
