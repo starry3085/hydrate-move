@@ -1147,11 +1147,7 @@ input[type="number"] {
         z-index: 999;
     }
     
-    /* Mobile notification adjustments */
-    .notification-alert {
-        width: calc(100% - 20px);
-        max-width: 100%;
-    }
+    /* Mobile notification adjustments - consolidated with main mobile notification styles below */
 }
 
 @media (max-width: 480px) {
