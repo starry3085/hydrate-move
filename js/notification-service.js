@@ -12,7 +12,6 @@ class NotificationService {
             standup: null,
             default: null
         };
-        this.currentCallbacks = null;
         this.notificationCounter = 0; // Counter for unique notification IDs
         this.autoHideTimers = new Map(); // Track auto-hide timers for each notification
 
@@ -107,14 +106,9 @@ class NotificationService {
      * @param {string} type - Notification type ('water' | 'standup')
      * @param {string} title - Notification title
      * @param {string} message - Notification content
-     * @param {Function} onDone - Callback when user clicks Done
-     * @param {Function} onSnooze - Callback when user clicks Snooze
      * @returns {boolean} Whether successfully displayed
      */
-    showNotification(type, title, message, onDone, onSnooze) {
-        // Store callbacks for modal handling
-        this.currentCallbacks = { onDone, onSnooze, type };
-        
+    showNotification(type, title, message) {
         // Try browser notification first
         const browserNotificationShown = this.showBrowserNotification(type, title, message);
         
@@ -343,121 +337,6 @@ class NotificationService {
         return '⏰';
     }
 
-    /**
-     * Show modal notification using HTML overlay
-     * @param {string} type - Notification type
-     * @param {string} title - Notification title  
-     * @param {string} message - Notification message
-     */
-    showModalNotification(type, title, message) {
-        const overlay = document.getElementById('notification-overlay');
-        const titleElement = document.getElementById('notification-title');
-        const messageElement = document.getElementById('notification-message');
-        const iconElement = document.getElementById('notification-icon');
-        const confirmBtn = document.getElementById('notification-confirm');
-        const snoozeBtn = document.getElementById('notification-snooze');
-
-        if (!overlay || !titleElement || !messageElement || !iconElement || !confirmBtn || !snoozeBtn) {
-            console.warn('Modal notification elements not found');
-            return;
-        }
-
-        // Update content
-        titleElement.textContent = title;
-        messageElement.textContent = message;
-        
-        // Update icon class
-        iconElement.className = `notification-icon ${type}-icon`;
-        
-        // Show overlay
-        overlay.style.display = 'flex';
-        setTimeout(() => overlay.classList.add('show'), 10);
-
-        // Remove existing event listeners
-        const newConfirmBtn = confirmBtn.cloneNode(true);
-        const newSnoozeBtn = snoozeBtn.cloneNode(true);
-        confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
-        snoozeBtn.parentNode.replaceChild(newSnoozeBtn, snoozeBtn);
-
-        // Add event listeners
-        newConfirmBtn.addEventListener('click', () => {
-            this.handleDoneClick();
-        });
-
-        newSnoozeBtn.addEventListener('click', () => {
-            this.handleSnoozeClick();
-        });
-
-        // Auto-hide after 30 seconds
-        setTimeout(() => {
-            if (overlay.classList.contains('show')) {
-                this.hideModalNotification();
-            }
-        }, 30000);
-    }
-
-    /**
-     * Handle Done button click with analytics tracking
-     */
-    handleDoneClick() {
-        if (this.currentCallbacks && this.currentCallbacks.onDone) {
-            // Track analytics event
-            this.trackReminderCompletion(this.currentCallbacks.type);
-            
-            // Execute callback
-            this.currentCallbacks.onDone();
-        }
-        
-        this.hideModalNotification();
-    }
-
-    /**
-     * Handle Snooze button click
-     */
-    handleSnoozeClick() {
-        if (this.currentCallbacks && this.currentCallbacks.onSnooze) {
-            this.currentCallbacks.onSnooze();
-        }
-        
-        this.hideModalNotification();
-    }
-
-    /**
-     * Track reminder completion for analytics
-     * @param {string} type - Reminder type
-     */
-    trackReminderCompletion(type) {
-        try {
-            // Get global analytics instance
-            if (window.app && window.app.analytics) {
-                if (type === 'water') {
-                    window.app.analytics.trackWaterCompleted();
-                } else if (type === 'standup') {
-                    window.app.analytics.trackStandupCompleted();
-                }
-            } else {
-                console.warn('Analytics not available for tracking');
-            }
-        } catch (error) {
-            console.warn('Failed to track reminder completion:', error);
-        }
-    }
-
-    /**
-     * Hide modal notification
-     */
-    hideModalNotification() {
-        const overlay = document.getElementById('notification-overlay');
-        if (overlay) {
-            overlay.classList.remove('show');
-            setTimeout(() => {
-                overlay.style.display = 'none';
-            }, 300);
-        }
-        
-        // Clear callbacks
-        this.currentCallbacks = null;
-    }
 
     /**
      * Play beep sound using Web Audio API

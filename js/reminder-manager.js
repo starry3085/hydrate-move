@@ -180,9 +180,7 @@ class ReminderManager {
         this.notificationService.showNotification(
             this.type,
             title,
-            message,
-            () => this.acknowledge(),
-            () => this.snooze()
+            message
         );
         
         // Auto-restart immediately
