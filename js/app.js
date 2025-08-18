@@ -138,7 +138,8 @@ class OfficeWellnessApp {
             const notificationService = new NotificationService();
             
             // Load saved settings from storage
-            const savedSettings = this.storage?.getItem('appSettings') || {};
+            const savedSettings = this.storage ? this.storage.getItem('appSettings') : null;
+            const settings = savedSettings || {};
             
             // Water Reminder
             this.waterReminder = new WaterReminder('water', {
@@ -294,8 +295,8 @@ class OfficeWellnessApp {
         
         try {
             const settings = {
-                water: this.waterReminder?.settings || {},
-                standup: this.standupReminder?.settings || {}
+                water: this.waterReminder ? this.waterReminder.settings : {},
+                standup: this.standupReminder ? this.standupReminder.settings : {}
             };
             
             this.storage.setItem('appSettings', settings);

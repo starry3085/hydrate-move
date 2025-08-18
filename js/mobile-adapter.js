@@ -40,12 +40,14 @@ class MobileAdapter {
             localStorage.removeItem(testKey);
             return result;
         } catch (e) {
-            this.errorHandler?.handleError({
-                type: 'storage',
-                error: e,
-                message: 'Local storage unavailable',
-                timestamp: Date.now()
-            });
+            if (this.errorHandler) {
+                this.errorHandler.handleError({
+                    type: 'storage',
+                    error: e,
+                    message: 'Local storage unavailable',
+                    timestamp: Date.now()
+                });
+            }
             return false;
         }
     }
@@ -229,7 +231,7 @@ class MobileAdapter {
             viewport: {
                 width: window.innerWidth,
                 height: window.innerHeight,
-                orientation: screen.orientation?.angle || 0
+                orientation: screen.orientation ? screen.orientation.angle : 0
             },
             userAgent: navigator.userAgent,
             platform: navigator.platform,
@@ -257,7 +259,7 @@ class MobileAdapter {
             },
             serviceWorker: {
                 available: this.features.serviceWorker,
-                active: navigator.serviceWorker?.controller?.state === 'activated'
+                active: navigator.serviceWorker && navigator.serviceWorker.controller && navigator.serviceWorker.controller.state === 'activated'
             },
             touch: {
                 available: this.features.touchEvents,
@@ -283,12 +285,14 @@ class MobileAdapter {
             const permission = await Notification.requestPermission();
             return permission;
         } catch (error) {
-            this.errorHandler?.handleError({
-                type: 'notification',
-                error,
-                message: 'Failed to request notification permission',
-                timestamp: Date.now()
-            });
+            if (this.errorHandler) {
+                this.errorHandler.handleError({
+                    type: 'notification',
+                    error,
+                    message: 'Failed to request notification permission',
+                    timestamp: Date.now()
+                });
+            }
             return 'denied';
         }
     }

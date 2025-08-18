@@ -24,7 +24,7 @@ class ErrorHandler {
             this.handleError({
                 type: 'promise',
                 error: event.reason,
-                message: event.reason?.message || 'Unhandled Promise rejection'
+                message: event.reason && event.reason.message ? event.reason.message : 'Unhandled Promise rejection'
             });
         });
 

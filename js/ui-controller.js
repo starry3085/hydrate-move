@@ -256,7 +256,7 @@ class UIController {
 
             if (isActive) {
                 // Show countdown time when active
-                const timeRemaining = Math.max(0, reminder.getTimeRemaining?.() || 0);
+                const timeRemaining = Math.max(0, reminder.getTimeRemaining ? reminder.getTimeRemaining() : 0);
                 const formattedTime = this.formatTime(timeRemaining);
                 countdownElement.textContent = formattedTime;
                 
@@ -296,7 +296,7 @@ class UIController {
 
         // Get actual interval from reminder settings
         const reminder = type === 'water' ? this.waterReminder : this.standupReminder;
-        const interval = reminder?.settings?.interval || REMINDER_CONSTANTS.DEFAULT_INTERVAL_MINUTES;
+        const interval = reminder && reminder.settings && reminder.settings.interval ? reminder.settings.interval : REMINDER_CONSTANTS.DEFAULT_INTERVAL_MINUTES;
         const intervalTime = interval * 60 * 1000; // Convert to milliseconds
         const formattedTime = this.formatTime(intervalTime);
 
