@@ -58,16 +58,16 @@ class OfficeWellnessApp {
                 // Sync initial intervals from HTML inputs
                 this.syncInitialIntervals();
                 
-                console.log('🔗 Reminders and demo controller linked to UI controller');
-            } else {
-                console.warn('⚠️ Some components not ready for linking');
-            }
-            
-            // Initial UI update is now handled by setReminders - no need for separate force update
-            
-            console.log('✅ Office Wellness App initialized successfully');
-        } catch (error) {
-            console.error('❌ Failed to initialize:', error);
+            console.log('Reminders and demo controller linked to UI controller');
+        } else {
+            console.warn('Some components not ready for linking');
+        }
+        
+        // Initial UI update is now handled by setReminders - no need for separate force update
+        
+        console.log('Office Wellness App initialized successfully');
+    } catch (error) {
+        console.error('Failed to initialize:', error);
             this.handleInitializationError(error);
         }
     }
@@ -75,9 +75,9 @@ class OfficeWellnessApp {
     initializeErrorHandler() {
         try {
             this.errorHandler = new ErrorHandler();
-            console.log('🛡️ Error handler initialized');
+            console.log('Error handler initialized');
         } catch (error) {
-            console.warn('⚠️ Failed to initialize error handler:', error);
+            console.warn('Failed to initialize error handler:', error);
         }
     }
 
@@ -88,9 +88,9 @@ class OfficeWellnessApp {
     initializeStorage() {
         try {
             this.storage = new StorageManager();
-            console.log('💾 Storage manager initialized');
+            console.log('Storage manager initialized');
         } catch (error) {
-            console.warn('⚠️ Storage initialization failed, using defaults:', error);
+            console.warn('Storage initialization failed, using defaults:', error);
             this.storage = null;
         }
     }
@@ -102,9 +102,9 @@ class OfficeWellnessApp {
     initializeAnalytics() {
         try {
             this.analytics = new Analytics();
-            console.log('📊 Analytics initialized');
+            console.log('Analytics initialized');
         } catch (error) {
-            console.warn('⚠️ Analytics initialization failed:', error);
+            console.warn('Analytics initialization failed:', error);
             this.analytics = null;
         }
     }
@@ -120,7 +120,7 @@ class OfficeWellnessApp {
                 mobileBreakpoint: 768
             });
             
-            console.log('🎨 UI Controller initialized');
+            console.log('UI Controller initialized');
         } catch (error) {
             throw new Error(`UI Controller initialization failed: ${error.message}`);
         }
@@ -132,7 +132,7 @@ class OfficeWellnessApp {
      */
     initializeReminders() {
         try {
-            console.log('🔄 Starting reminder initialization...');
+            console.log('Starting reminder initialization...');
             
             // Initialize notification service first
             const notificationService = new NotificationService();
@@ -157,9 +157,9 @@ class OfficeWellnessApp {
                 ...savedSettings.standup
             }, notificationService);
 
-            console.log('✅ Reminder managers initialized successfully');
+            console.log('Reminder managers initialized successfully');
         } catch (error) {
-            console.error('❌ Reminder initialization failed:', error);
+            console.error('Reminder initialization failed:', error);
             throw new Error(`Reminder initialization failed: ${error.message}`);
         }
     }
@@ -170,7 +170,7 @@ class OfficeWellnessApp {
      */
     initializeDemoController() {
         try {
-            console.log('🎬 Starting demo controller initialization...');
+            console.log('Starting demo controller initialization...');
             
             if (!this.waterReminder || !this.standupReminder || !this.uiController) {
                 throw new Error('Demo controller requires water reminder, standup reminder, and UI controller');
@@ -182,9 +182,9 @@ class OfficeWellnessApp {
                 uiController: this.uiController
             });
             
-            console.log('✅ Demo controller initialized successfully');
+            console.log('Demo controller initialized successfully');
         } catch (error) {
-            console.error('❌ Demo controller initialization failed:', error);
+            console.error('Demo controller initialization failed:', error);
             // Demo is not critical - continue without it
             this.demoController = null;
         }
@@ -198,9 +198,9 @@ class OfficeWellnessApp {
         try {
             this.feedbackButton = new FeedbackButton();
             this.feedbackButton.init();
-            console.log('💬 Feedback button initialized');
+            console.log('Feedback button initialized');
         } catch (error) {
-            console.warn('⚠️ Feedback button initialization failed:', error);
+            console.warn('Feedback button initialization failed:', error);
             this.feedbackButton = null;
         }
     }
@@ -227,7 +227,7 @@ class OfficeWellnessApp {
             throw new Error(`Missing components: ${missing.join(', ')}`);
         }
 
-        console.log('✅ All components validated');
+        console.log('All components validated');
     }
 
 
@@ -238,18 +238,29 @@ class OfficeWellnessApp {
      * @private
      */
     handleInitializationError(error) {
-        console.error('🚨 Initialization error:', error);
+        console.error('Initialization error:', error);
+        
+        // Increment retry count
+        this.retryCount++;
         
         // Show user-friendly error
         const errorMessage = error.message || 'Application failed to start';
         const userMessage = `Office Wellness App Error:\n${errorMessage}\n\nPlease refresh the page to try again.`;
         
-        // Try to show via UI, fallback to alert
-        setTimeout(() => {
-            if (window.alert) {
-                alert(userMessage);
-            }
-        }, 100);
+        // Try recovery if within retry limits
+        if (this.retryCount < this.config.maxRetries) {
+            console.log(`Attempting recovery (attempt ${this.retryCount}/${this.config.maxRetries})`);
+            setTimeout(() => {
+                this.attemptRecovery();
+            }, 1000 * this.retryCount);
+        } else {
+            // Show error to user after max retries
+            setTimeout(() => {
+                if (window.alert) {
+                    alert(userMessage);
+                }
+            }, 100);
+        }
     }
 
 
@@ -280,7 +291,7 @@ class OfficeWellnessApp {
                 }
             }
             
-            console.log('🔄 Initial intervals synced from HTML');
+            console.log('Initial intervals synced from HTML');
         } catch (error) {
             console.warn('Failed to sync initial intervals:', error);
         }
@@ -300,7 +311,7 @@ class OfficeWellnessApp {
             };
             
             this.storage.setItem('appSettings', settings);
-            console.log('💾 Settings saved successfully');
+            console.log('Settings saved successfully');
         } catch (error) {
             console.warn('Failed to save settings:', error);
         }
@@ -313,17 +324,17 @@ class OfficeWellnessApp {
      * @private
      */
     handleAppError(error, context = 'Application') {
-        console.error(`❌ ${context} Error:`, error);
+        console.error(`${context} Error:`, error);
         
         if (this.retryCount < this.config.maxRetries) {
             this.retryCount++;
-            console.log(`🔄 Attempting recovery (attempt ${this.retryCount}/${this.config.maxRetries})`);
+            console.log(`Attempting recovery (attempt ${this.retryCount}/${this.config.maxRetries})`);
             
             setTimeout(() => {
                 this.attemptRecovery();
             }, 1000 * this.retryCount);
         } else {
-            console.error('❌ Max retries exceeded, showing error to user');
+            console.error('Max retries exceeded, showing error to user');
             this.showErrorToUser(error);
         }
     }
@@ -334,17 +345,17 @@ class OfficeWellnessApp {
      */
     async attemptRecovery() {
         try {
-            console.log('🔄 Starting recovery process...');
+            console.log('Starting recovery process...');
             
             // Reinitialize components
             this.cleanup();
             await this.init();
             
             this.retryCount = 0;
-            console.log('✅ Recovery successful');
+            console.log('Recovery successful');
             
         } catch (recoveryError) {
-            console.error('❌ Recovery failed:', recoveryError);
+            console.error('Recovery failed:', recoveryError);
             this.showErrorToUser(recoveryError);
         }
     }

@@ -54,7 +54,7 @@ class UIController {
      */
     init() {
         try {
-            console.log('🎨 Initializing UI Controller...');
+            console.log('Initializing UI Controller...');
             
             // Ensure DOM is ready
             if (document.readyState === 'loading') {
@@ -80,9 +80,9 @@ class UIController {
             this.checkMobile();
             this.startUpdateLoop();
             
-            console.log('✅ UI Controller initialized successfully');
+            console.log('UI Controller initialized successfully');
         } catch (error) {
-            console.error('❌ UI Controller initialization failed:', error);
+            console.error('UI Controller initialization failed:', error);
             throw error;
         }
     }
@@ -101,7 +101,7 @@ class UIController {
         this.waterReminder = waterReminder;
         this.standupReminder = standupReminder;
         
-        console.log('✅ Reminders successfully linked to UI controller');
+        console.log('Reminders successfully linked to UI controller');
         
         // Update UI immediately with proper initialization state
         this.updateAllUI();
@@ -118,7 +118,7 @@ class UIController {
         }
         
         this.demoController = demoController;
-        console.log('✅ Demo controller successfully linked to UI controller');
+        console.log('Demo controller successfully linked to UI controller');
     }
 
     /**
@@ -139,10 +139,10 @@ class UIController {
             try {
                 this.elements[key] = document.querySelector(selectors[key]);
                 if (!this.elements[key]) {
-                    console.warn(`⚠️ Element not found: ${selectors[key]}`);
+                    console.warn(`Element not found: ${selectors[key]}`);
                 }
             } catch (error) {
-                console.error(`❌ Error finding element ${selectors[key]}:`, error);
+                console.error(`Error finding element ${selectors[key]}:`, error);
                 this.elements[key] = null;
             }
         });
@@ -160,7 +160,7 @@ class UIController {
             throw new Error(`Critical UI elements missing: ${missing.join(', ')}`);
         }
         
-        console.log('✅ All critical UI elements found');
+        console.log('All critical UI elements found');
     }
 
     /**
@@ -413,6 +413,33 @@ class UIController {
             document.body.classList.add('desktop');
             document.body.classList.remove('mobile');
             this.hideMobileMenu(); // Close mobile menu on desktop
+        }
+    }
+
+    /**
+     * Hide mobile menu when switching to desktop
+     * @private
+     */
+    hideMobileMenu() {
+        try {
+            const mobileMenu = document.querySelector('.mobile-menu');
+            if (mobileMenu) {
+                mobileMenu.classList.remove('active');
+            }
+            
+            // Also hide any mobile overlay
+            const mobileOverlay = document.querySelector('.mobile-overlay');
+            if (mobileOverlay) {
+                mobileOverlay.classList.remove('active');
+            }
+            
+            // Reset mobile menu button state
+            const menuToggle = document.querySelector('.menu-toggle');
+            if (menuToggle) {
+                menuToggle.classList.remove('active');
+            }
+        } catch (error) {
+            console.warn('Failed to hide mobile menu:', error);
         }
     }
 
