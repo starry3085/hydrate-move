@@ -18,8 +18,8 @@ A lightweight web app that reminds you to drink water and take standing breaks d
 
 ### 📱 Modern Web
 - Responsive design for all devices
-- PWA support (install as app)
-- Offline functionality
+- Browser-based application (no installation required) / 基于浏览器的应用（无需安装）
+- Works in any modern browser / 适用于任何现代浏览器
 - Dark mode support
 
 ## 🚀 Quick Start
@@ -43,7 +43,7 @@ cd hydrate-move
 ## 🔧 Tech Stack
 
 - **Frontend**: Vanilla HTML/CSS/JavaScript
-- **PWA**: Service Worker + Web Manifest
+- **Browser Compatibility**: Modern web standards / 现代网络标准
 - **Storage**: Local Storage
 - **Deployment**: Cloudflare Pages
 

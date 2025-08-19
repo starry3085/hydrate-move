@@ -95,7 +95,7 @@ Wait 5-10 minutes, then:
 ### Pre-Deployment
 - [ ] Test locally with static server
 - [ ] Verify all assets load correctly
-- [ ] Check PWA functionality
+- [ ] Check core functionality / 检查核心功能
 - [ ] Test notifications and reminders
 - [ ] Validate analytics configuration (if enabled)
 
@@ -149,10 +149,10 @@ If you encounter issues:
 4. Output directory: `./`
 5. Deploy
 
-## 📱 PWA Considerations
-- Ensure `manifest.json` is accessible
-- Verify service worker registration
-- Test offline functionality
-- Check app installation prompts
+## 📱 Browser Compatibility / 浏览器兼容性
+- Ensure cross-browser functionality / 确保跨浏览器功能
+- Test responsive design on mobile devices / 测试移动设备响应式设计
+- Verify notification permissions / 验证通知权限
+- Check timer accuracy across browsers / 检查定时器在各浏览器的准确性
 
 Start configuring your custom domain now!

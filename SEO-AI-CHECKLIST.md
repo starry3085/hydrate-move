@@ -15,10 +15,10 @@
   - 包含价格、功能列表、关键词
   - 符合Google富摘要要求
 
-- [x] **PWA优化**
-  - 更新manifest.json（categories, purpose: maskable）
-  - 创建service-worker.js支持离线使用
-  - 注册Service Worker
+- [x] **Browser Optimization / 浏览器优化**
+  - Modern web standards compliance / 现代网络标准兼容性
+  - Cross-browser compatibility testing / 跨浏览器兼容性测试
+  - Performance optimization / 性能优化
 
 ### 数据层优化
 - [x] **Sitemap更新**
@@ -59,9 +59,9 @@
 - **检索准确性**: JSON-LD提供结构化信息
 - **用户意图匹配**: 关键词覆盖主要使用场景
 
-### PWA评分
-- **Lighthouse PWA**: 目标90+分
-- **Lighthouse SEO**: 目标95+分
+### Performance Scoring / 性能评分
+- **Lighthouse Performance**: Target 90+ score / 目标90+分
+- **Lighthouse SEO**: Target 95+ score / 目标95+分
 - **可安装性**: 支持桌面和移动端安装
 
 ## 🔍 验证方法
@@ -71,9 +71,9 @@
 # Lighthouse检测
 npx lighthouse https://starry3085.github.io/hydrate-move/ --view
 
-# PWA检测
-# Chrome DevTools > Application > Manifest
-# Chrome DevTools > Application > Service Workers
+# Browser Compatibility Check / 浏览器兼容性检查
+# Chrome DevTools > Console (check for errors) / 控制台检查错误
+# Chrome DevTools > Network (check loading performance) / 网络检查加载性能
 ```
 
 ### 2. SEO验证

@@ -6,7 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="theme-color" content="#2c3e50">
 
     <!-- 性能优化 -->
     <meta name="robots" content="index, follow">
@@ -18,7 +17,7 @@
     <!-- 社交媒体优化 -->
     <meta property="og:title" content="Hydrate Move - Free Office Wellness Timer">
     <meta property="og:description"
-        content="Free browser-based office wellness timer that reminds you to drink water and stand up every 30 minutes. PWA support, works offline.">
+        content="Free browser-based office wellness timer that reminds you to drink water and stand up every 30 minutes. Works in any modern browser. 免费的浏览器办公健康提醒工具。">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://starry3085.github.io/hydrate-move/">
     <meta property="og:image" content="https://starry3085.github.io/hydrate-move/assets/og-image.png">
@@ -33,14 +32,12 @@
     <meta http-equiv="Expires" content="0">
     <title>Hydrate Move - Free Office Wellness Timer</title>
     <meta name="description"
-        content="在浏览器里提醒喝水和站立的小工具，30分钟循环，支持离线PWA，完全免费。Free browser-based office wellness timer that reminds you to drink water and stand up every 30 minutes.">
+        content="Free browser-based office wellness timer that reminds you to drink water and stand up every 30 minutes. Works in any modern browser. 免费的浏览器办公健康提醒工具，每30分钟提醒喝水和站立。">
     <link rel="preload" href="styles/main.css?v=1.0.4" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript>
         <link rel="stylesheet" href="styles/main.css?v=1.0.4">
     </noscript>
     <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
-    <link rel="apple-touch-icon" href="assets/standup-icon.png">
-    <link rel="manifest" href="manifest.json">
 
     <!-- 结构化数据 JSON-LD -->
     <script type="application/ld+json">
@@ -56,7 +53,7 @@
             "@type": "Offer",
             "price": "0"
         },
-        "featureList": ["water reminder", "stand-up reminder", "PWA support", "offline functionality"],
+        "featureList": ["water reminder", "stand-up reminder", "browser-based", "no installation required"],
         "author": {
             "@type": "Organization",
             "name": "Hydrate Move Team"
@@ -93,7 +90,7 @@
                     <ul>
                         <li>Water reminder every 30 minutes for better hydration</li>
                         <li>Standup reminder for posture breaks and movement</li>
-                        <li>Progressive Web App with offline functionality</li>
+                        <li>Browser-based application with no installation required</li>
                         <li>Privacy-first design with local storage only</li>
                         <li>Free office productivity tool for remote workers</li>
                     </ul>
@@ -239,24 +236,9 @@
                 if (missingClasses.length > 0) {
                     console.error('Missing classes:', missingClasses);
                     
-                    // 尝试清除缓存并重新加载
-                    console.log('Attempting cache refresh...');
-                    if ('caches' in window) {
-                        caches.keys().then(names => {
-                            names.forEach(name => caches.delete(name));
-                        });
-                    }
-                    
-                    if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-                        navigator.serviceWorker.controller.postMessage({action: 'SKIP_WAITING'});
-                        navigator.serviceWorker.getRegistrations().then(registrations => {
-                            registrations.forEach(registration => registration.unregister());
-                        });
-                    }
-                    
-                    // 延迟重载，给用户显示错误信息
+                    // Attempt to reload after delay to show error message
                     setTimeout(() => {
-                        if (confirm('检测到缓存问题，是否刷新页面？')) {
+                        if (confirm('Application loading issue detected. Refresh page?')) {
                             location.reload(true);
                         }
                     }, 2000);
@@ -363,15 +345,6 @@
         }
 
 
-        // Clean up old service worker registrations
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.getRegistrations().then(function(registrations) {
-                for(let registration of registrations) {
-                    console.log('Unregistering old service worker:', registration);
-                    registration.unregister();
-                }
-            });
-        }
 
         // Initialize app when DOM is ready
         if (document.readyState === 'loading') {
