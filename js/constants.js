@@ -16,9 +16,6 @@ const REMINDER_CONSTANTS = {
     // Timer update frequency in milliseconds
     UPDATE_INTERVAL_MS: 1000,
     
-    // Snooze duration in minutes
-    SNOOZE_DURATION_MINUTES: 5,
-    
     // Auto-restart delay after reminder trigger (milliseconds)
     AUTO_RESTART_DELAY_MS: 5000
 };

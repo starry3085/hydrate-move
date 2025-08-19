@@ -76,7 +76,7 @@ The application uses centralized constants management following MVP and best pra
 **REMINDER_CONSTANTS**:
 - `DEFAULT_INTERVAL_MINUTES: 30` - Fixed reminder interval (replaces user-configurable intervals)
 - `DEMO_INTERVAL_SECONDS: 30` - Demo mode interval for quick demonstration
-- `SNOOZE_DURATION_MINUTES: 5` - Snooze delay duration
+- ~~`SNOOZE_DURATION_MINUTES: 5` - Snooze delay duration~~ (Removed: Snooze feature not in MVP / 已移除：稍后提醒功能不在MVP范围内)
 - `UPDATE_INTERVAL_MS: 1000` - UI update frequency
 - `AUTO_RESTART_DELAY_MS: 5000` - Auto-restart delay after reminder trigger
 

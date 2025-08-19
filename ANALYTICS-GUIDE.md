@@ -90,7 +90,7 @@ git push origin main
 - [ ] Standup reminder triggers after 30 minutes
 - [ ] Notification modal appears with correct content
 - [ ] "Done" button closes modal and tracks event
-- [ ] "Remind Later" button snoozes reminder
+- [x] "Remind Later" button removed - snooze feature not in MVP
 - [ ] Browser console shows analytics tracking logs
 - [ ] No JavaScript errors in console
 

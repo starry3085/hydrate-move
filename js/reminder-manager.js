@@ -199,22 +199,7 @@ class ReminderManager {
         console.log(`${this.type} reminder acknowledged`);
     }
 
-    /**
-     * Snooze reminder (delay 5 minutes)
-     */
-    snooze() {
-        if (!this.isActive) return;
-        
-        const snoozeTime = REMINDER_CONSTANTS.SNOOZE_DURATION_MINUTES * 60 * 1000; // 5 minutes in milliseconds
-        this.timeRemaining = snoozeTime;
-        this.startTime = Date.now();
-        this.nextReminderTime = this.startTime + snoozeTime;
-        
-        this.clearTimer();
-        this.startTimer();
-        
-        console.log(`${this.type} reminder snoozed for 5 minutes`);
-    }
+
 
     /**
      * Reset and restart timer
