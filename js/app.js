@@ -137,16 +137,20 @@ class OfficeWellnessApp {
             // Initialize notification service first
             const notificationService = new NotificationService();
             
-            // Load saved settings from storage
+            // Load saved settings from storage with proper null handling
             const savedSettings = this.storage ? this.storage.getItem('appSettings') : null;
             const settings = savedSettings || {};
+            
+            // Ensure water and standup settings exist with defaults
+            const waterSettings = (savedSettings && savedSettings.water) ? savedSettings.water : {};
+            const standupSettings = (savedSettings && savedSettings.standup) ? savedSettings.standup : {};
             
             // Water Reminder
             this.waterReminder = new WaterReminder('water', {
                 interval: 30,
                 enabled: true,
                 sound: true,
-                ...savedSettings.water
+                ...waterSettings
             }, notificationService);
 
             // Standup Reminder
@@ -154,7 +158,7 @@ class OfficeWellnessApp {
                 interval: 30,
                 enabled: true,
                 sound: true,
-                ...savedSettings.standup
+                ...standupSettings
             }, notificationService);
 
             console.log('Reminder managers initialized successfully');
