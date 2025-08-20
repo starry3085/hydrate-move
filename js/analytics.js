@@ -7,10 +7,13 @@ class Analytics {
         this.isEnabled = true;
         this.baiduAnalyticsReady = false;
         this.checkAttempts = 0;
-        this.maxCheckAttempts = 5;
+        this.maxCheckAttempts = 10; // 增加重试次数
+        this.warningShown = false; // 避免重复警告
         
-        // Check if Baidu Analytics is loaded with retry mechanism
-        this.initializeBaiduAnalytics();
+        // 延迟初始化，给百度统计脚本更多加载时间
+        setTimeout(() => {
+            this.initializeBaiduAnalytics();
+        }, 1000);
     }
 
     /**
@@ -20,9 +23,9 @@ class Analytics {
     initializeBaiduAnalytics() {
         this.checkBaiduAnalytics();
         
-        // If not ready, retry with exponential backoff
+        // If not ready, retry with longer intervals
         if (!this.baiduAnalyticsReady && this.checkAttempts < this.maxCheckAttempts) {
-            const delay = Math.pow(2, this.checkAttempts) * 500; // 500ms, 1s, 2s, 4s, 8s
+            const delay = Math.min(1000 + (this.checkAttempts * 1000), 5000); // 1s, 2s, 3s...最多5s
             setTimeout(() => {
                 this.checkAttempts++;
                 this.initializeBaiduAnalytics();
@@ -39,8 +42,13 @@ class Analytics {
         if (typeof _hmt !== 'undefined' && Array.isArray(_hmt)) {
             this.baiduAnalyticsReady = true;
             console.log('✅ Baidu Analytics ready');
-        } else if (this.checkAttempts >= this.maxCheckAttempts) {
-            console.warn('⚠️ Baidu Analytics failed to load after multiple attempts, events will be logged only');
+            return;
+        }
+        
+        // 只在最后一次尝试时显示警告
+        if (this.checkAttempts >= this.maxCheckAttempts && !this.warningShown) {
+            this.warningShown = true;
+            console.warn('⚠️ Baidu Analytics unavailable (may be blocked by ad blocker), events will be logged locally only');
         }
     }
 

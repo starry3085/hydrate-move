@@ -64,17 +64,34 @@
     <script>
         var _hmt = _hmt || [];
         (function () {
-            var hm = document.createElement("script");
-            hm.src = "https://hm.baidu.com/hm.js?44c1c4380ba833e8a8d594886bf282db";
-            hm.async = true;
-            hm.onerror = function() {
-                console.warn('Baidu Analytics script failed to load');
-            };
-            hm.onload = function() {
-                console.log('Baidu Analytics script loaded successfully');
-            };
-            var s = document.getElementsByTagName("script")[0];
-            s.parentNode.insertBefore(hm, s);
+            try {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?44c1c4380ba833e8a8d594886bf282db";
+                hm.async = true;
+                hm.defer = true;
+                
+                // 添加超时处理
+                var timeout = setTimeout(function() {
+                    console.warn('Baidu Analytics loading timeout');
+                }, 10000);
+                
+                hm.onerror = function() {
+                    clearTimeout(timeout);
+                    console.warn('Baidu Analytics script failed to load (may be blocked)');
+                };
+                
+                hm.onload = function() {
+                    clearTimeout(timeout);
+                    console.log('✅ Baidu Analytics script loaded successfully');
+                    // 确保_hmt数组可用
+                    window._hmt = window._hmt || [];
+                };
+                
+                var s = document.getElementsByTagName("script")[0];
+                s.parentNode.insertBefore(hm, s);
+            } catch (error) {
+                console.warn('Baidu Analytics initialization failed:', error);
+            }
         })();
     </script>
 </head>
