@@ -207,21 +207,34 @@ class NotificationService {
         // Bind close event for this specific notification
         const closeBtn = alertContainer.querySelector('.btn-close');
         if (closeBtn) {
-            closeBtn.addEventListener('click', () => {
+            closeBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 this.hideSpecificAlert(notificationId);
             });
         }
 
-        // Show with animation
-        setTimeout(() => alertContainer.classList.add('show'), 100);
+        // Show with animation - ensure DOM is ready
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                if (document.getElementById(notificationId)) {
+                    alertContainer.classList.add('show');
+                }
+            });
+        });
 
         // Auto-hide after 5 seconds with proper cleanup
         const autoHideTimer = setTimeout(() => {
-            this.hideSpecificAlert(notificationId);
+            // Double-check the element still exists before hiding
+            if (document.getElementById(notificationId)) {
+                this.hideSpecificAlert(notificationId);
+            }
         }, 5000);
 
         // Store timer reference for cleanup
         this.autoHideTimers.set(notificationId, autoHideTimer);
+        
+        console.log(`📢 In-page alert created: ${notificationId}, auto-hide in 5 seconds`);
     }
 
     /**
@@ -230,22 +243,39 @@ class NotificationService {
      */
     hideSpecificAlert(notificationId) {
         const alertElement = document.getElementById(notificationId);
-        if (alertElement) {
-            // Clear the auto-hide timer
-            if (this.autoHideTimers.has(notificationId)) {
-                clearTimeout(this.autoHideTimers.get(notificationId));
-                this.autoHideTimers.delete(notificationId);
-            }
+        if (!alertElement) {
+            console.warn(`Alert element not found: ${notificationId}`);
+            return;
+        }
 
+        // Clear the auto-hide timer first
+        if (this.autoHideTimers.has(notificationId)) {
+            clearTimeout(this.autoHideTimers.get(notificationId));
+            this.autoHideTimers.delete(notificationId);
+            console.log(`🧹 Cleared auto-hide timer for: ${notificationId}`);
+        }
+
+        // Check if element already has show class before removing
+        if (alertElement.classList.contains('show')) {
             // Hide with animation - remove show class to trigger CSS transition
             alertElement.classList.remove('show');
+            console.log(`🎭 Starting hide animation for: ${notificationId}`);
             
             // Wait for CSS transition to complete before removing from DOM
             setTimeout(() => {
-                if (alertElement && alertElement.parentNode) {
-                    alertElement.parentNode.removeChild(alertElement);
+                // Double-check element still exists and has parent
+                const element = document.getElementById(notificationId);
+                if (element && element.parentNode) {
+                    element.parentNode.removeChild(element);
+                    console.log(`🗑️ Removed from DOM: ${notificationId}`);
                 }
-            }, 300); // Match CSS transition duration
+            }, 300); // Match CSS transition duration (0.3s)
+        } else {
+            // Element doesn't have show class, remove immediately
+            if (alertElement.parentNode) {
+                alertElement.parentNode.removeChild(alertElement);
+                console.log(`🗑️ Removed immediately (no animation): ${notificationId}`);
+            }
         }
     }
 
