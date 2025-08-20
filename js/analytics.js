@@ -6,9 +6,28 @@ class Analytics {
     constructor() {
         this.isEnabled = true;
         this.baiduAnalyticsReady = false;
+        this.checkAttempts = 0;
+        this.maxCheckAttempts = 5;
         
-        // Check if Baidu Analytics is loaded
+        // Check if Baidu Analytics is loaded with retry mechanism
+        this.initializeBaiduAnalytics();
+    }
+
+    /**
+     * Initialize Baidu Analytics with retry mechanism
+     * @private
+     */
+    initializeBaiduAnalytics() {
         this.checkBaiduAnalytics();
+        
+        // If not ready, retry with exponential backoff
+        if (!this.baiduAnalyticsReady && this.checkAttempts < this.maxCheckAttempts) {
+            const delay = Math.pow(2, this.checkAttempts) * 500; // 500ms, 1s, 2s, 4s, 8s
+            setTimeout(() => {
+                this.checkAttempts++;
+                this.initializeBaiduAnalytics();
+            }, delay);
+        }
     }
 
     /**
@@ -20,8 +39,8 @@ class Analytics {
         if (typeof _hmt !== 'undefined' && Array.isArray(_hmt)) {
             this.baiduAnalyticsReady = true;
             console.log('✅ Baidu Analytics ready');
-        } else {
-            console.warn('⚠️ Baidu Analytics not loaded, events will be logged only');
+        } else if (this.checkAttempts >= this.maxCheckAttempts) {
+            console.warn('⚠️ Baidu Analytics failed to load after multiple attempts, events will be logged only');
         }
     }
 

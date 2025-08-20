@@ -68,6 +68,13 @@
         (function () {
             var hm = document.createElement("script");
             hm.src = "https://hm.baidu.com/hm.js?44c1c4380ba833e8a8d594886bf282db";
+            hm.async = true;
+            hm.onerror = function() {
+                console.warn('Baidu Analytics script failed to load');
+            };
+            hm.onload = function() {
+                console.log('Baidu Analytics script loaded successfully');
+            };
             var s = document.getElementsByTagName("script")[0];
             s.parentNode.insertBefore(hm, s);
         })();
