@@ -1,0 +1,69 @@
+{
+  "meta": {
+    "title": "Hydrate Move - 免费办公健康提醒器",
+    "description": "免费的浏览器办公健康提醒工具，每30分钟提醒喝水和站立。支持所有现代浏览器。",
+    "keywords": "办公健康, 喝水提醒, 站立提醒, 健康计时器, 生产力, 工作习惯, 饮水追踪, 姿势休息",
+    "author": "Hydrate Move 团队",
+    "language": "zh-CN"
+  },
+  "og": {
+    "title": "Hydrate Move - 免费办公健康提醒器",
+    "description": "免费的浏览器办公健康提醒工具，每30分钟提醒喝水和站立。支持所有现代浏览器。"
+  },
+  "twitter": {
+    "title": "Hydrate Move - 免费办公健康提醒器",
+    "description": "智能提醒办公人员保持水分和运动休息"
+  },
+  "jsonLd": {
+    "name": "Hydrate Move",
+    "description": "免费的浏览器办公健康提醒工具，每30分钟提醒喝水和站立。",
+    "featureList": [
+      "喝水提醒",
+      "站立提醒",
+      "浏览器运行",
+      "无需安装"
+    ],
+    "author": "Hydrate Move 团队",
+    "keywords": "办公健康, 喝水提醒, 站立提醒, 健康计时器, 生产力, 工作习惯"
+  },
+  "ui": {
+    "appTitle": "Hydrate Move",
+    "appSubtitle": "办公健康提醒 - 保持健康工作习惯",
+    "seoContent": {
+      "description": "每30分钟保持水分和运动休息。免费的隐私优先办公健康计时器，可离线工作，无需注册。",
+      "featuresTitle": "办公健康计时器功能",
+      "features": [
+        "每30分钟喝水提醒，更好保持水分",
+        "站立提醒，改善姿势和运动",
+        "基于浏览器的应用，无需安装",
+        "隐私优先设计，仅本地存储",
+        "免费的远程工作生产力工具"
+      ]
+    },
+    "demo": {
+      "buttonText": "演示",
+      "buttonAriaLabel": "启动演示模式查看提醒如何工作",
+      "statusText": "点击演示查看提醒如何工作"
+    },
+    "reminders": {
+      "sectionLabel": "健康提醒",
+      "water": {
+        "title": "喝水提醒",
+        "remindEvery": "每次提醒:",
+        "remindAfter": "提醒时间:",
+        "interval": "30 分钟",
+        "buttonStart": "开始",
+        "buttonAriaLabel": "启动喝水提醒计时器"
+      },
+      "standup": {
+        "title": "站立提醒",
+        "remindEvery": "每次提醒:",
+        "remindAfter": "提醒时间:",
+        "interval": "30 分钟",
+        "buttonStart": "开始",
+        "buttonAriaLabel": "启动站立提醒计时器"
+      }
+    },
+    "loading": "加载中..."
+  }
+}
