@@ -5,6 +5,9 @@ pages_build_output_dir = "."
 [env.production]
 name = "hydrate-move"
 
+[env.preview]
+name = "hydrate-move-staging"
+
 # 自定义域名配置
-# 自定义域名: hydrate-move.lightyearai.info
-# 需要在Cloudflare Dashboard中手动配置
+# 生产环境: hydrate-move.lightyearai.info
+# 测试环境: staging.hydrate-move.lightyearai.info (需要在Cloudflare Dashboard中手动配置)
