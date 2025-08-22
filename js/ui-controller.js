@@ -261,7 +261,7 @@ class UIController {
                 countdownElement.textContent = formattedTime;
                 
                 // Update button to Stop with warning style
-                btnElement.textContent = 'Stop';
+                btnElement.textContent = '停止';
                 btnElement.className = 'btn-warning';
             } else {
                 // Show time remaining (which should match interval when inactive)
@@ -270,7 +270,7 @@ class UIController {
                 countdownElement.textContent = formattedTime;
                 
                 // Update button to Start with primary style
-                btnElement.textContent = 'Start';
+                btnElement.textContent = '开始';
                 btnElement.className = 'btn-primary';
             }
 
@@ -301,7 +301,7 @@ class UIController {
         const formattedTime = this.formatTime(intervalTime);
 
         countdownElement.textContent = formattedTime;
-        btnElement.textContent = 'Start';
+        btnElement.textContent = '开始';
         btnElement.className = 'btn-primary';
     }
 
@@ -324,7 +324,7 @@ class UIController {
                     btn.textContent = 'Loading...';
                     btn.disabled = true;
                     setTimeout(() => {
-                        btn.textContent = 'Start';
+                        btn.textContent = '开始';
                         btn.disabled = false;
                     }, 2000);
                 }
@@ -368,12 +368,12 @@ class UIController {
             if (this.demoController.isDemoRunning) {
                 // Stop demo if running
                 this.demoController.stopDemo();
-                demoBtn.textContent = 'Demo';
+                demoBtn.textContent = '演示';
                 demoBtn.className = 'btn-demo';
             } else {
                 // Start demo
                 this.demoController.startDemo();
-                demoBtn.textContent = 'Stop Demo';
+                demoBtn.textContent = '停止演示';
                 demoBtn.className = 'btn-demo active';
             }
             

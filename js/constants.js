@@ -50,14 +50,14 @@ const DEMO_CONSTANTS = {
     WATER_START_DELAY_MS: 0,        // Start water reminder immediately
     STANDUP_START_DELAY_MS: 10000,  // Start standup reminder after 10 seconds
     
-    // Demo status messages
+    // 演示状态消息
     STATUS_MESSAGES: {
-        READY: 'Click Demo to see how reminders work',
-        STARTING: 'Demo starting...',
-        WATER_STARTING: 'Starting water reminder (FOR DEMO PURPOSE - 30s interval)',
-        STANDUP_STARTING: 'Starting standup reminder (FOR DEMO PURPOSE - 30s interval)',
-        RUNNING: 'Demo running - watch for notifications!',
-        COMPLETED: 'Demo completed - reminders reset to normal'
+        READY: '点击演示查看提醒如何工作',
+        STARTING: '演示启动中...',
+        WATER_STARTING: '正在启动喝水提醒（演示模式 - 30秒间隔）',
+        STANDUP_STARTING: '正在启动站立提醒（演示模式 - 30秒间隔）',
+        RUNNING: '演示运行中 - 请注意通知！',
+        COMPLETED: '演示完成 - 提醒已重置为正常模式'
     }
 };
 
@@ -74,12 +74,12 @@ const NOTIFICATION_CONSTANTS = {
     // Notification messages
     MESSAGES: {
         WATER: {
-            TITLE: '💧 Time to Hydrate!',
-            BODY: 'Long work sessions can lead to dehydration, remember to drink water!'
+            TITLE: '💧 该喝水了！',
+            BODY: '长时间工作容易导致脱水，记得要多喝水哦！'
         },
         STANDUP: {
-            TITLE: '🧘 Time to Stand Up!',
-            BODY: 'Sitting too long is bad for your health, get up and move around!'
+            TITLE: '🧘 该起来活动了！',
+            BODY: '久坐对健康有害，起来走走，伸伸腰吧！'
         }
     }
 };

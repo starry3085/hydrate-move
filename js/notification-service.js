@@ -522,16 +522,17 @@ class NotificationService {
         promptContainer.id = 'notification-permission-prompt';
 
         // Create prompt content
+        const isChinesePage = document.documentElement.lang === 'zh-CN';
         promptContainer.innerHTML = `
             <div class="prompt-content">
                 <div class="prompt-icon">🔔</div>
                 <div class="prompt-text">
-                    <h3>Enable Notifications</h3>
-                    <p>To better remind you to drink water and take breaks, please allow browser notifications.</p>
+                    <h3>${isChinesePage ? '开启通知' : 'Enable Notifications'}</h3>
+                    <p>${isChinesePage ? '为了更好地提醒您喝水和休息，请允许浏览器通知。' : 'To better remind you to drink water and take breaks, please allow browser notifications.'}</p>
                 </div>
                 <div class="prompt-actions">
-                    <button class="btn btn-primary" id="request-permission-btn">Allow Notifications</button>
-                    <button class="btn btn-secondary" id="dismiss-prompt-btn">Maybe Later</button>
+                    <button class="btn btn-primary" id="request-permission-btn">${isChinesePage ? '允许通知' : 'Allow Notifications'}</button>
+                    <button class="btn btn-secondary" id="dismiss-prompt-btn">${isChinesePage ? '稍后再说' : 'Maybe Later'}</button>
                 </div>
             </div>
         `;
