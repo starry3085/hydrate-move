@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>错误测试</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <h1>错误调试页面</h1>
+    <div id="error-log" style="background: #f0f0f0; padding: 20px; margin: 20px; font-family: monospace;"></div>
+    
+    <script src="js/constants.js"></script>
+    <script src="js/notification-service.js"></script>
+    <script src="js/reminder-manager.js"></script>
+    <script src="js/afternoon-tea-reminder.js"></script>
+    
+    <script>
+        const errorLog = document.getElementById('error-log');
+        
+        // 捕获所有错误
+        window.addEventListener('error', function(e) {
+            errorLog.innerHTML += '<div style="color: red;">ERROR: ' + e.message + '</div>';
+            errorLog.innerHTML += '<div style="color: gray;">File: ' + e.filename + ':' + e.lineno + '</div>';
+        });
+        
+        // 捕获未处理的Promise错误
+        window.addEventListener('unhandledrejection', function(e) {
+            errorLog.innerHTML += '<div style="color: orange;">PROMISE ERROR: ' + e.reason + '</div>';
+        });
+        
+        // 检查每个脚本加载
+        const scripts = ['notification-service.js', 'afternoon-tea-config.js', 'afternoon-tea-reminder.js'];
+        scripts.forEach(script => {
+            errorLog.innerHTML += '<div>Loading: ' + script + '</div>';
+        });
+        
+        // 检查全局变量
+        setTimeout(() => {
+            errorLog.innerHTML += '<div style="color: blue;">=== 状态检查 ===</div>';
+            errorLog.innerHTML += '<div>NotificationService: ' + (window.NotificationService ? '✅' : '❌') + '</div>';
+            errorLog.innerHTML += '<div>notificationService: ' + (window.notificationService ? '✅' : '❌') + '</div>';
+            errorLog.innerHTML += '<div>AFTERNOON_TEA_CONSTANTS: ' + (window.AFTERNOON_TEA_CONSTANTS ? '✅' : '❌') + '</div>';
+            errorLog.innerHTML += '<div>AfternoonTeaReminder: ' + (window.AfternoonTeaReminder ? '✅' : '❌') + '</div>';
+            errorLog.innerHTML += '<div>afternoonTeaReminder: ' + (window.afternoonTeaReminder ? '✅' : '❌') + '</div>';
+        }, 1000);
+    </script>
+</body>
+</html>

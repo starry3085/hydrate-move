@@ -7,6 +7,7 @@ class OfficeWellnessApp {
         this.uiController = null;
         this.waterReminder = null;
         this.standupReminder = null;
+        this.afternoonTeaReminder = null; // 新增下午茶提醒
         this.demoController = null;
         this.errorHandler = null;
         this.storage = null;
@@ -40,6 +41,7 @@ class OfficeWellnessApp {
             this.initializeAnalytics();
             this.initializeUI();
             this.initializeReminders();
+            this.initializeAfternoonTea(); // 初始化下午茶提醒
             this.initializeDemoController();
             this.initializeFeedbackButton();
             
@@ -140,6 +142,9 @@ class OfficeWellnessApp {
             // Initialize notification service first
             const notificationService = new NotificationService();
             
+            // 将notificationService暴露到全局，供下午茶提醒使用
+            window.notificationService = notificationService;
+            
             // Load saved settings from storage with proper null handling
             const savedSettings = this.storage ? this.storage.getItem('appSettings') : null;
             const settings = savedSettings || {};
@@ -209,6 +214,40 @@ class OfficeWellnessApp {
         } catch (error) {
             console.warn('Feedback button initialization failed:', error);
             this.feedbackButton = null;
+        }
+    }
+
+    /**
+     * Initialize afternoon tea reminder (Easter egg feature for Chinese version)
+     * @private
+     */
+    initializeAfternoonTea() {
+        try {
+            // 检查是否为中文版本及功能是否启用
+            if (!AFTERNOON_TEA_CONSTANTS.isChineseVersionOnly() || !AFTERNOON_TEA_CONSTANTS.ENABLED) {
+                console.log('🍵 下午茶提醒彩蛋未启用（非中文版或功能关闭）');
+                return;
+            }
+            
+            // 确保通知服务已初始化
+            const notificationService = window.notificationService;
+            if (!notificationService) {
+                console.warn('🍵 通知服务未初始化，下午茶提醒跳过');
+                return;
+            }
+            
+            // 创建下午茶提醒实例，传入空设置和通知服务
+            this.afternoonTeaReminder = new AfternoonTeaReminder({}, notificationService);
+            
+            // 将实例暴露到全局供调试使用
+            window.afternoonTeaReminder = this.afternoonTeaReminder;
+            
+            console.log('🍵 下午茶提醒彩蛋初始化成功');
+            
+        } catch (error) {
+            console.error('🍵 下午茶提醒初始化失败:', error);
+            // 下午茶提醒是可选功能，不影响主应用
+            this.afternoonTeaReminder = null;
         }
     }
 
@@ -422,6 +461,11 @@ class OfficeWellnessApp {
             if (this.standupReminder) {
                 this.standupReminder.destroy();
                 this.standupReminder = null;
+            }
+            
+            if (this.afternoonTeaReminder) {
+                this.afternoonTeaReminder.destroy();
+                this.afternoonTeaReminder = null;
             }
             
             if (this.demoController) {

@@ -86,13 +86,45 @@ const DEMO_CONSTANTS = {
 };
 
 /**
+ * Afternoon Tea Easter Egg Configuration Constants
+ */
+const AFTERNOON_TEA_CONSTANTS = {
+    // 功能开关 - 仅在中文版启用
+    ENABLED: true,
+    
+    // 提醒时间配置 (24小时制)
+    REMINDER_TIME: {
+        HOUR: 15,     // 小时 (0-23)
+        MINUTE: 5     // 分钟 (0-59) - 测试用，15:05
+    },
+    
+    // 显示配置
+    DISPLAY: {
+        DURATION_MS: 5000,  // 显示时长 (毫秒) - 与其他通知保持一致
+        POSITION: 'top-right' // 显示位置
+    },
+    
+    // 语言检测 - 仅在中文版启用
+    isChineseVersionOnly() {
+        return document.documentElement.lang === 'zh-CN' && 
+               window.location.pathname.includes('/zh/');
+    },
+    
+    // 获取格式化的提醒时间字符串
+    getReminderTimeString() {
+        return `${this.REMINDER_TIME.HOUR.toString().padStart(2, '0')}:${this.REMINDER_TIME.MINUTE.toString().padStart(2, '0')}`;
+    }
+};
+
+/**
  * Notification Configuration Constants
  */
 const NOTIFICATION_CONSTANTS = {
     // Notification types
     TYPES: {
         WATER: 'water',
-        STANDUP: 'standup'
+        STANDUP: 'standup',
+        AFTERNOON_TEA: 'afternoon_tea'
     },
     
     // 双语通知消息 - 根据页面语言动态选择
@@ -116,6 +148,16 @@ const NOTIFICATION_CONSTANTS = {
                 TITLE: '🧘 Time to Stand Up!',
                 BODY: 'Sitting too long is harmful to your health. Get up and stretch!'
             }
+        },
+        AFTERNOON_TEA: {
+            'zh-CN': {
+                TITLE: '🍵 下午茶时间到！',
+                BODY: '工作再忙，也别忘了享受一杯温暖的下午茶时光～'
+            },
+            'en': {
+                TITLE: '🍵 Afternoon Tea Time!',
+                BODY: 'Take a break and enjoy a warm cup of tea～'
+            }
         }
     },
     
@@ -133,7 +175,8 @@ if (typeof module !== 'undefined' && module.exports) {
         UI_CONSTANTS,
         STORAGE_CONSTANTS,
         DEMO_CONSTANTS,
-        NOTIFICATION_CONSTANTS
+        NOTIFICATION_CONSTANTS,
+        AFTERNOON_TEA_CONSTANTS
     };
 }
 
@@ -143,3 +186,4 @@ window.UI_CONSTANTS = UI_CONSTANTS;
 window.STORAGE_CONSTANTS = STORAGE_CONSTANTS;
 window.DEMO_CONSTANTS = DEMO_CONSTANTS;
 window.NOTIFICATION_CONSTANTS = NOTIFICATION_CONSTANTS;
+window.AFTERNOON_TEA_CONSTANTS = AFTERNOON_TEA_CONSTANTS;

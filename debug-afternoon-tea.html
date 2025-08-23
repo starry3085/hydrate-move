@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>调试下午茶提醒</title>
+    <link rel="stylesheet" href="styles/main.css">
+</head>
+<body>
+    <h1>调试页面</h1>
+    <button onclick="test()">测试</button>
+    <div id="output"></div>
+
+    <script src="js/notification-service.js"></script>
+    <script src="js/afternoon-tea-config.js"></script>
+    <script src="js/afternoon-tea-reminder.js"></script>
+    
+    <script>
+        function test() {
+            const output = document.getElementById('output');
+            output.innerHTML += '<p>测试开始...</p>';
+            
+            try {
+                output.innerHTML += `<p>AfternoonTeaConfig: ${JSON.stringify(window.AfternoonTeaConfig)}</p>`;
+                output.innerHTML += `<p>AfternoonTeaReminder: ${window.AfternoonTeaReminder ? '存在' : '不存在'}</p>`;
+                output.innerHTML += `<p>afternoonTeaReminder: ${window.afternoonTeaReminder ? '已初始化' : '未初始化'}</p>`;
+            } catch (e) {
+                output.innerHTML += `<p>错误: ${e.message}</p>`;
+            }
+        }
+        
+        // 捕获错误
+        window.addEventListener('error', function(e) {
+            document.getElementById('output').innerHTML += `<p>错误: ${e.message}</p>`;
+        });
+    </script>
+</body>
+</html>
