@@ -87,15 +87,16 @@ const DEMO_CONSTANTS = {
 
 /**
  * Afternoon Tea Easter Egg Configuration Constants
+ * 下午茶彩蛋配置常量 - 现在支持多语言版本
  */
 const AFTERNOON_TEA_CONSTANTS = {
-    // 功能开关 - 仅在中文版启用
+    // 功能开关 - 现在支持多语言版本
     ENABLED: true,
     
     // 提醒时间配置 (24小时制)
     REMINDER_TIME: {
         HOUR: 15,     // 小时 (0-23)
-        MINUTE: 15    // 分钟 (0-59) - 改为15:15
+        MINUTE: 15    // 分钟 (0-59) - 15:15下午茶时间
     },
     
     // 显示配置
@@ -104,13 +105,47 @@ const AFTERNOON_TEA_CONSTANTS = {
         POSITION: 'top-right' // 显示位置
     },
     
-    // 语言检测 - 仅在中文版启用
+    // 新增：多语言支持配置
+    MULTI_LANGUAGE_SUPPORT: true,
+    
+    // 语言检测方法扩展
     isChineseVersionOnly() {
         return document.documentElement.lang === 'zh-CN' && 
                window.location.pathname.includes('/zh/');
     },
     
+    isEnglishVersionOnly() {
+        return document.documentElement.lang === 'en' || 
+               (!this.isChineseVersionOnly());
+    },
+    
     // 获取格式化的提醒时间字符串
+    getReminderTimeString() {
+        return `${this.REMINDER_TIME.HOUR.toString().padStart(2, '0')}:${this.REMINDER_TIME.MINUTE.toString().padStart(2, '0')}`;
+    }
+};
+
+/**
+ * Lunch Reminder Configuration Constants
+ * 午餐提醒配置常量 - 中文版专属第二个彩蛋
+ */
+const LUNCH_REMINDER_CONSTANTS = {
+    ENABLED: true,  // 配置开关
+    REMINDER_TIME: { 
+        HOUR: 12, 
+        MINUTE: 0 
+    },
+    DISPLAY: { 
+        DURATION_MS: 10000,  // 10秒显示时长，与下午茶提醒一致
+        POSITION: 'top-right' 
+    },
+    
+    // 仅中文版启用
+    isChineseVersionOnly() {
+        return document.documentElement.lang === 'zh-CN' && 
+               window.location.pathname.includes('/zh/');
+    },
+    
     getReminderTimeString() {
         return `${this.REMINDER_TIME.HOUR.toString().padStart(2, '0')}:${this.REMINDER_TIME.MINUTE.toString().padStart(2, '0')}`;
     }
@@ -155,8 +190,16 @@ const NOTIFICATION_CONSTANTS = {
                 BODY: '三点几啦！饮茶先啦！'
             },
             'en': {
-                TITLE: '🍵 Afternoon Tea Time!',
-                BODY: 'Take a break and enjoy a warm cup of tea～'
+                TITLE: '☕ Coffee Break',
+                BODY: 'Coffee, tea, or meme?'
+            }
+        },
+        
+        // 新增午餐提醒消息 - 中文版专属
+        LUNCH_REMINDER: {
+            'zh-CN': {
+                TITLE: '🍚 开饭啦！',
+                BODY: '事已至此，先吃饭吧'
             }
         }
     },
@@ -176,7 +219,8 @@ if (typeof module !== 'undefined' && module.exports) {
         STORAGE_CONSTANTS,
         DEMO_CONSTANTS,
         NOTIFICATION_CONSTANTS,
-        AFTERNOON_TEA_CONSTANTS
+        AFTERNOON_TEA_CONSTANTS,
+        LUNCH_REMINDER_CONSTANTS
     };
 }
 
@@ -187,3 +231,4 @@ window.STORAGE_CONSTANTS = STORAGE_CONSTANTS;
 window.DEMO_CONSTANTS = DEMO_CONSTANTS;
 window.NOTIFICATION_CONSTANTS = NOTIFICATION_CONSTANTS;
 window.AFTERNOON_TEA_CONSTANTS = AFTERNOON_TEA_CONSTANTS;
+window.LUNCH_REMINDER_CONSTANTS = LUNCH_REMINDER_CONSTANTS;

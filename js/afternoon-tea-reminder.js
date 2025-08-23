@@ -1,9 +1,14 @@
 /**
- * Afternoon Tea Reminder - Easter Egg Feature (Chinese Version Only)
+ * Afternoon Tea Reminder - Easter Egg Feature (Now Supports Multi-Language)
+ * 下午茶提醒 - 彩蛋功能（现在支持多语言版本）
  * 
  * 继承ReminderManager，遵循MVP原则和项目架构标准
  * 使用依赖注入，避免全局变量依赖
  * 复用现有的NotificationService和UI样式
+ * 
+ * 支持功能:
+ * - 中文版: 下午茶提醒 (15:15)
+ * - 英文版: Coffee Break (15:15)
  */
 class AfternoonTeaReminder extends ReminderManager {
     /**
@@ -20,40 +25,59 @@ class AfternoonTeaReminder extends ReminderManager {
         this.lastTriggerDate = null;
         this.specialCheckInterval = null;
         
-        // 语言检查 - 仅在中文版启用
-        if (!this.config.isChineseVersionOnly()) {
-            console.log('🍵 非中文版，下午茶提醒彩蛋未启用');
-            this.enabled = false;
-            return;
+        // 检测当前语言环境
+        this.isChineseVersion = this.config.isChineseVersionOnly();
+        this.isEnglishVersion = this.config.isEnglishVersionOnly();
+        
+        // 根据语言版本和多语言支持配置决定是否启用
+        if (this.config.MULTI_LANGUAGE_SUPPORT) {
+            // 多语言支持模式：中文版或英文版都可启用
+            this.enabled = (this.isChineseVersion || this.isEnglishVersion) && this.config.ENABLED;
+            
+            if (this.enabled) {
+                const versionType = this.isChineseVersion ? '中文版（下午茶）' : '英文版（Coffee Break）';
+                console.log(`🍵 多语言下午茶提醒已启用 - ${versionType}`);
+            } else {
+                console.log('🍵 多语言下午茶提醒未启用（功能关闭）');
+                return;
+            }
+        } else {
+            // 传统模式：仅中文版启用
+            this.enabled = this.isChineseVersion && this.config.ENABLED;
+            
+            if (!this.isChineseVersion) {
+                console.log('🍵 非中文版，下午茶提醒彩蛋未启用');
+                return;
+            }
+            
+            if (!this.config.ENABLED) {
+                console.log('🍵 下午茶提醒功能已禁用');
+                return;
+            }
         }
         
-        // 功能开关检查
-        if (!this.config.ENABLED) {
-            console.log('🍵 下午茶提醒功能已禁用');
-            this.enabled = false;
-            return;
-        }
-        
-        this.enabled = true;
         this.initializeAfternoonTea();
     }
     
     /**
-     * 初始化下午茶提醒特定功能
+     * 初始化下午茶提醒特定功能（现在支持多语言）
      * @private
      */
     initializeAfternoonTea() {
-        // 获取上次触发日期
-        this.lastTriggerDate = localStorage.getItem('afternoonTeaLastTrigger');
+        // 获取上次触发日期（根据语言版本使用不同的存储键）
+        const storageKey = this.isChineseVersion ? 'afternoonTeaLastTrigger' : 'coffeeBreakLastTrigger';
+        this.lastTriggerDate = localStorage.getItem(storageKey);
+        this.storageKey = storageKey; // 保存存储键以便后续使用
         
         // 开始特殊时间检查（每分钟检查一次）
         this.startSpecialTimeCheck();
         
-        console.log(`🍵 下午茶提醒彩蛋已启用 - 将在 ${this.config.getReminderTimeString()} 触发`);
+        const featureType = this.isChineseVersion ? '下午茶提醒' : 'Coffee Break';
+        console.log(`🍵 ${featureType}已启用 - 将在 ${this.config.getReminderTimeString()} 触发`);
     }
     
     /**
-     * 开始特殊时间检查
+     * 开始特殊时间检查（支持多语言版本）
      * @private
      */
     startSpecialTimeCheck() {
@@ -71,7 +95,8 @@ class AfternoonTeaReminder extends ReminderManager {
             this.checkSpecialTime();
         }, 60000); // 60秒检查一次
         
-        console.log('🍵 下午茶时间检查定时器已启动');
+        const featureType = this.isChineseVersion ? '下午茶' : 'Coffee Break';
+        console.log(`🍵 ${featureType}时间检查定时器已启动`);
     }
     
     /**
@@ -112,15 +137,16 @@ class AfternoonTeaReminder extends ReminderManager {
     }
     
     /**
-     * 触发下午茶提醒
+     * 触发下午茶/咖啡休息提醒（多语言支持）
      * @private
      */
     triggerAfternoonTea() {
-        console.log('🍵 下午茶提醒触发');
+        const featureType = this.isChineseVersion ? '下午茶提醒' : 'Coffee Break';
+        console.log(`🍵 ${featureType}触发`);
         
-        // 记录触发日期，防止重复触发
+        // 记录触发日期，防止重复触发（使用对应语言的存储键）
         const today = new Date().toDateString();
-        localStorage.setItem('afternoonTeaLastTrigger', today);
+        localStorage.setItem(this.storageKey, today);
         this.lastTriggerDate = today;
         
         // 调用重写后的triggerReminder方法
@@ -128,13 +154,13 @@ class AfternoonTeaReminder extends ReminderManager {
     }
     
     /**
-     * 重写父类的triggerReminder方法，使用下午茶特定的通知消息
+     * 重写父类的triggerReminder方法，使用多语言的通知消息
      * @override
      */
     triggerReminder() {
-        // 下午茶提醒不需要检查isActive状态，因为它有自己的启用逻辑
+        // 下午茶/咖啡休息提醒不需要检查isActive状态，因为它有自己的启用逻辑
         
-        // 获取下午茶的本地化通知消息
+        // 获取对应语言版本的本地化通知消息
         const notificationConfig = NOTIFICATION_CONSTANTS.getMessage('AFTERNOON_TEA');
         
         const title = notificationConfig.TITLE;
@@ -147,20 +173,22 @@ class AfternoonTeaReminder extends ReminderManager {
             message
         );
         
-        console.log(`${this.type} reminder triggered - 下午茶提醒已显示`);
+        const featureType = this.isChineseVersion ? '下午茶提醒' : 'Coffee Break';
+        console.log(`${this.type} reminder triggered - ${featureType}已显示`);
     }
     
     /**
-     * 手动触发下午茶提醒（用于测试）
+     * 手动触发下午茶/咖啡休息提醒（用于测试）
      * @public
      */
     manualTrigger() {
         if (!this.enabled) {
-            console.warn('🍵 下午茶提醒未启用');
+            console.warn('🍵 下午茶/咖啡休息提醒未启用');
             return;
         }
         
-        console.log('🍵 手动触发下午茶提醒');
+        const featureType = this.isChineseVersion ? '下午茶提醒' : 'Coffee Break';
+        console.log(`🍵 手动触发${featureType}`);
         this.triggerReminder();
     }
     
