@@ -94,8 +94,8 @@ const AFTERNOON_TEA_CONSTANTS = {
     
     // 提醒时间配置 (24小时制)
     REMINDER_TIME: {
-        HOUR: 15,     // 小时 (0-23)
-        MINUTE: 57    // 分钟 (0-59) - 测试用，15:57
+        HOUR: 16,     // 小时 (0-23)
+        MINUTE: 0     // 分钟 (0-59) - 测试用，16:00
     },
     
     // 显示配置

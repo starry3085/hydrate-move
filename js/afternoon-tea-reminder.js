@@ -132,7 +132,7 @@ class AfternoonTeaReminder extends ReminderManager {
      * @override
      */
     triggerReminder() {
-        if (!this.isActive) return;
+        // 下午茶提醒不需要检查isActive状态，因为它有自己的启用逻辑
         
         // 获取下午茶的本地化通知消息
         const notificationConfig = NOTIFICATION_CONSTANTS.getMessage('AFTERNOON_TEA');
