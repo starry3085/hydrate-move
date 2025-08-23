@@ -57,6 +57,12 @@ class AfternoonTeaReminder extends ReminderManager {
      * @private
      */
     startSpecialTimeCheck() {
+        // 清理现有的定时器，防止重复
+        if (this.specialCheckInterval) {
+            clearInterval(this.specialCheckInterval);
+            this.specialCheckInterval = null;
+        }
+        
         // 立即检查一次
         this.checkSpecialTime();
         
@@ -64,6 +70,8 @@ class AfternoonTeaReminder extends ReminderManager {
         this.specialCheckInterval = setInterval(() => {
             this.checkSpecialTime();
         }, 60000); // 60秒检查一次
+        
+        console.log('🍵 下午茶时间检查定时器已启动');
     }
     
     /**
@@ -81,15 +89,25 @@ class AfternoonTeaReminder extends ReminderManager {
         const targetHour = this.config.REMINDER_TIME.HOUR;
         const targetMinute = this.config.REMINDER_TIME.MINUTE;
         
-        // 调试信息
-        console.log(`🍵 下午茶时间检查: 当前 ${currentHour}:${currentMinute.toString().padStart(2, '0')}, 目标 ${targetHour}:${targetMinute.toString().padStart(2, '0')}, 今日已触发: ${this.lastTriggerDate === today}`);
+        const isTargetTime = (currentHour === targetHour && currentMinute === targetMinute);
+        const hasTriggeredToday = (this.lastTriggerDate === today);
+        
+        // 日志显示逻辑：只在未触发当天或新的一天显示日志
+        const shouldShowLog = !hasTriggeredToday;
+        
+        if (shouldShowLog && isTargetTime) {
+            console.log(`🍵 下午茶时间检查: 当前 ${currentHour}:${currentMinute.toString().padStart(2, '0')}, 目标 ${targetHour}:${targetMinute.toString().padStart(2, '0')}`);
+        }
         
         // 检查是否为目标时间且今日未触发
-        if (currentHour === targetHour && 
-            currentMinute === targetMinute && 
-            this.lastTriggerDate !== today) {
-            
+        if (isTargetTime && !hasTriggeredToday) {
+            console.log('🍵 ✅ 满足触发条件，开始触发下午茶提醒');
             this.triggerAfternoonTea();
+        }
+        
+        // 检查是否跨日（新的一天开始时显示日志）
+        if (currentHour === 0 && currentMinute === 0 && hasTriggeredToday) {
+            console.log('🍵 新的一天开始，下午茶提醒重置');
         }
     }
     
@@ -108,9 +126,9 @@ class AfternoonTeaReminder extends ReminderManager {
         // 获取本地化的通知消息
         const notificationConfig = NOTIFICATION_CONSTANTS.getMessage('AFTERNOON_TEA');
         
-        // 使用父类的通知服务显示提醒
+        // 使用与喝水提醒完全相同的方式显示通知（包括音效）
         this.notificationService.showNotification(
-            'water', // 使用water类型保持视觉一致性
+            'water', // 使用water类型保持视觉和音效一致性
             notificationConfig.TITLE,
             notificationConfig.BODY
         );
@@ -196,7 +214,49 @@ class AfternoonTeaReminder extends ReminderManager {
             isChineseVersion: this.config.isChineseVersionOnly()
         };
     }
+    
+    /**
+     * 调试方法 - 检查localStorage中的触发记录
+     * @public
+     */
+    debugTriggerRecord() {
+        const storedDate = localStorage.getItem('afternoonTeaLastTrigger');
+        const today = new Date().toDateString();
+        
+        console.log('🔍 下午茶提醒调试信息:');
+        console.log(`   localStorage中的记录: ${storedDate}`);
+        console.log(`   当前实例记录: ${this.lastTriggerDate}`);
+        console.log(`   今日日期: ${today}`);
+        console.log(`   是否匹配: ${storedDate === today}`);
+        
+        return {
+            storedDate,
+            instanceDate: this.lastTriggerDate,
+            today,
+            isMatched: storedDate === today
+        };
+    }
+    
+    /**
+     * 清理触发记录（用于测试）
+     * @public
+     */
+    clearTriggerRecord() {
+        localStorage.removeItem('afternoonTeaLastTrigger');
+        this.lastTriggerDate = null;
+        console.log('🧹 下午茶提醒触发记录已清理');
+    }
 }
 
 // 导出类供其他模块使用
 window.AfternoonTeaReminder = AfternoonTeaReminder;
+
+// 添加全局辅助函数供调试使用
+window.clearAfternoonTeaTrigger = function() {
+    localStorage.removeItem('afternoonTeaLastTrigger');
+    if (window.afternoonTeaReminder) {
+        window.afternoonTeaReminder.lastTriggerDate = null;
+    }
+    console.log('🧹 下午茶提醒触发记录已清理，可以重新测试');
+};
+

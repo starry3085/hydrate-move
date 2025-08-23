@@ -223,6 +223,12 @@ class OfficeWellnessApp {
      */
     initializeAfternoonTea() {
         try {
+            // 防止重复初始化
+            if (window.afternoonTeaReminder) {
+                console.log('🍵 下午茶提醒已存在，跳过初始化');
+                return;
+            }
+            
             // 检查是否为中文版本及功能是否启用
             if (!AFTERNOON_TEA_CONSTANTS.isChineseVersionOnly() || !AFTERNOON_TEA_CONSTANTS.ENABLED) {
                 console.log('🍵 下午茶提醒彩蛋未启用（非中文版或功能关闭）');

@@ -95,7 +95,7 @@ const AFTERNOON_TEA_CONSTANTS = {
     // 提醒时间配置 (24小时制)
     REMINDER_TIME: {
         HOUR: 15,     // 小时 (0-23)
-        MINUTE: 5     // 分钟 (0-59) - 测试用，15:05
+        MINUTE: 47    // 分钟 (0-59) - 测试用，15:47
     },
     
     // 显示配置
@@ -152,7 +152,7 @@ const NOTIFICATION_CONSTANTS = {
         AFTERNOON_TEA: {
             'zh-CN': {
                 TITLE: '🍵 下午茶时间到！',
-                BODY: '工作再忙，也别忘了享受一杯温暖的下午茶时光～'
+                BODY: '三点几啦！饮茶先啦！'
             },
             'en': {
                 TITLE: '🍵 Afternoon Tea Time!',
