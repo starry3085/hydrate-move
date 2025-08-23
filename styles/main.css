@@ -1966,3 +1966,97 @@ ditable time display styles */
         height: 28px;
     }
 }
+
+/* QR Code Hover Tooltip Styles */
+.feedback-qr-tooltip {
+    position: absolute;
+    background: white;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 0;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease, transform 0.3s ease;
+    z-index: 1001;
+    pointer-events: none;
+    transform: translateY(-10px);
+    min-width: 180px;
+}
+
+.feedback-qr-tooltip.visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.qr-tooltip-content {
+    text-align: center;
+    padding: 16px;
+}
+
+.qr-tooltip-image {
+    max-width: 120px;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.qr-tooltip-content p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    line-height: 1.4;
+    white-space: nowrap;
+}
+
+/* Arrow for QR tooltip */
+.feedback-qr-tooltip::before {
+    content: '';
+    position: absolute;
+    top: -6px;
+    right: 20px;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 6px solid white;
+    z-index: 1002;
+}
+
+.feedback-qr-tooltip::after {
+    content: '';
+    position: absolute;
+    top: -7px;
+    right: 20px;
+    width: 0;
+    height: 0;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-bottom: 6px solid var(--border-color);
+    z-index: 1001;
+}
+
+/* Mobile responsive for QR tooltip */
+@media (max-width: 768px) {
+    .feedback-qr-tooltip {
+        min-width: 160px;
+        right: 5px !important;
+    }
+    
+    .qr-tooltip-content {
+        padding: 12px;
+    }
+    
+    .qr-tooltip-image {
+        max-width: 100px;
+    }
+    
+    .qr-tooltip-content p {
+        font-size: 0.75rem;
+    }
+}

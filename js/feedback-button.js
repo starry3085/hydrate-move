@@ -1,6 +1,7 @@
 /**
  * Feedback Button Module
- * Provides GitHub Issues integration for user feedback
+ * Provides GitHub Issues integration for user feedback (English)
+ * Provides WeChat QR code hover tooltip for user feedback (Chinese)
  */
 
 class FeedbackButton {
@@ -8,6 +9,15 @@ class FeedbackButton {
         this.button = null;
         this.tooltip = null;
         this.isInitialized = false;
+        this.currentLanguage = this.detectLanguage();
+    }
+
+    /**
+     * Detect current page language
+     */
+    detectLanguage() {
+        const lang = document.documentElement.lang || 'en';
+        return lang.startsWith('zh') ? 'zh' : 'en';
     }
 
     /**
@@ -28,15 +38,40 @@ class FeedbackButton {
     createButton() {
         this.button = document.createElement('button');
         this.button.className = 'feedback-button';
-        this.button.setAttribute('aria-label', 'Provide feedback or report issues');
-        this.button.setAttribute('title', 'Feedback requires GitHub account');
-        this.button.innerHTML = `
+        
+        if (this.currentLanguage === 'zh') {
+            this.button.setAttribute('aria-label', '提供反馈或报告问题');
+            this.button.setAttribute('title', '私信公众号反馈问题');
+            this.button.innerHTML = this.getChineseFeedbackIcon();
+        } else {
+            this.button.setAttribute('aria-label', 'Provide feedback or report issues');
+            this.button.setAttribute('title', 'Feedback requires GitHub account');
+            this.button.innerHTML = this.getGitHubIcon();
+        }
+        
+        document.body.appendChild(this.button);
+    }
+
+    /**
+     * Get GitHub icon SVG
+     */
+    getGitHubIcon() {
+        return `
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M12 2C6.477 2 2 6.477 2 12c0 4.42 2.865 8.166 6.839 9.489.5.092.682-.217.682-.482 0-.237-.008-.866-.013-1.7-2.782.604-3.369-1.34-3.369-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.069-.608.069-.608 1.003.07 1.531 1.03 1.531 1.03.892 1.529 2.341 1.087 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.029-2.683-.103-.253-.446-1.27.098-2.647 0 0 .84-.269 2.75 1.025A9.564 9.564 0 0112 6.844c.85.004 1.705.114 2.504.336 1.909-1.294 2.747-1.025 2.747-1.025.546 1.377.203 2.394.1 2.647.64.699 1.028 1.592 1.028 2.683 0 3.842-2.339 4.687-4.566 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C19.138 20.161 22 16.418 22 12c0-5.523-4.477-10-10-10z"/>
             </svg>
         `;
-        
-        document.body.appendChild(this.button);
+    }
+
+    /**
+     * Get Chinese feedback icon SVG (message/contact icon)
+     */
+    getChineseFeedbackIcon() {
+        return `
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z"/>
+            </svg>
+        `;
     }
 
     /**
@@ -45,10 +80,23 @@ class FeedbackButton {
     createTooltip() {
         this.tooltip = document.createElement('div');
         this.tooltip.className = 'feedback-tooltip';
-        this.tooltip.textContent = 'Requires GitHub account to submit feedback';
+        
+        if (this.currentLanguage === 'zh') {
+            this.tooltip.className = 'feedback-qr-tooltip';
+            this.tooltip.innerHTML = `
+                <div class="qr-tooltip-content">
+                    <img src="../LightYearAI QR Code.jpg" alt="光年AI公众号二维码" class="qr-tooltip-image" onerror="this.src='./LightYearAI QR Code.jpg'">
+                    <p>私信公众号反馈问题</p>
+                </div>
+            `;
+        } else {
+            this.tooltip.textContent = 'Requires GitHub account to submit feedback';
+        }
+        
         this.tooltip.setAttribute('role', 'tooltip');
         document.body.appendChild(this.tooltip);
     }
+
 
     /**
      * Bind event listeners
@@ -97,13 +145,21 @@ class FeedbackButton {
     handleFeedbackClick() {
         // Track analytics
         if (window.analytics && window.analytics.track) {
-            window.analytics.track('feedback_button_clicked');
+            window.analytics.track('feedback_button_clicked', {
+                language: this.currentLanguage
+            });
         }
 
-        // Open GitHub Issues with pre-filled template
-        const githubUrl = 'https://github.com/starry3085/hydrate-move/issues/new?template=user-feedback.yml';
-        window.open(githubUrl, '_blank', 'noopener,noreferrer');
+        if (this.currentLanguage === 'zh') {
+            // For Chinese version, clicking doesn't do anything - QR code shows on hover
+            return;
+        } else {
+            // Open GitHub Issues with pre-filled template
+            const githubUrl = 'https://github.com/starry3085/hydrate-move/issues/new?template=user-feedback.yml';
+            window.open(githubUrl, '_blank', 'noopener,noreferrer');
+        }
     }
+
 
     /**
      * Show tooltip
@@ -131,20 +187,36 @@ class FeedbackButton {
         if (!this.button || !this.tooltip) return;
 
         const buttonRect = this.button.getBoundingClientRect();
-        const tooltipRect = this.tooltip.getBoundingClientRect();
         
-        // Position tooltip below the button
-        let left = buttonRect.left + (buttonRect.width - tooltipRect.width) / 2;
-        let top = buttonRect.bottom + 8;
+        if (this.currentLanguage === 'zh') {
+            // QR tooltip positioning - below button, aligned to right edge
+            const tooltipWidth = 180; // Approximate width
+            let left = buttonRect.right - tooltipWidth;
+            let top = buttonRect.bottom + 12;
 
-        // Ensure tooltip stays within viewport
-        if (left < 8) left = 8;
-        if (left + tooltipRect.width > window.innerWidth - 8) {
-            left = window.innerWidth - tooltipRect.width - 8;
+            // Ensure tooltip stays within viewport
+            if (left < 8) left = 8;
+            if (left + tooltipWidth > window.innerWidth - 8) {
+                left = window.innerWidth - tooltipWidth - 8;
+            }
+
+            this.tooltip.style.left = `${left}px`;
+            this.tooltip.style.top = `${top}px`;
+        } else {
+            // Regular tooltip positioning
+            const tooltipRect = this.tooltip.getBoundingClientRect();
+            let left = buttonRect.left + (buttonRect.width - tooltipRect.width) / 2;
+            let top = buttonRect.bottom + 8;
+
+            // Ensure tooltip stays within viewport
+            if (left < 8) left = 8;
+            if (left + tooltipRect.width > window.innerWidth - 8) {
+                left = window.innerWidth - tooltipRect.width - 8;
+            }
+
+            this.tooltip.style.left = `${left}px`;
+            this.tooltip.style.top = `${top}px`;
         }
-
-        this.tooltip.style.left = `${left}px`;
-        this.tooltip.style.top = `${top}px`;
     }
 
     /**
