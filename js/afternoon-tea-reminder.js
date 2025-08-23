@@ -123,17 +123,8 @@ class AfternoonTeaReminder extends ReminderManager {
         localStorage.setItem('afternoonTeaLastTrigger', today);
         this.lastTriggerDate = today;
         
-        // 获取本地化的通知消息
-        const notificationConfig = NOTIFICATION_CONSTANTS.getMessage('AFTERNOON_TEA');
-        
-        // 使用与喝水提醒完全相同的方式显示通知（包括音效）
-        this.notificationService.showNotification(
-            'water', // 使用water类型保持视觉和音效一致性
-            notificationConfig.TITLE,
-            notificationConfig.BODY
-        );
-        
-        console.log('🍵 下午茶提醒已显示');
+        // 调用重写后的triggerReminder方法
+        this.triggerReminder();
     }
     
     /**
@@ -141,7 +132,22 @@ class AfternoonTeaReminder extends ReminderManager {
      * @override
      */
     triggerReminder() {
-        this.triggerAfternoonTea();
+        if (!this.isActive) return;
+        
+        // 获取下午茶的本地化通知消息
+        const notificationConfig = NOTIFICATION_CONSTANTS.getMessage('AFTERNOON_TEA');
+        
+        const title = notificationConfig.TITLE;
+        const message = notificationConfig.BODY;
+        
+        // 使用与喝水提醒完全相同的方式显示通知（包括音效）
+        this.notificationService.showNotification(
+            this.type,  // 使用类型（'water'）保持视觉和音效一致性
+            title,
+            message
+        );
+        
+        console.log(`${this.type} reminder triggered - 下午茶提醒已显示`);
     }
     
     /**

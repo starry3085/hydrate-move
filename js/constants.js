@@ -95,12 +95,12 @@ const AFTERNOON_TEA_CONSTANTS = {
     // 提醒时间配置 (24小时制)
     REMINDER_TIME: {
         HOUR: 15,     // 小时 (0-23)
-        MINUTE: 47    // 分钟 (0-59) - 测试用，15:47
+        MINUTE: 57    // 分钟 (0-59) - 测试用，15:57
     },
     
     // 显示配置
     DISPLAY: {
-        DURATION_MS: 5000,  // 显示时长 (毫秒) - 与其他通知保持一致
+        DURATION_MS: 10000,  // 显示时长 (毫秒) - 下午茶提醒10秒
         POSITION: 'top-right' // 显示位置
     },
     
