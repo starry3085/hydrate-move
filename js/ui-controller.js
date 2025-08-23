@@ -241,9 +241,10 @@ class UIController {
             }
 
             if (!reminder) {
-                // Show initializing state
+                // Show initializing state - 支持双语
+                const isChinesePage = document.documentElement.lang === 'zh-CN';
                 countdownElement.textContent = '...';
-                btnElement.textContent = 'Loading...';
+                btnElement.textContent = isChinesePage ? '加载中...' : 'Loading...';
                 btnElement.className = 'btn-secondary';
                 btnElement.disabled = true;
                 return;
@@ -260,8 +261,9 @@ class UIController {
                 const formattedTime = this.formatTime(timeRemaining);
                 countdownElement.textContent = formattedTime;
                 
-                // Update button to Stop with warning style
-                btnElement.textContent = '停止';
+                // Update button to Stop with warning style - 支持双语
+                const isChinesePage = document.documentElement.lang === 'zh-CN';
+                btnElement.textContent = isChinesePage ? '停止' : 'Stop';
                 btnElement.className = 'btn-warning';
             } else {
                 // Show time remaining (which should match interval when inactive)
@@ -269,8 +271,9 @@ class UIController {
                 const formattedTime = this.formatTime(timeRemaining);
                 countdownElement.textContent = formattedTime;
                 
-                // Update button to Start with primary style
-                btnElement.textContent = '开始';
+                // Update button to Start with primary style - 支持双语
+                const isChinesePage = document.documentElement.lang === 'zh-CN';
+                btnElement.textContent = isChinesePage ? '开始' : 'Start';
                 btnElement.className = 'btn-primary';
             }
 
@@ -318,13 +321,14 @@ class UIController {
             
             if (!reminder) {
                 console.error(`${type} reminder not available - still initializing`);
-                // Show user-friendly message
+                // Show user-friendly message - 支持双语
                 const btn = this.elements[`${type}Btn`];
                 if (btn) {
-                    btn.textContent = 'Loading...';
+                    const isChinesePage = document.documentElement.lang === 'zh-CN';
+                    btn.textContent = isChinesePage ? '加载中...' : 'Loading...';
                     btn.disabled = true;
                     setTimeout(() => {
-                        btn.textContent = '开始';
+                        btn.textContent = isChinesePage ? '开始' : 'Start';
                         btn.disabled = false;
                     }, 2000);
                 }

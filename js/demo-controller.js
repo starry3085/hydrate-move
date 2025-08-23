@@ -208,7 +208,8 @@ class DemoController {
      * @private
      */
     updateDemoStatus(statusKey) {
-        const message = DEMO_CONSTANTS.STATUS_MESSAGES[statusKey] || statusKey;
+        // 使用双语获取方法，根据页面语言动态获取消息
+        const message = DEMO_CONSTANTS.getStatusMessage(statusKey);
         
         // Update demo status element if it exists
         const statusElement = document.getElementById('demo-status');

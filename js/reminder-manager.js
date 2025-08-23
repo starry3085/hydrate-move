@@ -169,9 +169,10 @@ class ReminderManager {
     triggerReminder() {
         if (!this.isActive) return;
         
+        // 使用双语获取方法，根据页面语言动态获取通知消息
         const notificationConfig = this.type === 'water' 
-            ? NOTIFICATION_CONSTANTS.MESSAGES.WATER 
-            : NOTIFICATION_CONSTANTS.MESSAGES.STANDUP;
+            ? NOTIFICATION_CONSTANTS.getMessage('WATER')
+            : NOTIFICATION_CONSTANTS.getMessage('STANDUP');
         
         const title = notificationConfig.TITLE;
         const message = notificationConfig.BODY;

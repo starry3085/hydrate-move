@@ -58,6 +58,9 @@ class OfficeWellnessApp {
                 // Sync initial intervals from HTML inputs
                 this.syncInitialIntervals();
                 
+                // 初始化演示状态文本（确保语言纯度）
+                this.initializeDemoStatusText();
+                
             console.log('Reminders and demo controller linked to UI controller');
         } else {
             console.warn('Some components not ready for linking');
@@ -298,6 +301,25 @@ class OfficeWellnessApp {
             console.log('Initial intervals synced from HTML');
         } catch (error) {
             console.warn('Failed to sync initial intervals:', error);
+        }
+    }
+    
+    /**
+     * 初始化演示状态文本 - 确保语言纯度
+     * @private
+     */
+    initializeDemoStatusText() {
+        try {
+            // 获取演示状态元素
+            const demoStatusElement = document.getElementById('demo-status');
+            if (demoStatusElement) {
+                // 使用DEMO_CONSTANTS的双语获取方法设置初始状态
+                const initialMessage = DEMO_CONSTANTS.getStatusMessage('READY');
+                demoStatusElement.textContent = initialMessage;
+                console.log('演示状态文本已初始化:', initialMessage);
+            }
+        } catch (error) {
+            console.warn('Failed to initialize demo status text:', error);
         }
     }
 
