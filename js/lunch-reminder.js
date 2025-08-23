@@ -124,6 +124,11 @@ class LunchReminder extends ReminderManager {
     triggerLunchReminder() {
         console.log('🍚 午餐提醒触发');
         
+        // Track easter egg trigger for analytics
+        if (window.app && window.app.analytics) {
+            window.app.analytics.trackEasterEggTriggered('lunch_reminder', 'zh-CN');
+        }
+        
         // 记录触发日期，防止重复触发
         const today = new Date().toDateString();
         localStorage.setItem('lunchReminderLastTrigger', today);
@@ -150,7 +155,8 @@ class LunchReminder extends ReminderManager {
         this.notificationService.showNotification(
             this.type,  // 使用类型（'water'）保持视觉和音效一致性
             title,
-            message
+            message,
+            'lunch_reminder'  // Source for analytics tracking
         );
         
         console.log(`${this.type} reminder triggered - 午餐提醒已显示`);

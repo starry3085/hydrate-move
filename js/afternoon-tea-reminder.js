@@ -144,6 +144,12 @@ class AfternoonTeaReminder extends ReminderManager {
         const featureType = this.isChineseVersion ? '下午茶提醒' : 'Coffee Break';
         console.log(`🍵 ${featureType}触发`);
         
+        // Track easter egg trigger for analytics
+        const language = this.isChineseVersion ? 'zh-CN' : 'en';
+        if (window.app && window.app.analytics) {
+            window.app.analytics.trackEasterEggTriggered('afternoon_tea', language);
+        }
+        
         // 记录触发日期，防止重复触发（使用对应语言的存储键）
         const today = new Date().toDateString();
         localStorage.setItem(this.storageKey, today);
@@ -170,7 +176,8 @@ class AfternoonTeaReminder extends ReminderManager {
         this.notificationService.showNotification(
             this.type,  // 使用类型（'water'）保持视觉和音效一致性
             title,
-            message
+            message,
+            'afternoon_tea'  // Source for analytics tracking
         );
         
         const featureType = this.isChineseVersion ? '下午茶提醒' : 'Coffee Break';

@@ -106,9 +106,18 @@ class NotificationService {
      * @param {string} type - Notification type ('water' | 'standup')
      * @param {string} title - Notification title
      * @param {string} message - Notification content
+     * @param {string} source - Source of notification ('water_reminder' | 'standup_reminder' | 'afternoon_tea' | 'lunch_reminder')
      * @returns {boolean} Whether successfully displayed
      */
-    showNotification(type, title, message) {
+    showNotification(type, title, message, source = 'unknown') {
+        // Get current language for analytics
+        const currentLanguage = document.documentElement.lang || 'en';
+        
+        // Track notification display
+        if (window.app && window.app.analytics) {
+            window.app.analytics.trackNotificationShown(type, source, currentLanguage);
+        }
+        
         // Try browser notification first
         const browserNotificationShown = this.showBrowserNotification(type, title, message);
         
@@ -210,6 +219,12 @@ class NotificationService {
             closeBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
+                
+                // Track manual dismissal
+                if (window.app && window.app.analytics) {
+                    window.app.analytics.trackNotificationDismissed(type, 'manual_close');
+                }
+                
                 this.hideSpecificAlert(notificationId);
             });
         }
@@ -227,6 +242,11 @@ class NotificationService {
         const autoHideTimer = setTimeout(() => {
             // Double-check the element still exists before hiding
             if (document.getElementById(notificationId)) {
+                // Track auto dismissal
+                if (window.app && window.app.analytics) {
+                    window.app.analytics.trackNotificationDismissed(type, 'auto_dismiss');
+                }
+                
                 this.hideSpecificAlert(notificationId);
             }
         }, 5000);

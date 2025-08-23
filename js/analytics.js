@@ -89,6 +89,67 @@ class Analytics {
     }
 
     /**
+     * Track notification shown to user
+     * Core metric: Track when notifications are actually displayed
+     * @param {string} type - Notification type ('water' | 'standup')
+     * @param {string} source - Source of notification ('water_reminder' | 'standup_reminder' | 'afternoon_tea' | 'lunch_reminder')
+     * @param {string} language - Current language ('zh-CN' | 'en')
+     */
+    trackNotificationShown(type, source, language) {
+        if (!this.isEnabled) return;
+        
+        try {
+            console.log(`📊 Analytics: Notification shown - ${type} from ${source} (${language})`);
+            
+            if (this.baiduAnalyticsReady) {
+                _hmt.push(['_trackEvent', 'notification', 'shown', `${type}_${source}_${language}`, 1]);
+            }
+        } catch (error) {
+            console.warn('Analytics tracking failed:', error);
+        }
+    }
+
+    /**
+     * Track notification dismissed by user or auto-hide
+     * Core metric: Track how notifications are dismissed
+     * @param {string} type - Notification type ('water' | 'standup')
+     * @param {string} dismissType - How dismissed ('manual_close' | 'auto_dismiss')
+     */
+    trackNotificationDismissed(type, dismissType) {
+        if (!this.isEnabled) return;
+        
+        try {
+            console.log(`📊 Analytics: Notification dismissed - ${type} via ${dismissType}`);
+            
+            if (this.baiduAnalyticsReady) {
+                _hmt.push(['_trackEvent', 'notification', 'dismissed', `${type}_${dismissType}`, 1]);
+            }
+        } catch (error) {
+            console.warn('Analytics tracking failed:', error);
+        }
+    }
+
+    /**
+     * Track easter egg triggered
+     * Core metric: Track when easter eggs are triggered in business logic
+     * @param {string} type - Easter egg type ('afternoon_tea' | 'lunch_reminder')
+     * @param {string} language - Current language ('zh-CN' | 'en')
+     */
+    trackEasterEggTriggered(type, language) {
+        if (!this.isEnabled) return;
+        
+        try {
+            console.log(`📊 Analytics: Easter egg triggered - ${type} (${language})`);
+            
+            if (this.baiduAnalyticsReady) {
+                _hmt.push(['_trackEvent', 'easter_egg', 'triggered', `${type}_${language}`, 1]);
+            }
+        } catch (error) {
+            console.warn('Analytics tracking failed:', error);
+        }
+    }
+
+    /**
      * Enable/disable analytics tracking
      * @param {boolean} enabled - Whether to enable tracking
      */
@@ -104,10 +165,31 @@ class Analytics {
     isAnalyticsEnabled() {
         return this.isEnabled;
     }
+
+    /**
+     * Manual testing method - trigger sample events for validation
+     * @public
+     */
+    testTracking() {
+        console.log('🧪 Testing K2 analytics tracking...');
+        this.trackNotificationShown('water', 'water_reminder', 'en');
+        this.trackNotificationDismissed('water', 'manual_close');
+        this.trackEasterEggTriggered('afternoon_tea', 'zh-CN');
+        console.log('🧪 Test events sent');
+    }
 }
 
 // Create global analytics instance
 window.Analytics = Analytics;
+
+// Global test function for manual verification
+window.testAnalytics = function() {
+    if (window.app && window.app.analytics) {
+        window.app.analytics.testTracking();
+    } else {
+        console.warn('Analytics not initialized yet');
+    }
+};
 
 // Export for module use
 if (typeof module !== 'undefined' && module.exports) {

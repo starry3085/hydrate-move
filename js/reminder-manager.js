@@ -177,11 +177,15 @@ class ReminderManager {
         const title = notificationConfig.TITLE;
         const message = notificationConfig.BODY;
         
-        // Show notification
+        // Determine source for analytics tracking
+        const source = this.type === 'water' ? 'water_reminder' : 'standup_reminder';
+        
+        // Show notification with source tracking
         this.notificationService.showNotification(
             this.type,
             title,
-            message
+            message,
+            source
         );
         
         // Auto-restart immediately
