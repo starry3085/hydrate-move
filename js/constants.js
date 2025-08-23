@@ -179,12 +179,30 @@ const AFTERNOON_TEA_EASTER_EGG_CONSTANTS = {
         wechat: {
             TITLE: '🍵 下午茶时间到！',
             TEXT: '三点几啦！饮茶先啦！\n\n发现一个超贴心的办公室健康提醒小工具，定时提醒喝水和站立，还有这样的小彩蛋🎉\n\n分享给你们，一起做健康的打工人！',
-            HASHTAGS: '#办公室健康 #下午茶时间 #健康生活'
+            HASHTAGS: '#办公室健康 #下午茶时间 #健康生活',
+            PLATFORM_TIPS: {
+                USAGE: '点击链接直接使用，无需下载安装',
+                FEATURES: [
+                    '✅ 定时喝水提醒',
+                    '✅ 智能站立提醒', 
+                    '✅ 免费无广告',
+                    '✅ 支持所有浏览器'
+                ]
+            }
         },
         xiaohongshu: {
             TITLE: '🍵 办公室下午茶彩蛋',
             TEXT: '哈哈哈，下午茶时间到！\n\n工作再忙也要记得：\n💧 多喝水\n🧘 多站立\n🍵 享受下午茶时光\n\n这个小工具还有彩蛋，太有意思了！\n\n#办公室健康 #下午茶 #打工人的小确幸',
-            HASHTAGS: '#办公室健康 #下午茶 #健康生活 #打工人'
+            HASHTAGS: '#办公室健康 #下午茶 #健康生活 #打工人',
+            PLATFORM_TIPS: {
+                STYLE: '小红书风格分享',
+                CONTENT_TYPE: '生活方式分享',
+                ENGAGEMENT: [
+                    '✨ 点赞收藏就是支持',
+                    '✨ 评论区交流体验',
+                    '✨ 分享给更多小伙伴'
+                ]
+            }
         }
     },
     
@@ -202,6 +220,30 @@ const AFTERNOON_TEA_EASTER_EGG_CONSTANTS = {
         SECOND_EASTER_EGG_UNLOCK: {
             TITLE: '🎊 太棒了！您已解锁第二个彩蛋！',
             MESSAGE: '明天中午12:00请留意特别提醒哦~\n记得保存分享让更多朋友体验这个小工具！'
+        }
+    },
+    
+    // 链接生成配置
+    SHARE_LINKS: {
+        BASE_URL: 'https://hydrate-move.lightyearai.info/zh/',
+        UTM_PARAMETERS: {
+            SOURCE: 'easter_egg',
+            MEDIUM: 'social',
+            CAMPAIGN: 'afternoon_tea_share'
+        },
+        
+        // 生成带参数的链接
+        generateTrackingUrl(shareType) {
+            const baseUrl = this.BASE_URL;
+            const params = new URLSearchParams({
+                utm_source: this.UTM_PARAMETERS.SOURCE,
+                utm_medium: this.UTM_PARAMETERS.MEDIUM,
+                utm_campaign: this.UTM_PARAMETERS.CAMPAIGN,
+                utm_content: shareType,
+                ref: 'easter_egg'
+            });
+            
+            return `${baseUrl}?${params.toString()}`;
         }
     }
 };
