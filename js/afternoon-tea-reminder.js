@@ -157,6 +157,17 @@ class AfternoonTeaReminder extends ReminderManager {
         
         // 调用重写后的triggerReminder方法
         this.triggerReminder();
+        
+        // 🎉 新增：检查并触发彩蛋（仅中文版）
+        // 这不会影响原有的下午茶提醒功能
+        if (this.isChineseVersion && window.afternoonTeaEasterEgg) {
+            try {
+                console.log('🎉 检查下午茶彩蛋触发条件');
+                window.afternoonTeaEasterEgg.checkFirstTimeTrigger();
+            } catch (error) {
+                console.warn('🎉 彩蛋触发检查失败，但不影响下午茶提醒:', error);
+            }
+        }
     }
     
     /**

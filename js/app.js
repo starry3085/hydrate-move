@@ -8,6 +8,7 @@ class OfficeWellnessApp {
         this.waterReminder = null;
         this.standupReminder = null;
         this.afternoonTeaReminder = null; // 新增下午茶提醒
+        this.afternoonTeaEasterEgg = null; // 新增下午茶彩蛋管理器
         this.lunchReminder = null; // 新增午餐提醒
         this.demoController = null;
         this.errorHandler = null;
@@ -43,6 +44,7 @@ class OfficeWellnessApp {
             this.initializeUI();
             this.initializeReminders();
             this.initializeAfternoonTea(); // 初始化下午茶提醒
+            this.initializeAfternoonTeaEasterEgg(); // 初始化下午茶彩蛋
             this.initializeLunchReminder(); // 初始化午餐提醒
             this.initializeDemoController();
             this.initializeFeedbackButton();
@@ -273,6 +275,43 @@ class OfficeWellnessApp {
             console.error('🍵 下午茶提醒初始化失败:', error);
             // 下午茶提醒是可选功能，不影响主应用
             this.afternoonTeaReminder = null;
+        }
+    }
+
+    /**
+     * Initialize afternoon tea easter egg manager
+     * 初始化下午茶彩蛋管理器
+     * @private
+     */
+    initializeAfternoonTeaEasterEgg() {
+        try {
+            // 检查是否为中文版
+            if (!AFTERNOON_TEA_EASTER_EGG_CONSTANTS.ENABLED) {
+                console.log('🎉 下午茶彩蛋功能已禁用');
+                return;
+            }
+            
+            // 防止重复初始化
+            if (window.afternoonTeaEasterEgg) {
+                console.log('🎉 下午茶彩蛋管理器已存在，跳过初始化');
+                return;
+            }
+            
+            // 创建彩蛋管理器实例
+            this.afternoonTeaEasterEgg = new AfternoonTeaEasterEgg(
+                this.storage,  // 传入存储管理器
+                this.analytics // 传入分析工具
+            );
+            
+            // 全局暴露供调试和其他模块使用
+            window.afternoonTeaEasterEgg = this.afternoonTeaEasterEgg;
+            
+            console.log('🎉 下午茶彩蛋管理器初始化成功');
+            
+        } catch (error) {
+            console.error('🎉 下午茶彩蛋管理器初始化失败:', error);
+            // 彩蛋是可选功能，不影响主应用
+            this.afternoonTeaEasterEgg = null;
         }
     }
 

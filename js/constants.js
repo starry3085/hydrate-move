@@ -130,7 +130,7 @@ const AFTERNOON_TEA_CONSTANTS = {
  * 午餐提醒配置常量 - 中文版专属第二个彩蛋
  */
 const LUNCH_REMINDER_CONSTANTS = {
-    ENABLED: true,  // 配置开关
+    ENABLED: false,  // 默认禁用，等待彩蛋解锁
     REMINDER_TIME: { 
         HOUR: 12, 
         MINUTE: 0 
@@ -148,6 +148,61 @@ const LUNCH_REMINDER_CONSTANTS = {
     
     getReminderTimeString() {
         return `${this.REMINDER_TIME.HOUR.toString().padStart(2, '0')}:${this.REMINDER_TIME.MINUTE.toString().padStart(2, '0')}`;
+    }
+};
+
+/**
+ * Afternoon Tea Easter Egg Configuration Constants
+ * 下午茶彩蛋配置常量 - 双层彩蛋体验
+ */
+const AFTERNOON_TEA_EASTER_EGG_CONSTANTS = {
+    // 功能开关
+    ENABLED: true,
+    
+    // 存储键值配置
+    STORAGE_KEYS: {
+        FIRST_EASTER_EGG_SHOWN: 'afternoonTeaFirstEasterEggShown',
+        LUNCH_REMINDER_UNLOCKED: 'lunchReminderUnlocked',
+        SHARE_ACTIONS: 'afternoonTeaShareActions',
+        UNLOCK_TIMESTAMP: 'easterEggUnlockTimestamp'
+    },
+    
+    // 显示配置
+    DISPLAY: {
+        DURATION_MS: 10000,  // 10秒显示时长
+        POSITION: 'center',  // 屏幕中央显示
+        ANIMATION: 'bounceIn'  // 动画效果
+    },
+    
+    // 分享模板配置（无Canvas版本）
+    SHARE_TEMPLATES: {
+        wechat: {
+            TITLE: '🍵 下午茶时间到！',
+            TEXT: '三点几啦！饮茶先啦！\n\n发现一个超贴心的办公室健康提醒小工具，定时提醒喝水和站立，还有这样的小彩蛋🎉\n\n分享给你们，一起做健康的打工人！',
+            HASHTAGS: '#办公室健康 #下午茶时间 #健康生活'
+        },
+        xiaohongshu: {
+            TITLE: '🍵 办公室下午茶彩蛋',
+            TEXT: '哈哈哈，下午茶时间到！\n\n工作再忙也要记得：\n💧 多喝水\n🧘 多站立\n🍵 享受下午茶时光\n\n这个小工具还有彩蛋，太有意思了！\n\n#办公室健康 #下午茶 #打工人的小确幸',
+            HASHTAGS: '#办公室健康 #下午茶 #健康生活 #打工人'
+        }
+    },
+    
+    // 彩蛋文案配置
+    MESSAGES: {
+        FIRST_EASTER_EGG: {
+            TITLE: '🎉 恭喜成功解锁下午茶提醒彩蛋！',
+            SUBTITLE: '三点几啦！饮茶先啦！',
+            DESCRIPTION: '把这个贴心小工具分享给朋友们吧~',
+            SHARE_BUTTONS: {
+                WECHAT: '保存分享到朋友圈/微信',
+                XIAOHONGSHU: '生成笔记发到小红书'
+            }
+        },
+        SECOND_EASTER_EGG_UNLOCK: {
+            TITLE: '🎊 太棒了！您已解锁第二个彩蛋！',
+            MESSAGE: '明天中午12:00请留意特别提醒哦~\n记得保存分享让更多朋友体验这个小工具！'
+        }
     }
 };
 
@@ -220,7 +275,8 @@ if (typeof module !== 'undefined' && module.exports) {
         DEMO_CONSTANTS,
         NOTIFICATION_CONSTANTS,
         AFTERNOON_TEA_CONSTANTS,
-        LUNCH_REMINDER_CONSTANTS
+        LUNCH_REMINDER_CONSTANTS,
+        AFTERNOON_TEA_EASTER_EGG_CONSTANTS
     };
 }
 
@@ -232,3 +288,4 @@ window.DEMO_CONSTANTS = DEMO_CONSTANTS;
 window.NOTIFICATION_CONSTANTS = NOTIFICATION_CONSTANTS;
 window.AFTERNOON_TEA_CONSTANTS = AFTERNOON_TEA_CONSTANTS;
 window.LUNCH_REMINDER_CONSTANTS = LUNCH_REMINDER_CONSTANTS;
+window.AFTERNOON_TEA_EASTER_EGG_CONSTANTS = AFTERNOON_TEA_EASTER_EGG_CONSTANTS;
