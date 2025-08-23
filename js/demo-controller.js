@@ -278,7 +278,9 @@ class DemoController {
     resetDemoButton() {
         const demoBtn = document.getElementById('demo-btn');
         if (demoBtn) {
-            demoBtn.textContent = 'Demo';
+            // Check if we're on Chinese page
+            const isChinesePage = document.documentElement.lang === 'zh-CN';
+            demoBtn.textContent = isChinesePage ? '演示' : 'Demo';
             demoBtn.className = 'btn-demo';
         }
     }

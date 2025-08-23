@@ -365,15 +365,18 @@ class UIController {
                 return;
             }
 
+            // Check if we're on Chinese page
+            const isChinesePage = document.documentElement.lang === 'zh-CN';
+
             if (this.demoController.isDemoRunning) {
                 // Stop demo if running
                 this.demoController.stopDemo();
-                demoBtn.textContent = '演示';
+                demoBtn.textContent = isChinesePage ? '演示' : 'Demo';
                 demoBtn.className = 'btn-demo';
             } else {
                 // Start demo
                 this.demoController.startDemo();
-                demoBtn.textContent = '停止演示';
+                demoBtn.textContent = isChinesePage ? '停止演示' : 'Stop Demo';
                 demoBtn.className = 'btn-demo active';
             }
             
