@@ -8,6 +8,7 @@ class OfficeWellnessApp {
         this.waterReminder = null;
         this.standupReminder = null;
         this.afternoonTeaReminder = null; // 新增下午茶提醒
+        this.lunchReminder = null; // 新增午餐提醒
         this.demoController = null;
         this.errorHandler = null;
         this.storage = null;
@@ -42,6 +43,7 @@ class OfficeWellnessApp {
             this.initializeUI();
             this.initializeReminders();
             this.initializeAfternoonTea(); // 初始化下午茶提醒
+            this.initializeLunchReminder(); // 初始化午餐提醒
             this.initializeDemoController();
             this.initializeFeedbackButton();
             
@@ -229,10 +231,25 @@ class OfficeWellnessApp {
                 return;
             }
             
-            // 检查是否为中文版本及功能是否启用
-            if (!AFTERNOON_TEA_CONSTANTS.isChineseVersionOnly() || !AFTERNOON_TEA_CONSTANTS.ENABLED) {
-                console.log('🍵 下午茶提醒彩蛋未启用（非中文版或功能关闭）');
-                return;
+            // 检查是否启用多语言支持
+            if (!AFTERNOON_TEA_CONSTANTS.MULTI_LANGUAGE_SUPPORT) {
+                // 传统模式：仅中文版启用
+                if (!AFTERNOON_TEA_CONSTANTS.isChineseVersionOnly() || !AFTERNOON_TEA_CONSTANTS.ENABLED) {
+                    console.log('🍵 下午茶提醒彩蛋未启用（非中文版或功能关闭）');
+                    return;
+                }
+            } else {
+                // 多语言模式：中文版和英文版都可启用
+                const isChineseVersion = AFTERNOON_TEA_CONSTANTS.isChineseVersionOnly();
+                const isEnglishVersion = AFTERNOON_TEA_CONSTANTS.isEnglishVersionOnly();
+                
+                if (!AFTERNOON_TEA_CONSTANTS.ENABLED || (!isChineseVersion && !isEnglishVersion)) {
+                    console.log('🍵 下午茶/咖啡提醒未启用（功能关闭或未检测到支持的语言）');
+                    return;
+                }
+                
+                const featureType = isChineseVersion ? '下午茶提醒' : 'Coffee Break';
+                console.log(`🍵 检测到${featureType}环境，开始初始化`);
             }
             
             // 确保通知服务已初始化
@@ -248,12 +265,55 @@ class OfficeWellnessApp {
             // 将实例暴露到全局供调试使用
             window.afternoonTeaReminder = this.afternoonTeaReminder;
             
-            console.log('🍵 下午茶提醒彩蛋初始化成功');
+            const isChineseVersion = AFTERNOON_TEA_CONSTANTS.isChineseVersionOnly();
+            const featureType = isChineseVersion ? '下午茶提醒彩蛋' : 'Coffee Break';
+            console.log(`🍵 ${featureType}初始化成功`);
             
         } catch (error) {
             console.error('🍵 下午茶提醒初始化失败:', error);
             // 下午茶提醒是可选功能，不影响主应用
             this.afternoonTeaReminder = null;
+        }
+    }
+
+    /**
+     * Initialize lunch reminder (Chinese version exclusive easter egg feature)
+     * 初始化午餐提醒（中文版专属第二个彩蛋功能）
+     * @private
+     */
+    initializeLunchReminder() {
+        try {
+            // 仅在中文版且功能启用时初始化
+            if (!LUNCH_REMINDER_CONSTANTS.isChineseVersionOnly() || !LUNCH_REMINDER_CONSTANTS.ENABLED) {
+                console.log('🍲 午餐提醒未启用（非中文版或功能关闭）');
+                return;
+            }
+            
+            // 防止重复初始化
+            if (window.lunchReminder) {
+                console.log('🍲 午餐提醒已存在，跳过初始化');
+                return;
+            }
+            
+            // 确保通知服务已初始化
+            const notificationService = window.notificationService;
+            if (!notificationService) {
+                console.warn('🍲 通知服务未初始化，午餐提醒跳过');
+                return;
+            }
+            
+            // 创建午餐提醒实例
+            this.lunchReminder = new LunchReminder({}, notificationService);
+            
+            // 将实例暴露到全局供调试使用
+            window.lunchReminder = this.lunchReminder;
+            
+            console.log('🍲 午餐提醒初始化成功');
+            
+        } catch (error) {
+            console.error('🍲 午餐提醒初始化失败:', error);
+            // 午餐提醒是可选功能，不影响主应用
+            this.lunchReminder = null;
         }
     }
 
@@ -472,6 +532,11 @@ class OfficeWellnessApp {
             if (this.afternoonTeaReminder) {
                 this.afternoonTeaReminder.destroy();
                 this.afternoonTeaReminder = null;
+            }
+            
+            if (this.lunchReminder) {
+                this.lunchReminder.destroy();
+                this.lunchReminder = null;
             }
             
             if (this.demoController) {

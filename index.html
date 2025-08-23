@@ -217,6 +217,8 @@
     <script src="js/mobile-adapter.js?v=1.0.4" onerror="console.error('Failed to load mobile-adapter.js')"></script>
     <script src="js/ui-controller.js?v=1.0.4" onerror="console.error('Failed to load ui-controller.js')"></script>
     <script src="js/feedback-button.js?v=1.0.4" onerror="console.error('Failed to load feedback-button.js')"></script>
+    <!-- Coffee Break feature (English version) -->
+    <script src="js/afternoon-tea-reminder.js?v=1.0.4" onerror="console.error('Failed to load afternoon-tea-reminder.js')"></script>
     <script src="js/app.js?v=1.0.4" onerror="console.error('Failed to load app.js')"></script>
 
     <!-- Script Loading Verification -->
@@ -225,7 +227,7 @@
         const expectedClasses = [
             'ErrorHandler', 'StorageManager', 'AppSettings',
             'NotificationService', 'ReminderManager',
-            'WaterReminder', 'StandupReminder', 'UIController', 'MobileAdapter', 'DemoController', 'Analytics', 'OfficeWellnessApp', 'FeedbackButton'
+            'WaterReminder', 'StandupReminder', 'UIController', 'MobileAdapter', 'DemoController', 'Analytics', 'OfficeWellnessApp', 'FeedbackButton', 'AfternoonTeaReminder'
         ];
 
         expectedClasses.forEach(className => {
@@ -249,7 +251,7 @@
                 const requiredClasses = [
             'ErrorHandler', 'StorageManager', 'AppSettings',
             'NotificationService', 'ReminderManager',
-            'WaterReminder', 'StandupReminder', 'UIController', 'MobileAdapter', 'DemoController', 'Analytics', 'OfficeWellnessApp', 'FeedbackButton'
+            'WaterReminder', 'StandupReminder', 'UIController', 'MobileAdapter', 'DemoController', 'Analytics', 'OfficeWellnessApp', 'FeedbackButton', 'AfternoonTeaReminder'
         ];
 
                 // Debug: Log all class availability

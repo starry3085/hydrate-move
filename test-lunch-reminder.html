@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>午餐提醒功能测试 - Hydrate Move</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .test-button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+            font-size: 14px;
+        }
+        .test-button:hover {
+            background: #2980b9;
+        }
+        .status {
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        pre {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+        .reminder-time {
+            font-weight: bold;
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <h1>🍚 午餐提醒功能测试</h1>
+    
+    <div class="test-container">
+        <h2>📋 测试状态</h2>
+        <div id="test-status" class="status info">
+            正在初始化测试环境...
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>🔧 功能测试</h2>
+        <div>
+            <button class="test-button" onclick="testLunchReminderExists()">
+                1️⃣ 检查午餐提醒类是否存在
+            </button>
+            <button class="test-button" onclick="testLunchReminderInstance()">
+                2️⃣ 检查午餐提醒实例
+            </button>
+            <button class="test-button" onclick="testManualTrigger()">
+                3️⃣ 手动触发午餐提醒
+            </button>
+            <button class="test-button" onclick="testConfiguration()">
+                4️⃣ 检查配置信息
+            </button>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>📊 配置信息</h2>
+        <div id="config-info">
+            <p><strong>提醒时间:</strong> <span class="reminder-time">12:00</span></p>
+            <p><strong>显示时长:</strong> 10秒</p>
+            <p><strong>语言检测:</strong> <span id="language-check">检测中...</span></p>
+            <p><strong>功能状态:</strong> <span id="feature-status">检测中...</span></p>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2>📝 测试日志</h2>
+        <pre id="test-log">等待测试开始...\n</pre>
+    </div>
+
+    <!-- 引入所有必需的JavaScript文件 -->
+    <script src="../js/constants.js"></script>
+    <script src="../js/error-handler.js"></script>
+    <script src="../js/storage-manager.js"></script>
+    <script src="../js/notification-service.js"></script>
+    <script src="../js/reminder-manager.js"></script>
+    <script src="../js/lunch-reminder.js"></script>
+
+    <script>
+        // 测试日志功能
+        function log(message, type = 'info') {
+            const logElement = document.getElementById('test-log');
+            const timestamp = new Date().toLocaleTimeString();
+            const logEntry = `[${timestamp}] ${message}\n`;
+            logElement.textContent += logEntry;
+            logElement.scrollTop = logElement.scrollHeight;
+            
+            console.log(`TEST: ${message}`);
+        }
+
+        function updateStatus(message, type = 'info') {
+            const statusElement = document.getElementById('test-status');
+            statusElement.textContent = message;
+            statusElement.className = `status ${type}`;
+        }
+
+        // 测试函数
+        function testLunchReminderExists() {
+            log('🔍 测试1: 检查LunchReminder类是否存在');
+            
+            if (typeof LunchReminder !== 'undefined') {
+                log('✅ LunchReminder类存在', 'success');
+                updateStatus('LunchReminder类检查通过', 'success');
+                return true;
+            } else {
+                log('❌ LunchReminder类不存在', 'error');
+                updateStatus('LunchReminder类检查失败', 'error');
+                return false;
+            }
+        }
+
+        function testLunchReminderInstance() {
+            log('🔍 测试2: 检查午餐提醒实例');
+            
+            try {
+                // 创建通知服务
+                const notificationService = new NotificationService();
+                
+                // 创建午餐提醒实例
+                const lunchReminder = new LunchReminder({}, notificationService);
+                
+                if (lunchReminder) {
+                    log('✅ 午餐提醒实例创建成功', 'success');
+                    
+                    // 检查调试信息
+                    const debugInfo = lunchReminder.getDebugInfo();
+                    log(`📊 调试信息: ${JSON.stringify(debugInfo, null, 2)}`);
+                    
+                    updateStatus('午餐提醒实例测试通过', 'success');
+                    return lunchReminder;
+                } else {
+                    log('❌ 午餐提醒实例创建失败', 'error');
+                    updateStatus('午餐提醒实例测试失败', 'error');
+                    return null;
+                }
+            } catch (error) {
+                log(`❌ 创建午餐提醒实例时出错: ${error.message}`, 'error');
+                updateStatus('午餐提醒实例测试出错', 'error');
+                return null;
+            }
+        }
+
+        function testManualTrigger() {
+            log('🔍 测试3: 手动触发午餐提醒');
+            
+            try {
+                // 检查是否有全局实例
+                if (window.lunchReminder) {
+                    log('使用全局午餐提醒实例');
+                    window.lunchReminder.manualTrigger();
+                    log('✅ 手动触发成功（使用全局实例）', 'success');
+                    updateStatus('手动触发测试通过', 'success');
+                } else {
+                    // 创建临时实例进行测试
+                    log('创建临时午餐提醒实例进行测试');
+                    const notificationService = new NotificationService();
+                    const tempLunchReminder = new LunchReminder({}, notificationService);
+                    
+                    if (tempLunchReminder && tempLunchReminder.enabled) {
+                        tempLunchReminder.manualTrigger();
+                        log('✅ 手动触发成功（使用临时实例）', 'success');
+                        updateStatus('手动触发测试通过', 'success');
+                    } else {
+                        log('⚠️ 午餐提醒未启用（可能因为不是中文版）', 'info');
+                        updateStatus('午餐提醒未启用', 'info');
+                    }
+                }
+            } catch (error) {
+                log(`❌ 手动触发时出错: ${error.message}`, 'error');
+                updateStatus('手动触发测试失败', 'error');
+            }
+        }
+
+        function testConfiguration() {
+            log('🔍 测试4: 检查配置信息');
+            
+            try {
+                // 检查LUNCH_REMINDER_CONSTANTS
+                if (typeof LUNCH_REMINDER_CONSTANTS !== 'undefined') {
+                    log('✅ LUNCH_REMINDER_CONSTANTS存在');
+                    log(`📊 配置详情: ${JSON.stringify(LUNCH_REMINDER_CONSTANTS, null, 2)}`);
+                    
+                    // 检查消息配置
+                    if (typeof NOTIFICATION_CONSTANTS !== 'undefined' && NOTIFICATION_CONSTANTS.MESSAGES.LUNCH_REMINDER) {
+                        log('✅ 午餐提醒消息配置存在');
+                        log(`📊 消息配置: ${JSON.stringify(NOTIFICATION_CONSTANTS.MESSAGES.LUNCH_REMINDER, null, 2)}`);
+                    } else {
+                        log('❌ 午餐提醒消息配置不存在', 'error');
+                    }
+                    
+                    updateStatus('配置检查通过', 'success');
+                } else {
+                    log('❌ LUNCH_REMINDER_CONSTANTS不存在', 'error');
+                    updateStatus('配置检查失败', 'error');
+                }
+            } catch (error) {
+                log(`❌ 检查配置时出错: ${error.message}`, 'error');
+                updateStatus('配置检查出错', 'error');
+            }
+        }
+
+        // 初始化测试环境
+        function initializeTest() {
+            log('🚀 初始化测试环境');
+            
+            // 检查语言
+            const lang = document.documentElement.lang;
+            document.getElementById('language-check').textContent = lang || '未检测到';
+            
+            // 检查是否为中文版
+            if (typeof LUNCH_REMINDER_CONSTANTS !== 'undefined') {
+                const isChineseVersion = LUNCH_REMINDER_CONSTANTS.isChineseVersionOnly();
+                document.getElementById('feature-status').textContent = isChineseVersion ? '已启用' : '未启用（非中文版）';
+                
+                if (isChineseVersion) {
+                    log('✅ 检测到中文版环境，午餐提醒功能应该可用');
+                } else {
+                    log('⚠️ 非中文版环境，午餐提醒功能将不可用');
+                }
+            }
+            
+            updateStatus('测试环境初始化完成，可以开始测试', 'success');
+            log('📋 测试环境初始化完成');
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeTest();
+        });
+
+        // 全局错误处理
+        window.addEventListener('error', function(event) {
+            log(`🚨 全局错误: ${event.message}`, 'error');
+        });
+    </script>
+</body>
+</html>
