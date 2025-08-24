@@ -788,8 +788,12 @@ if (typeof window !== 'undefined') {
     console.log('💡 使用方法:');
     console.log('  - testEasterEgg.reset() // 重置所有状态');
     console.log('  - testEasterEgg.triggerAfternoonTea() // 触发下午茶提醒');
+    console.log('  - testEasterEgg.triggerLunch() // 触发午餐提醒');
     console.log('  - testEasterEgg.showFirstEgg() // 显示第一层彩蛋');
     console.log('  - testEasterEgg.simulateShare() // 模拟分享操作');
     console.log('  - testEasterEgg.showStatus() // 查看状态');
     console.log('  - testEasterEgg.runFullTest() // 运行完整测试');
+    console.log('🔧 调试模式专用方法（URL参数?debug=1启用）:');
+    console.log('  - testEasterEgg.help() // 显示调试帮助');
+    console.log('  - testEasterEgg.getDebugInfo() // 获取调试信息');
 }

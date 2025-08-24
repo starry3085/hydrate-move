@@ -228,6 +228,8 @@
     <script src="../js/easter-egg-ui.js?v=1.0.4" onerror="console.error('Failed to load easter-egg-ui.js')"></script>
     <!-- 午餐提醒彩蛋功能 (仅中文版) -->
     <script src="../js/lunch-reminder.js?v=1.0.4" onerror="console.error('Failed to load lunch-reminder.js')"></script>
+    <!-- 调试模式管理器 (支持URL参数调试) -->
+    <script src="../js/debug-mode.js?v=1.0.4" onerror="console.error('Failed to load debug-mode.js')"></script>
     <script src="../js/app.js?v=1.0.4" onerror="console.error('Failed to load app.js')"></script>
 
     <!-- Script Loading Verification -->
@@ -236,7 +238,7 @@
         const expectedClasses = [
             'ErrorHandler', 'StorageManager', 'AppSettings',
             'NotificationService', 'ReminderManager',
-            'WaterReminder', 'StandupReminder', 'UIController', 'MobileAdapter', 'DemoController', 'Analytics', 'OfficeWellnessApp', 'FeedbackButton', 'AfternoonTeaReminder', 'AfternoonTeaEasterEgg', 'EasterEggUI', 'LunchReminder'
+            'WaterReminder', 'StandupReminder', 'UIController', 'MobileAdapter', 'DemoController', 'Analytics', 'OfficeWellnessApp', 'FeedbackButton', 'AfternoonTeaReminder', 'AfternoonTeaEasterEgg', 'EasterEggUI', 'LunchReminder', 'DebugModeManager'
         ];
 
         expectedClasses.forEach(className => {
@@ -260,7 +262,7 @@
                 const requiredClasses = [
             'ErrorHandler', 'StorageManager', 'AppSettings',
             'NotificationService', 'ReminderManager',
-            'WaterReminder', 'StandupReminder', 'UIController', 'MobileAdapter', 'DemoController', 'Analytics', 'OfficeWellnessApp', 'FeedbackButton', 'AfternoonTeaReminder', 'AfternoonTeaEasterEgg', 'EasterEggUI', 'LunchReminder'
+            'WaterReminder', 'StandupReminder', 'UIController', 'MobileAdapter', 'DemoController', 'Analytics', 'OfficeWellnessApp', 'FeedbackButton', 'AfternoonTeaReminder', 'AfternoonTeaEasterEgg', 'EasterEggUI', 'LunchReminder', 'DebugModeManager'
         ];
 
                 // Debug: Log all class availability
