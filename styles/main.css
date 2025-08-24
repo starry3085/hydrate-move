@@ -1,4 +1,7 @@
 /* Base style reset and variable definitions */
+/* Import Easter Egg Modal Styles */
+@import url('easter-egg.css');
+
 :root {
     --primary-color: #2c3e50;
     --secondary-color: #3498db;
