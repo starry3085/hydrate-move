@@ -178,9 +178,16 @@ class DebugModeManager {
             forceEasterEgg: () => {
                 console.log('🔧 Forcing easter egg popup display...');
                 
-                // 优先使用绝对有效的弹窗函数
+                // 优先使用新版POC逻辑
+                if (window.testEasterEggPOC && window.testEasterEggPOC.showEasterEgg) {
+                    console.log('🔧 Using new POC easter egg logic');
+                    window.testEasterEggPOC.showEasterEgg();
+                    return;
+                }
+                
+                // 备用 - 绝对有效的弹窗函数（旧版）
                 if (typeof createGuaranteedEasterEggModal === 'function') {
-                    console.log('🔧 Using guaranteed popup function');
+                    console.log('🔧 Using guaranteed popup function (old version)');
                     createGuaranteedEasterEggModal();
                     return;
                 }
@@ -323,9 +330,16 @@ class DebugModeManager {
                 // For afternoon tea, we want to trigger both the notification AND the easter egg
                 console.log('🔧 Triggering afternoon tea easter egg...');
                 
-                // ✨ Method 1: 绝对有效的弹窗函数（最高优先级）
+                // ✨ Method 1: 优先使用新版POC逻辑（最高优先级）
+                if (window.testEasterEggPOC && window.testEasterEggPOC.showEasterEgg) {
+                    console.log('🔧 ✅ Using new POC easter egg logic - This WILL show the updated version!');
+                    window.testEasterEggPOC.showEasterEgg();
+                    return; // 成功，直接返回
+                }
+                
+                // Method 1.5: 备用 - 绝对有效的弹窗函数（旧版）
                 if (typeof createGuaranteedEasterEggModal === 'function') {
-                    console.log('🔧 ✅ Using guaranteed popup function - This WILL show!');
+                    console.log('🔧 ⚠️ Using guaranteed popup function (old version) - fallback');
                     createGuaranteedEasterEggModal();
                     return; // 成功，直接返回
                 }
