@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>本地二维码生成器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .qr-container {
+            margin: 30px 0;
+            padding: 20px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            background: #f9f9f9;
+        }
+        .url-info {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            font-family: monospace;
+            word-break: break-all;
+        }
+        #qrcode {
+            margin: 20px 0;
+        }
+        .download-btn {
+            background: #007bff;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        .download-btn:hover {
+            background: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>🍵 中文版网站二维码生成器（本地版）</h1>
+    
+    <div class="url-info">
+        <strong>目标域名：</strong><br>
+        https://hydrate-move.lightyearai.info/zh/
+    </div>
+    
+    <div class="qr-container">
+        <h3>生成的二维码</h3>
+        <div id="qrcode"></div>
+        <button class="download-btn" onclick="downloadQR()">下载二维码 (PNG)</button>
+    </div>
+    
+    <div style="margin-top: 40px; padding: 20px; background: #f0f8ff; border-radius: 5px;">
+        <h4>🎨 使用说明</h4>
+        <p>点击"下载二维码"按钮，将自动下载为 <code>qr_code_zh.png</code> 文件</p>
+        <p>这个二维码可以直接用于下午茶彩蛋的分享图片制作</p>
+    </div>
+
+    <!-- 引入QRCode.js库 -->
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    
+    <script>
+        // 目标URL
+        const targetUrl = 'https://hydrate-move.lightyearai.info/zh/';
+        
+        // 生成二维码
+        function generateQR() {
+            const qrContainer = document.getElementById('qrcode');
+            
+            // 清空容器
+            qrContainer.innerHTML = '';
+            
+            // 生成二维码
+            QRCode.toCanvas(qrContainer, targetUrl, {
+                width: 300,
+                height: 300,
+                color: {
+                    dark: '#000000',
+                    light: '#FFFFFF'
+                }
+            }, function (error) {
+                if (error) {
+                    console.error('二维码生成失败:', error);
+                    qrContainer.innerHTML = '<p style="color: red;">二维码生成失败，请检查网络连接</p>';
+                } else {
+                    console.log('二维码生成成功!');
+                }
+            });
+        }
+        
+        // 下载二维码
+        function downloadQR() {
+            const canvas = document.querySelector('#qrcode canvas');
+            if (!canvas) {
+                alert('请先生成二维码！');
+                return;
+            }
+            
+            // 创建下载链接
+            const link = document.createElement('a');
+            link.download = 'qr_code_zh.png';
+            link.href = canvas.toDataURL('image/png');
+            
+            // 触发下载
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            console.log('二维码已下载为: qr_code_zh.png');
+        }
+        
+        // 页面加载完成后生成二维码
+        window.addEventListener('load', function() {
+            // 检查QRCode库是否加载成功
+            if (typeof QRCode !== 'undefined') {
+                generateQR();
+            } else {
+                // 如果CDN加载失败，显示备用方案
+                document.getElementById('qrcode').innerHTML = `
+                    <div style="padding: 20px; background: #fff3cd; border-radius: 5px;">
+                        <h4>⚠️ 无法加载二维码生成库</h4>
+                        <p>请尝试以下备用方案：</p>
+                        <ol style="text-align: left;">
+                            <li>访问在线二维码生成器：<br>
+                                <a href="https://www.qr-code-generator.com/" target="_blank">
+                                    https://www.qr-code-generator.com/
+                                </a>
+                            </li>
+                            <li>输入URL: <code>${targetUrl}</code></li>
+                            <li>生成并下载为 <code>qr_code_zh.png</code></li>
+                        </ol>
+                    </div>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

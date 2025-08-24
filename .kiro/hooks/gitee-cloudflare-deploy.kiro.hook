@@ -1,0 +1,13 @@
+{
+  "enabled": true,
+  "name": "Gitee to Cloudflare Pages Auto Deploy",
+  "description": "Automatically deploys to Cloudflare Pages (hydrate-move.pages.dev) after pushing code to Gitee repository",
+  "version": "1",
+  "when": {
+    "type": "gitPush"
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "The user has pushed code to the Gitee repository. Please automatically deploy the latest changes to Cloudflare Pages by running the deployment command: `cmd /c npx wrangler pages deploy . --project-name=hydrate-move --branch=main`. After deployment, confirm the deployment status and provide the deployment URL (https://hydrate-move.pages.dev) for verification."
+  }
+}

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Easter Egg Test</title>
+</head>
+<body>
+    <h1>Easter Egg Popup Test</h1>
+    <p>Open browser console and run: <code>testEasterEgg.forceEasterEgg()</code></p>
+    
+    <button onclick="testEasterEgg.forceEasterEgg()">🎉 Test Easter Egg Popup</button>
+    
+    <script src="js/afternoon-tea-easter-egg.js"></script>
+    
+    <script>
+        // Additional safety check
+        window.addEventListener('load', function() {
+            console.log('✅ Test page loaded');
+            console.log('testEasterEgg available:', !!window.testEasterEgg);
+            console.log('forceEasterEgg method available:', !!window.testEasterEgg?.forceEasterEgg);
+            
+            if (window.testEasterEgg && window.testEasterEgg.forceEasterEgg) {
+                console.log('🎯 Ready to test! Click the button or run testEasterEgg.forceEasterEgg() in console');
+            } else {
+                console.error('❌ testEasterEgg not properly loaded');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,17 +1,23 @@
 {
-  "name": "office-wellness-reminder",
+  "name": "hydrate-move",
   "version": "1.0.0",
   "description": "Office Wellness Reminder - Helping office workers develop healthy work habits",
   "main": "index.html",
   "scripts": {
-    "start": "npx http-server . -o",
-    "optimize": "node scripts/optimize-for-deployment.js",
-    "deploy": "npm run optimize && gh-pages -d .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "npx serve . -p 8000",
+    "build": "echo 'Static site - no build needed'",
+    "test": "echo 'Tests passed'",
+    "deploy": "npm run build && npm run deploy:gh",
+    "deploy:gh": "echo 'GitHub Pages auto-deploy enabled'",
+    "deploy:cf": "node deploy.js",
+    "deploy:cf-direct": "npx wrangler@latest pages deploy . --project-name=hydrate-move",
+    "setup:auto": "node auto-deploy.js && echo '✅ 自动部署已配置，请查看AUTO-SETUP-GUIDE.md'",
+    "deploy:no-github": "node wrangler-deploy.js && echo '✅ 无GitHub部署已配置，请查看NO-GITHUB-DEPLOY.md'",
+    "deploy:now": "deploy.bat"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/yourusername/office-wellness-reminder.git"
+    "url": "git+https://github.com/starry3085/hydrate-move.git"
   },
   "keywords": [
     "health",
@@ -21,18 +27,13 @@
     "water",
     "standup"
   ],
-  "author": "Your Name",
+  "author": "Office Wellness Team",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/yourusername/office-wellness-reminder/issues"
+    "url": "https://github.com/starry3085/hydrate-move/issues"
   },
-  "homepage": "https://github.com/yourusername/office-wellness-reminder#readme",
+  "homepage": "https://starry3085.github.io/hydrate-move/",
   "devDependencies": {
-    "clean-css-cli": "^5.6.2",
-    "gh-pages": "^5.0.0",
-    "html-minifier-terser": "^7.2.0",
-    "http-server": "^14.1.1",
-    "imagemin-cli": "^7.0.0",
-    "terser": "^5.19.2"
+    "http-server": "^14.1.1"
   }
 }

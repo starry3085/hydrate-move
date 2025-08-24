@@ -1,0 +1,182 @@
+{
+  "meta": {
+    "title": {
+      "en": "Hydrate Move - Free Office Wellness Timer",
+      "zh-CN": "Hydrate Move - 免费办公健康提醒器"
+    },
+    "description": {
+      "en": "Free browser-based office wellness timer that reminds you to drink water and stand up every 30 minutes. Works in any modern browser.",
+      "zh-CN": "免费的浏览器办公健康提醒工具，每30分钟提醒喝水和站立。支持所有现代浏览器。"
+    },
+    "keywords": {
+      "en": "office wellness, water reminder, standup reminder, health timer, productivity, work habits, hydration tracker, posture break",
+      "zh-CN": "办公健康, 喝水提醒, 站立提醒, 健康计时器, 生产力, 工作习惯, 饮水追踪, 姿势休息"
+    },
+    "author": {
+      "en": "Hydrate Move Team",
+      "zh-CN": "Hydrate Move 团队"
+    },
+    "language": {
+      "en": "en-US",
+      "zh-CN": "zh-CN"
+    }
+  },
+  "og": {
+    "title": {
+      "en": "Hydrate Move - Free Office Wellness Timer",
+      "zh-CN": "Hydrate Move - 免费办公健康提醒器"
+    },
+    "description": {
+      "en": "Free browser-based office wellness timer that reminds you to drink water and stand up every 30 minutes. Works in any modern browser.",
+      "zh-CN": "免费的浏览器办公健康提醒工具，每30分钟提醒喝水和站立。支持所有现代浏览器。"
+    }
+  },
+  "twitter": {
+    "title": {
+      "en": "Hydrate Move - Free Office Wellness Timer",
+      "zh-CN": "Hydrate Move - 免费办公健康提醒器"
+    },
+    "description": {
+      "en": "Smart reminders for office workers to stay hydrated and take movement breaks",
+      "zh-CN": "智能提醒办公人员保持水分和运动休息"
+    }
+  },
+  "jsonLd": {
+    "name": {
+      "en": "Hydrate Move",
+      "zh-CN": "Hydrate Move"
+    },
+    "description": {
+      "en": "Free browser-based office wellness timer that reminds you to drink water and stand up every 30 minutes.",
+      "zh-CN": "免费的浏览器办公健康提醒工具，每30分钟提醒喝水和站立。"
+    },
+    "featureList": {
+      "en": ["water reminder", "stand-up reminder", "browser-based", "no installation required"],
+      "zh-CN": ["喝水提醒", "站立提醒", "浏览器运行", "无需安装"]
+    },
+    "author": {
+      "en": "Hydrate Move Team",
+      "zh-CN": "Hydrate Move 团队"
+    },
+    "keywords": {
+      "en": "office wellness, water reminder, standup reminder, health timer, productivity, work habits",
+      "zh-CN": "办公健康, 喝水提醒, 站立提醒, 健康计时器, 生产力, 工作习惯"
+    }
+  },
+  "ui": {
+    "appTitle": {
+      "en": "Hydrate Move",
+      "zh-CN": "Hydrate Move"
+    },
+    "appSubtitle": {
+      "en": "Office Wellness Reminder - Maintain Healthy Work Habits",
+      "zh-CN": "办公健康提醒 - 保持健康工作习惯"
+    },
+    "seoContent": {
+      "description": {
+        "en": "Stay hydrated and take movement breaks every 30 minutes. Free privacy-first office wellness timer that works offline with no registration required.",
+        "zh-CN": "每30分钟保持水分和运动休息。免费的隐私优先办公健康计时器，可离线工作，无需注册。"
+      },
+      "featuresTitle": {
+        "en": "Office Wellness Timer Features",
+        "zh-CN": "办公健康计时器功能"
+      },
+      "features": {
+        "en": [
+          "Water reminder every 30 minutes for better hydration",
+          "Standup reminder for posture breaks and movement",
+          "Browser-based application with no installation required",
+          "Privacy-first design with local storage only",
+          "Free office productivity tool for remote workers"
+        ],
+        "zh-CN": [
+          "每30分钟喝水提醒，更好保持水分",
+          "站立提醒，改善姿势和运动",
+          "基于浏览器的应用，无需安装",
+          "隐私优先设计，仅本地存储",
+          "免费的远程工作生产力工具"
+        ]
+      }
+    },
+    "demo": {
+      "buttonText": {
+        "en": "Demo",
+        "zh-CN": "演示"
+      },
+      "buttonAriaLabel": {
+        "en": "Start demo mode to see how reminders work",
+        "zh-CN": "启动演示模式查看提醒如何工作"
+      },
+      "statusText": {
+        "en": "Click Demo to see how reminders work",
+        "zh-CN": "点击演示查看提醒如何工作"
+      }
+    },
+    "reminders": {
+      "sectionLabel": {
+        "en": "Wellness Reminders",
+        "zh-CN": "健康提醒"
+      },
+      "water": {
+        "title": {
+          "en": "Water Reminder",
+          "zh-CN": "喝水提醒"
+        },
+        "remindEvery": {
+          "en": "Remind every:",
+          "zh-CN": "每次提醒:"
+        },
+        "remindAfter": {
+          "en": "Remind after:",
+          "zh-CN": "提醒时间:"
+        },
+        "interval": {
+          "en": "30 mins",
+          "zh-CN": "30 分钟"
+        },
+        "buttonStart": {
+          "en": "Start",
+          "zh-CN": "开始"
+        },
+        "buttonAriaLabel": {
+          "en": "Start water reminder timer",
+          "zh-CN": "启动喝水提醒计时器"
+        }
+      },
+      "standup": {
+        "title": {
+          "en": "Standup Reminder",
+          "zh-CN": "站立提醒"
+        },
+        "remindEvery": {
+          "en": "Remind every:",
+          "zh-CN": "每次提醒:"
+        },
+        "remindAfter": {
+          "en": "Remind after:",
+          "zh-CN": "提醒时间:"
+        },
+        "interval": {
+          "en": "30 mins",
+          "zh-CN": "30 分钟"
+        },
+        "buttonStart": {
+          "en": "Start",
+          "zh-CN": "开始"
+        },
+        "buttonAriaLabel": {
+          "en": "Start standup reminder timer",
+          "zh-CN": "启动站立提醒计时器"
+        }
+      }
+    },
+    "loading": {
+      "en": "Loading...",
+      "zh-CN": "加载中..."
+    }
+  },
+  "domains": {
+    "production": "https://hydrate-move.lightyearai.info",
+    "staging": "https://staging.hydrate-move.lightyearai.info"
+  }
+}

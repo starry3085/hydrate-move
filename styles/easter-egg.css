@@ -1,0 +1,343 @@
+/**
+ * Easter Egg Modal Styles
+ * 彩蛋弹窗样式文件
+ * 从 afternoon_tea_share_modal.html POC 提取整合
+ */
+
+/* ===== 彩蛋弹窗背景遮罩 ===== */
+.easter-egg-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.6);
+    z-index: 2147483646;
+    opacity: 0;
+    display: none;
+    transition: opacity 0.3s ease-out;
+    isolation: isolate; /* 创建新的堆叠上下文 */
+}
+
+.easter-egg-backdrop.show {
+    opacity: 1;
+}
+
+/* ===== 彩蛋弹窗主体 ===== */
+.easter-egg-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 520px;
+    max-width: 95vw;
+    max-height: 90vh;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+    z-index: 2147483647;
+    opacity: 0;
+    display: none;
+    transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', Arial, sans-serif;
+}
+
+.easter-egg-modal.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* ===== 弹窗头部 ===== */
+.easter-egg-modal .modal-header {
+    background: #2c3e50;
+    color: white;
+    padding: 20px;
+    text-align: center;
+    position: relative;
+}
+
+.easter-egg-modal .close-button {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.easter-egg-modal .close-button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.easter-egg-modal .modal-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.easter-egg-modal .modal-subtitle {
+    font-size: 16px;
+    opacity: 0.9;
+    font-weight: 400;
+}
+
+/* ===== 弹窗内容 ===== */
+.easter-egg-modal .modal-content {
+    padding: 30px;
+    text-align: center;
+}
+
+.easter-egg-modal .congratulations-text {
+    font-size: 18px;
+    color: #2c3e50;
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+.easter-egg-modal .share-image-container {
+    margin: 25px 0;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    border: 2px dashed #dee2e6;
+}
+
+.easter-egg-modal .share-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.easter-egg-modal .share-tip {
+    font-size: 14px;
+    color: #6c757d;
+    margin-top: 10px;
+}
+
+/* ===== 分享按钮组 ===== */
+.easter-egg-modal .share-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin: 25px 0;
+}
+
+.easter-egg-modal .share-button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-decoration: none;
+    min-width: 160px;
+    justify-content: center;
+    font-family: inherit;
+}
+
+.easter-egg-modal .share-wechat {
+    background: #07c160;
+    color: white;
+}
+
+.easter-egg-modal .share-wechat:hover {
+    background: #06ad56;
+    transform: translateY(-1px);
+}
+
+.easter-egg-modal .share-xiaohongshu {
+    background: #ff2442;
+    color: white;
+}
+
+.easter-egg-modal .share-xiaohongshu:hover {
+    background: #e6203b;
+    transform: translateY(-1px);
+}
+
+.easter-egg-modal .share-copy {
+    background: #6c757d;
+    color: white;
+}
+
+.easter-egg-modal .share-copy:hover {
+    background: #5a6268;
+    transform: translateY(-1px);
+}
+
+/* ===== 解锁提示 ===== */
+.easter-egg-modal .unlock-notification {
+    background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+    padding: 20px;
+    border-radius: 12px;
+    margin: 20px 0;
+    border-left: 4px solid #f39c12;
+}
+
+.easter-egg-modal .unlock-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #d35400;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.easter-egg-modal .unlock-message {
+    font-size: 14px;
+    color: #8b4513;
+    line-height: 1.5;
+}
+
+/* ===== 成功提示Toast ===== */
+.success-toast {
+    position: fixed;
+    top: 80px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-20px);
+    background: #28a745;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    z-index: 2147483648;
+    opacity: 0;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    max-width: 90vw;
+    text-align: center;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', Arial, sans-serif;
+}
+
+.success-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* 特殊样式：解锁成功提示Toast */
+.unlock-success-toast {
+    background: #f39c12;
+    box-shadow: 0 4px 12px rgba(243, 156, 18, 0.3);
+    line-height: 1.3;
+    white-space: nowrap;
+}
+
+/* ===== 响应式设计 ===== */
+@media (max-width: 768px) {
+    .easter-egg-modal {
+        width: 95vw;
+        margin: 10px;
+        border-radius: 12px;
+    }
+    
+    .easter-egg-modal .modal-content {
+        padding: 20px;
+    }
+    
+    .easter-egg-modal .modal-header {
+        padding: 15px;
+    }
+    
+    .easter-egg-modal .modal-title {
+        font-size: 20px;
+    }
+    
+    .easter-egg-modal .modal-subtitle {
+        font-size: 14px;
+    }
+    
+    .easter-egg-modal .congratulations-text {
+        font-size: 16px;
+    }
+    
+    .easter-egg-modal .share-buttons {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+    }
+    
+    .easter-egg-modal .share-button {
+        width: 100%;
+        max-width: 280px;
+    }
+    
+    .success-toast {
+        top: 60px;
+        font-size: 13px;
+        padding: 10px 16px;
+        max-width: 85vw;
+    }
+    
+    .unlock-success-toast {
+        white-space: normal;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .easter-egg-modal {
+        width: 98vw;
+        max-height: 85vh;
+        border-radius: 8px;
+    }
+    
+    .easter-egg-modal .modal-content {
+        padding: 15px;
+    }
+    
+    .easter-egg-modal .modal-header {
+        padding: 12px;
+    }
+    
+    .easter-egg-modal .modal-title {
+        font-size: 18px;
+    }
+    
+    .easter-egg-modal .share-image-container {
+        margin: 15px 0;
+        padding: 10px;
+    }
+}
+
+/* ===== 无障碍支持 ===== */
+.easter-egg-modal [aria-label] {
+    outline: none;
+}
+
+.easter-egg-modal [aria-label]:focus {
+    outline: 2px solid #2c3e50;
+    outline-offset: 2px;
+}
+
+/* 减少动效敏感用户的动画 */
+@media (prefers-reduced-motion: reduce) {
+    .easter-egg-modal,
+    .easter-egg-backdrop,
+    .success-toast,
+    .easter-egg-modal .share-button {
+        transition: none;
+    }
+    
+    .easter-egg-modal.show {
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
