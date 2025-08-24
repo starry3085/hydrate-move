@@ -130,7 +130,8 @@ const AFTERNOON_TEA_CONSTANTS = {
  * 午餐提醒配置常量 - 中文版专属第二个彩蛋
  */
 const LUNCH_REMINDER_CONSTANTS = {
-    ENABLED: false,  // 默认禁用，等待彩蛋解锁
+    ENABLED: true,  // ✅ 改为默认启用
+    REQUIRES_UNLOCK: true,  // 新增：需要解锁标志
     REMINDER_TIME: { 
         HOUR: 12, 
         MINUTE: 0 
@@ -144,6 +145,18 @@ const LUNCH_REMINDER_CONSTANTS = {
     isChineseVersionOnly() {
         return document.documentElement.lang === 'zh-CN' && 
                window.location.pathname.includes('/zh/');
+    },
+    
+    // 检查是否已解锁
+    isUnlocked() {
+        return localStorage.getItem('lunchReminderUnlocked') === 'true';
+    },
+    
+    // 检查是否应该启用
+    shouldEnable() {
+        return this.ENABLED && 
+               this.isChineseVersionOnly() && 
+               (!this.REQUIRES_UNLOCK || this.isUnlocked());
     },
     
     getReminderTimeString() {

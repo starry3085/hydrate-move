@@ -28,16 +28,16 @@ class LunchReminder extends ReminderManager {
         // 检测是否为中文版
         this.isChineseVersion = this.config.isChineseVersionOnly();
         
-        // 仅在中文版且功能启用时工作
-        this.enabled = this.isChineseVersion && this.config.ENABLED;
+        // 仅在中文版且功能启用时工作 - 使用新的shouldEnable逻辑
+        this.enabled = this.isChineseVersion && this.config.shouldEnable();
         
         if (!this.isChineseVersion) {
             console.log('🍚 非中文版，午餐提醒彩蛋未启用');
             return;
         }
         
-        if (!this.config.ENABLED) {
-            console.log('🍚 午餐提醒功能已禁用');
+        if (!this.config.shouldEnable()) {
+            console.log('🍚 午餐提醒功能已禁用或未解锁');
             return;
         }
         

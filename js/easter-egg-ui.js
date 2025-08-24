@@ -29,29 +29,46 @@ class EasterEggUI {
     }
     
     /**
-     * 显示第一层彩蛋弹窗
+     * 显示第一层彩蛋弹窗 - 使用POC验证过的逻辑
      * @public
      */
     showFirstEasterEgg() {
         try {
-            if (this.isVisible || this.isAnimating) {
-                console.log('🎉 彩蛋弹窗已显示或正在动画中，跳过');
+            console.log('🎉 开始显示第一层彩蛋弹窗（POC逻辑）');
+            
+            // 直接使用页面中已有的DOM元素（跟POC一样）
+            const backdrop = document.getElementById('easterEggBackdrop');
+            const modal = document.getElementById('easterEggModal');
+            
+            if (!backdrop || !modal) {
+                console.error('❌ 彩蛋DOM元素未找到:', { backdrop: !!backdrop, modal: !!modal });
                 return;
             }
             
-            console.log('🎉 开始显示第一层彩蛋弹窗');
+            // 生成弹窗内容（跟POC一样）
+            modal.innerHTML = this.generatePOCModalContent();
             
-            // 检查配置是否可用
-            if (!this.config || !this.config.MESSAGES || !this.config.MESSAGES.FIRST_EASTER_EGG) {
-                console.error('🎉 配置不可用:', this.config);
-                return;
-            }
+            // 防止页面滚动
+            document.body.style.overflow = 'hidden';
             
-            // 创建弹窗
-            this.createEasterEggModal();
+            // 显示背景遮罩和弹窗（完全复制POC逻辑）
+            backdrop.style.display = 'block';
+            modal.style.display = 'block';
             
-            // 显示弹窗
-            this.showModal();
+            console.log('✅ 弹窗元素已显示');
+            
+            // 触发动画（跟POC一样）
+            requestAnimationFrame(() => {
+                backdrop.classList.add('show');
+                modal.classList.add('show');
+                console.log('✅ 弹窗动画已触发');
+            });
+            
+            // 绑定事件（跟POC一样）
+            this.bindPOCEvents(backdrop, modal);
+            
+            this.isVisible = true;
+            console.log('🎉 下午茶彩蛋弹窗已显示（POC逻辑）');
             
         } catch (error) {
             console.error('🎉 显示第一层彩蛋时出错:', error);
@@ -124,110 +141,105 @@ class EasterEggUI {
     }
     
     /**
-     * 获取弹窗内容HTML
+     * 生成POC弹窗内容HTML - 完全复制POC中验证过的内容
      * @returns {string} HTML内容
      * @private
      */
-    getModalContent() {
-        let messages;
-        
-        // 安全获取配置信息
-        try {
-            messages = this.config.MESSAGES.FIRST_EASTER_EGG;
-            if (!messages) {
-                throw new Error('配置中缺少 FIRST_EASTER_EGG 消息');
-            }
-        } catch (error) {
-            console.warn('🎉 使用默认配置:', error);
-            // 使用默认配置
-            messages = {
-                TITLE: '🎉 恭喜成功解锁下午茶提醒彩蛋！',
-                SUBTITLE: '三点几啦！饮茶先啦！',
-                DESCRIPTION: '把这个贴心小工具分享给朋友们吧~',
-                SHARE_BUTTONS: {
-                    WECHAT: '保存分享到朋友圈/微信',
-                    XIAOHONGSHU: '生成笔记发到小红书'
-                }
-            };
-        }
-        
+    generatePOCModalContent() {
+        // 完全复制POC中的弹窗内容
         const content = `
+            <!-- 弹窗头部 -->
             <div class="modal-header">
-                <button class="close-button" aria-label="关闭" title="关闭">
-                    <span aria-hidden="true">&times;</span>
+                <button class="close-button" onclick="this.closest('.easter-egg-modal').style.display='none'; document.getElementById('easterEggBackdrop').style.display='none'; document.body.style.overflow='';" aria-label="关闭">
+                    <span>&times;</span>
                 </button>
-                <div class="modal-title">${messages.TITLE}</div>
-                <div class="modal-subtitle">${messages.SUBTITLE}</div>
+                <div class="modal-title">🎉 恭喜成功解锁下午茶提醒彩蛋！</div>
+                <div class="modal-subtitle">三点几啦！饮茶先啦！</div>
             </div>
             
+            <!-- 弹窗内容 -->
             <div class="modal-content">
                 <div class="congratulations-text">
-                    ${messages.DESCRIPTION}
+                    🍵 太棒了！你发现了我们的小彩蛋！<br>
+                    把这个贴心小工具分享给朋友们吧~
                 </div>
                 
+                <!-- 分享图片 -->
                 <div class="share-image-container">
-                    <img src="../afternoon_tea_share.png" alt="下午茶分享图片" class="share-image" 
-                         onerror="this.style.display='none'; this.nextElementSibling.innerHTML='⚠️ 分享图片加载失败，请检查 afternoon_tea_share.png 文件'">
+                    <img src="afternoon_tea_share.png" alt="下午茶分享图片" class="share-image" 
+                         onerror="this.style.display='none'; document.querySelector('.share-tip').innerHTML='⚠️ 分享图片加载失败，请检查 afternoon_tea_share.png 文件'">
                     <div class="share-tip">
                         💡 长按图片保存，或点击下方按钮分享
                     </div>
                 </div>
                 
-                <div class="share-buttons" role="group" aria-label="分享选项">
-                    <button class="share-button share-wechat" 
-                            data-share-type="wechat" 
-                            aria-label="分享到微信朋友圈">
-                        <span class="share-icon">📱</span>
-                        <span class="share-text">${messages.SHARE_BUTTONS.WECHAT}</span>
+                <!-- 分享按钮 -->
+                <div class="share-buttons">
+                    <button class="share-button share-wechat" data-share-type="wechat">
+                        <span>保存分享到朋友圈</span>
                     </button>
-                    <button class="share-button share-xiaohongshu" 
-                            data-share-type="xiaohongshu" 
-                            aria-label="分享到小红书">
-                        <span class="share-icon">📝</span>
-                        <span class="share-text">${messages.SHARE_BUTTONS.XIAOHONGSHU}</span>
+                    <button class="share-button share-xiaohongshu" data-share-type="xiaohongshu">
+                        <span>生成笔记发小红书</span>
                     </button>
                 </div>
             </div>
         `;
         
-        console.log('🎉 弹窗内容已生成，长度:', content.length);
+        console.log('🎉 POC弹窗内容已生成，长度:', content.length);
         return content;
     }
     
     /**
-     * 绑定事件监听器
+     * 绑定POC事件监听器 - 完全复制POC中验证过的事件处理
+     * @param {HTMLElement} backdrop - 背景遮罩元素
+     * @param {HTMLElement} modal - 弹窗元素
      * @private
      */
-    bindEvents() {
-        // 关闭按钮
-        const closeButton = this.modal.querySelector('.close-button');
-        if (closeButton) {
-            closeButton.addEventListener('click', () => this.hideModal());
-        }
+    bindPOCEvents(backdrop, modal) {
+        // 背景点击关闭（跟POC一样）
+        backdrop.onclick = () => this.hidePOCModal(backdrop, modal);
         
-        // 背景点击关闭
-        this.backdrop.addEventListener('click', () => this.hideModal());
-        
-        // 分享按钮 - 使用事件委托处理嵌套元素
-        const shareButtons = this.modal.querySelectorAll('.share-button');
+        // 分享按钮事件（跟POC一样）
+        const shareButtons = modal.querySelectorAll('.share-button');
         shareButtons.forEach(button => {
             button.addEventListener('click', (e) => {
                 const shareType = e.target.closest('.share-button')?.getAttribute('data-share-type');
-                if (shareType) {
-                    this.handleShareClick(shareType);
+                if (!shareType) return;
+                
+                console.log(`🍵 ${shareType}分享按钮点击`);
+                
+                if (shareType === 'wechat') {
+                    this.shareToWechat();
+                } else if (shareType === 'xiaohongshu') {
+                    this.shareToXiaohongshu();
                 }
             });
         });
         
         // ESC键关闭
         this.escapeKeyHandler = (e) => {
-            if (e.key === 'Escape' && this.isVisible) {
-                this.hideModal();
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('easterEggModal');
+                if (modal && modal.classList.contains('show')) {
+                    this.hidePOCModal(backdrop, modal);
+                }
             }
         };
         document.addEventListener('keydown', this.escapeKeyHandler);
         
-        console.log('🎉 事件监听器已绑定');
+        // 监听右键菜单事件，用户右键保存图片也算完成分享（跟POC一样）
+        const shareImg = modal.querySelector('.share-image');
+        if (shareImg) {
+            shareImg.addEventListener('contextmenu', (e) => {
+                console.log('🖼️ 用户右键点击分享图片');
+                // 延迟触发解锁，给用户时间保存图片
+                setTimeout(() => {
+                    this.triggerSecondEasterEgg();
+                }, 3000);
+            });
+        }
+        
+        console.log('🎉 POC事件监听器已绑定');
     }
     
     /**
@@ -307,52 +319,74 @@ class EasterEggUI {
     }
     
     /**
-     * 处理分享按钮点击
-     * @param {string} shareType - 分享类型
+     * 分享到微信朋友圈 - 完全复制POC中验证过的逻辑
      * @private
      */
-    handleShareClick(shareType) {
-        console.log(`🎉 UI: 分享按钮点击 - ${shareType}`);
+    shareToWechat() {
+        const config = {
+            text: '三点几啦！饮茶先啦！\n\n发现一个超贴心的办公室健康提醒小工具，定时提醒喝水和站立，还有这样的小彩蛋🎉\n\n分享给你们，一起做健康的打工人！',
+            url: 'https://hydrate-move.lightyearai.info/zh/',
+            hashtags: '#办公室健康 #下午茶时间 #健康生活'
+        };
         
-        // 获取被点击的按钮元素
-        const clickedButton = this.modal.querySelector(`[data-share-type="${shareType}"]`);
-        if (clickedButton) {
-            // 添加加载状态
-            this.setButtonLoadingState(clickedButton, true);
-        }
+        const shareText = `${config.text}\n\n🔗 ${config.url}\n\n${config.hashtags}`;
         
-        // 生成分享内容
-        const shareContent = this.generateShareContent(shareType);
-        if (!shareContent) {
-            console.error('生成分享内容失败');
-            return;
-        }
+        console.log('🍵 微信分享按钮点击');
         
-        // 根据分享类型处理
-        let successMessage;
-        if (shareType === 'wechat') {
-            successMessage = '微信分享文案已复制！请长按图片保存到相册';
-        } else if (shareType === 'xiaohongshu') {
-            successMessage = '小红书文案已复制！请长按图片保存到相册';
-        } else {
-            successMessage = '分享内容已复制到剪贴板！';
-        }
+        // 简化流程：直接复制文案并提示用户手动保存图片
+        this.copyToClipboard(shareText, '微信分享文案已复制！请长按图片保存到相册');
+    }
+    
+    /**
+     * 分享到小红书 - 完全复制POC中验证过的逻辑
+     * @private
+     */
+    shareToXiaohongshu() {
+        const currentTime = new Date().toLocaleString('zh-CN', {
+            month: 'long',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
         
-        // 执行复制操作
-        this.copyToClipboard(shareContent, successMessage);
+        const config = {
+            text: '哈哈哈，下午茶时间到！\n\n工作再忙也要记得：\n💧 多喝水\n🧘 多站立\n🍵 享受下午茶时光\n\n这个小工具还有彩蛋，太有意思了！',
+            url: 'https://hydrate-move.lightyearai.info/zh/',
+            hashtags: '#办公室健康 #下午茶 #健康生活 #打工人'
+        };
         
-        // 调用主控制器的分享处理（如果需要）
-        if (this.easterEggManager) {
-            this.easterEggManager.handleShareClick(shareType);
-        }
+        const shareText = `🍵 ${currentTime} 的小惊喜\n\n${config.text}\n\n🔗 ${config.url}\n\n${config.hashtags}`;
         
-        // 延迟关闭弹窗，让用户看到分享操作
+        console.log('📝 小红书分享按钮点击');
+        
+        this.copyToClipboard(shareText, '小红书文案已复制！请长按图片保存到相册');
+    }
+    
+    /**
+     * 隐藏POC弹窗 - 完全复制POC中验证过的逻辑
+     * @param {HTMLElement} backdrop - 背景遮罩元素
+     * @param {HTMLElement} modal - 弹窗元素
+     * @private
+     */
+    hidePOCModal(backdrop, modal) {
+        // 移除动画类
+        backdrop.classList.remove('show');
+        modal.classList.remove('show');
+        
+        // 延迟隐藏元素
         setTimeout(() => {
-            if (clickedButton) {
-                this.setButtonLoadingState(clickedButton, false);
-            }
-            this.hideModal();
-        }, 1500);
+            backdrop.style.display = 'none';
+            modal.style.display = 'none';
+            
+            // 恢复页面滚动
+            document.body.style.overflow = '';
+            
+            // 测试用：关闭弹窗时重置午餐提醒彩蛋状态（POC中的逻辑）
+            // localStorage.removeItem('lunchReminderUnlocked'); // 注释掉，生产环境不需要重置
+        }, 400);
+        
+        this.isVisible = false;
+        console.log('🎉 下午茶彩蛋弹窗已隐藏（POC逻辑）');
     }
     
     /**
@@ -490,7 +524,7 @@ class EasterEggUI {
     }
     
     /**
-     * 复制到剪贴板
+     * 复制到剪贴板 - 完全复制POC中验证过的逻辑
      * @param {string} text - 要复制的文本
      * @param {string} successMessage - 成功提示消息
      * @public
@@ -545,7 +579,7 @@ class EasterEggUI {
     }
     
     /**
-     * 触发第二层彩蛋解锁
+     * 触发第二层彩蛋解锁 - 完全复制POC中验证过的逻辑
      * @public
      */
     triggerSecondEasterEgg() {
@@ -560,12 +594,12 @@ class EasterEggUI {
         // 记录解锁状态
         localStorage.setItem('lunchReminderUnlocked', 'true');
         
-        // 启用午餐提醒功能
+        // 模拟启用午餐提醒功能
         console.log('🍲 第二层彩蛋已解锁：午餐提醒功能已启用');
         
-        // 调用实际的午餐提醒启用逻辑
-        if (window.lunchReminder) {
-            window.lunchReminder.enabled = true;
+        // 这里可以调用实际的午餐提醒启用逻辑
+        if (window.app && window.app.lunchReminder) {
+            window.app.lunchReminder.enabled = true;
             console.log('🍲 午餐提醒实例已启用');
         }
         
@@ -574,17 +608,17 @@ class EasterEggUI {
             window.app.analytics.trackEasterEggTriggered('second_easter_egg_unlocked', 'zh-CN');
         }
         
-        // 显示解锁成功提示
+        // 显示解锁成功提示（延迟显示，避免与复制提示重叠）
         this.showUnlockSuccessToast();
     }
     
     /**
-     * 显示解锁成功提示
+     * 显示解锁成功提示 - 完全复制POC中验证过的样式和逻辑
      * @private
      */
     showUnlockSuccessToast() {
         const toast = document.createElement('div');
-        toast.className = 'success-toast unlock-success-toast';
+        toast.className = 'success-toast unlock-toast';
         
         // 分两行显示文字
         toast.innerHTML = `
@@ -592,27 +626,41 @@ class EasterEggUI {
             <div>明天12:00见~</div>
         `;
         
-        // 使用CSS样式类，但需要覆盖一些属性以保证居中显示
+        // 完全复制POC中的样式
         toast.style.cssText = `
-            position: fixed !important;
-            top: 50% !important;
-            left: 50% !important;
-            transform: translate(-50%, -50%) scale(0.8) !important;
-            z-index: 2147483650 !important;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: #f39c12;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            z-index: 2147483650;
+            opacity: 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(243, 156, 18, 0.3);
+            text-align: center;
+            line-height: 1.3;
+            width: auto;
+            display: inline-block;
         `;
         
         document.body.appendChild(toast);
         
-        // 显示动画 - 缩放弹出效果
+        // 显示动画 - 缩放弹出效果（跟POC一样）
         requestAnimationFrame(() => {
-            toast.classList.add('show');
-            toast.style.transform = 'translate(-50%, -50%) scale(1) !important';
+            toast.style.opacity = '1';
+            toast.style.transform = 'translate(-50%, -50%) scale(1)';
         });
         
-        // 自动隐藏 - 缩放消失
+        // 自动隐藏 - 缩放消失（跟POC一样）
         setTimeout(() => {
-            toast.classList.remove('show');
-            toast.style.transform = 'translate(-50%, -50%) scale(0.8) !important';
+            toast.style.opacity = '0';
+            toast.style.transform = 'translate(-50%, -50%) scale(0.8)';
             setTimeout(() => {
                 if (toast.parentNode) {
                     toast.parentNode.removeChild(toast);
@@ -622,7 +670,7 @@ class EasterEggUI {
     }
     
     /**
-     * 显示成功提示
+     * 显示成功提示 - 完全复制POC中验证过的样式和逻辑
      * @param {string} message - 提示消息
      * @public
      */
@@ -631,22 +679,44 @@ class EasterEggUI {
         toast.className = 'success-toast';
         toast.textContent = message;
         
+        // 完全复制POC中的样式
+        toast.style.cssText = `
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: #28a745;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 2147483648;
+            opacity: 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+            max-width: 90vw;
+            text-align: center;
+        `;
+        
         document.body.appendChild(toast);
         
-        // 显示动画
+        // 显示动画（跟POC一样）
         requestAnimationFrame(() => {
-            toast.classList.add('show');
+            toast.style.opacity = '1';
+            toast.style.transform = 'translateX(-50%) translateY(0)';
         });
         
-        // 自动隐藏
+        // 自动隐藏（跟POC一样）
         setTimeout(() => {
-            toast.classList.remove('show');
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateX(-50%) translateY(-20px)';
             setTimeout(() => {
                 if (toast.parentNode) {
                     toast.parentNode.removeChild(toast);
                 }
             }, 300);
-        }, 3000);
+        }, 2000);
     }
     
     /**
