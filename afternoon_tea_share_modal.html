@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍵 下午茶彩蛋解锁成功 - 分享弹窗</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei', Arial, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        /* 彩蛋弹窗背景遮罩 */
+        .easter-egg-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 2147483646;
+            opacity: 0;
+            display: none;
+            transition: opacity 0.3s ease-out;
+        }
+        
+        .easter-egg-backdrop.show {
+            opacity: 1;
+        }
+        
+        /* 彩蛋弹窗主体 */
+        .easter-egg-modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.9);
+            width: 520px;
+            max-width: 95vw;
+            max-height: 90vh;
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+            z-index: 2147483647;
+            opacity: 0;
+            display: none;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            overflow: hidden;
+        }
+        
+        .easter-egg-modal.show {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        
+        /* 弹窗头部 */
+        .modal-header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .close-button {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+        
+        .close-button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        
+        .modal-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+        
+        /* 弹窗内容 */
+        .modal-content {
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .congratulations-text {
+            font-size: 18px;
+            color: #2c3e50;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        
+        .share-image-container {
+            margin: 25px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border: 2px dashed #dee2e6;
+        }
+        
+        .share-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .share-tip {
+            font-size: 14px;
+            color: #6c757d;
+            margin-top: 10px;
+        }
+        
+        /* 分享按钮组 */
+        .share-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 25px 0;
+        }
+        
+        .share-button {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            min-width: 160px;
+            justify-content: center;
+        }
+        
+        .share-wechat {
+            background: #07c160;
+            color: white;
+        }
+        
+        .share-wechat:hover {
+            background: #06ad56;
+            transform: translateY(-1px);
+        }
+        
+        .share-xiaohongshu {
+            background: #ff2442;
+            color: white;
+        }
+        
+        .share-xiaohongshu:hover {
+            background: #e6203b;
+            transform: translateY(-1px);
+        }
+        
+        .share-copy {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .share-copy:hover {
+            background: #5a6268;
+            transform: translateY(-1px);
+        }
+        
+        /* 解锁提示 */
+        .unlock-notification {
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border-left: 4px solid #f39c12;
+        }
+        
+        .unlock-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #d35400;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .unlock-message {
+            font-size: 14px;
+            color: #8b4513;
+            line-height: 1.5;
+        }
+        
+
+        
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .easter-egg-modal {
+                width: 95vw;
+                margin: 10px;
+            }
+            
+            .modal-content {
+                padding: 20px;
+            }
+            
+            .share-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .share-button {
+                width: 100%;
+                max-width: 280px;
+            }
+        }
+        
+        /* 成功提示动画 - 纯绿色版本 */
+        .success-toast {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-20px);
+            background: #28a745;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            z-index: 2147483648;
+            opacity: 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+            max-width: 90vw;
+            text-align: center;
+        }
+        
+        .success-toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <!-- 演示按钮 -->
+    <button onclick="showEasterEggModal()" style="padding: 15px 30px; font-size: 16px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer;">
+        演示下午茶彩蛋解锁弹窗
+    </button>
+    
+    <!-- 测试按钮 -->
+    <button onclick="resetLunchReminderForTesting()" style="padding: 10px 20px; font-size: 14px; background: #f39c12; color: white; border: none; border-radius: 6px; cursor: pointer; margin-left: 10px;">
+        重置测试状态
+    </button>
+
+    <!-- 彩蛋弹窗 -->
+    <div id="easterEggBackdrop" class="easter-egg-backdrop" onclick="hideEasterEggModal()"></div>
+    
+    <div id="easterEggModal" class="easter-egg-modal">
+        <!-- 弹窗头部 -->
+        <div class="modal-header">
+            <button class="close-button" onclick="hideEasterEggModal()" aria-label="关闭">
+                <span>&times;</span>
+            </button>
+            <div class="modal-title">🎉 恭喜成功解锁下午茶提醒彩蛋！</div>
+            <div class="modal-subtitle">三点几啦！饮茶先啦！</div>
+        </div>
+        
+        <!-- 弹窗内容 -->
+        <div class="modal-content">
+            <div class="congratulations-text">
+                🍵 太棒了！你发现了我们的小彩蛋！<br>
+                把这个贴心小工具分享给朋友们吧~
+            </div>
+            
+            <!-- 分享图片 -->
+            <div class="share-image-container">
+                <img src="afternoon_tea_share.png" alt="下午茶分享图片" class="share-image" 
+                     onerror="this.style.display='none'; document.querySelector('.share-tip').innerHTML='⚠️ 分享图片加载失败，请检查 afternoon_tea_share.png 文件'">
+                <div class="share-tip">
+                    💡 长按图片保存，或点击下方按钮分享
+                </div>
+            </div>
+            
+            <!-- 分享按钮 -->
+            <div class="share-buttons">
+                <button class="share-button share-wechat" onclick="shareToWechat()">
+                    <span>保存分享到朋友圈</span>
+                </button>
+                <button class="share-button share-xiaohongshu" onclick="shareToXiaohongshu()">
+                    <span>生成笔记发小红书</span>
+                </button>
+            </div>
+            
+
+            
+
+        </div>
+    </div>
+
+    <script>
+        // 分享文案配置
+        const SHARE_CONFIG = {
+            wechat: {
+                title: '🍵 下午茶时间到！',
+                text: '三点几啦！饮茶先啦！\n\n发现一个超贴心的办公室健康提醒小工具，定时提醒喝水和站立，还有这样的小彩蛋🎉\n\n分享给你们，一起做健康的打工人！',
+                url: 'https://hydrate-move.lightyearai.info/zh/',
+                hashtags: '#办公室健康 #下午茶时间 #健康生活'
+            },
+            xiaohongshu: {
+                title: '🍵 办公室下午茶彩蛋',
+                text: '哈哈哈，下午茶时间到！\n\n工作再忙也要记得：\n💧 多喝水\n🧘 多站立\n🍵 享受下午茶时光\n\n这个小工具还有彩蛋，太有意思了！',
+                url: 'https://hydrate-move.lightyearai.info/zh/',
+                hashtags: '#办公室健康 #下午茶 #健康生活 #打工人'
+            }
+        };
+        
+        // 显示彩蛋弹窗
+        function showEasterEggModal() {
+            console.log('🎉 开始显示彩蛋弹窗...');
+            
+            const backdrop = document.getElementById('easterEggBackdrop');
+            const modal = document.getElementById('easterEggModal');
+            
+            if (!backdrop || !modal) {
+                console.error('❌ 弹窗元素未找到:', { backdrop: !!backdrop, modal: !!modal });
+                return;
+            }
+            
+            // 防止页面滚动
+            document.body.style.overflow = 'hidden';
+            
+            // 显示背景遮罩
+            backdrop.style.display = 'block';
+            modal.style.display = 'block';
+            
+            console.log('✅ 弹窗元素已显示');
+            
+            // 触发动画
+            requestAnimationFrame(() => {
+                backdrop.classList.add('show');
+                modal.classList.add('show');
+                console.log('✅ 弹窗动画已触发');
+            });
+            
+            console.log('🎉 下午茶彩蛋弹窗已显示');
+        }
+        
+        // 隐藏彩蛋弹窗
+        function hideEasterEggModal() {
+            const backdrop = document.getElementById('easterEggBackdrop');
+            const modal = document.getElementById('easterEggModal');
+            
+            // 移除动画类
+            backdrop.classList.remove('show');
+            modal.classList.remove('show');
+            
+            // 延迟隐藏元素
+            setTimeout(() => {
+                backdrop.style.display = 'none';
+                modal.style.display = 'none';
+                
+                // 恢复页面滚动
+                document.body.style.overflow = '';
+                
+                // 测试用：关闭弹窗时重置午餐提醒彩蛋状态
+                resetLunchReminderForTesting();
+            }, 400);
+            
+            console.log('🎉 下午茶彩蛋弹窗已隐藏');
+        }
+        
+        // 分享到微信朋友圈
+        function shareToWechat() {
+            const config = SHARE_CONFIG.wechat;
+            const shareText = `${config.text}\n\n🔗 ${config.url}\n\n${config.hashtags}`;
+            
+            console.log('🍵 微信分享按钮点击');
+            
+            // 简化流程：直接复制文案并提示用户手动保存图片
+            copyToClipboard(shareText, '微信分享文案已复制！请长按图片保存到相册');
+        }
+        
+        // 分享到小红书
+        function shareToXiaohongshu() {
+            const config = SHARE_CONFIG.xiaohongshu;
+            const currentTime = new Date().toLocaleString('zh-CN', {
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            const shareText = `🍵 ${currentTime} 的小惊喜\n\n${config.text}\n\n🔗 ${config.url}\n\n${config.hashtags}`;
+            
+            console.log('📝 小红书分享按钮点击');
+            
+            copyToClipboard(shareText, '小红书文案已复制！请长按图片保存到相册');
+        }
+        
+
+        
+
+        
+        // 复制到剪贴板
+        function copyToClipboard(text, successMessage = '内容已复制到剪贴板！') {
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(text).then(() => {
+                    showSuccessToast(successMessage);
+                    // 延迟触发解锁，避免提示重叠
+                    setTimeout(() => {
+                        triggerSecondEasterEgg();
+                    }, 2000);
+                }).catch(() => {
+                    fallbackCopy(text, successMessage);
+                });
+            } else {
+                fallbackCopy(text, successMessage);
+            }
+        }
+        
+        // 备用复制方案
+        function fallbackCopy(text, successMessage = '内容已复制到剪贴板！') {
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            textarea.style.position = 'fixed';
+            textarea.style.left = '-9999px';
+            document.body.appendChild(textarea);
+            textarea.select();
+            
+            try {
+                document.execCommand('copy');
+                showSuccessToast(successMessage);
+                // 延迟触发解锁，避免提示重叠
+                setTimeout(() => {
+                    triggerSecondEasterEgg();
+                }, 2000);
+            } catch (err) {
+                console.warn('复制失败:', err);
+                prompt('请手动复制以下内容:', text);
+                // 即使手动复制也触发解锁
+                setTimeout(() => {
+                    triggerSecondEasterEgg();
+                }, 1000);
+            }
+            
+            document.body.removeChild(textarea);
+        }
+        
+        // 触发第二层彩蛋解锁
+        function triggerSecondEasterEgg() {
+            // 检查是否已经解锁过，避免重复提示
+            const alreadyUnlocked = localStorage.getItem('lunchReminderUnlocked') === 'true';
+            
+            if (alreadyUnlocked) {
+                console.log('🍲 午餐提醒已经解锁过了');
+                return;
+            }
+            
+            // 记录解锁状态
+            localStorage.setItem('lunchReminderUnlocked', 'true');
+            
+            // 模拟启用午餐提醒功能
+            console.log('🍲 第二层彩蛋已解锁：午餐提醒功能已启用');
+            
+            // 这里可以调用实际的午餐提醒启用逻辑
+            if (window.app && window.app.lunchReminder) {
+                window.app.lunchReminder.enabled = true;
+                console.log('🍲 午餐提醒实例已启用');
+            }
+            
+            // 分析埋点
+            if (window.app && window.app.analytics) {
+                window.app.analytics.trackEasterEggTriggered('second_easter_egg_unlocked', 'zh-CN');
+            }
+            
+            // 显示解锁成功提示（延迟显示，避免与复制提示重叠）
+            showUnlockSuccessToast();
+        }
+        
+        // 显示解锁成功提示 - 紧凑适配文字大小，屏幕中间显示
+        function showUnlockSuccessToast() {
+            const toast = document.createElement('div');
+            toast.className = 'success-toast unlock-toast';
+            
+            // 分两行显示文字
+            toast.innerHTML = `
+                <div>🎊 恭喜解锁午餐提醒彩蛋！</div>
+                <div>明天12:00见~</div>
+            `;
+            
+            toast.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%) scale(0.8);
+                background: #f39c12;
+                color: white;
+                padding: 10px 16px;
+                border-radius: 6px;
+                font-size: 13px;
+                font-weight: 600;
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+                z-index: 2147483650;
+                opacity: 0;
+                transition: all 0.3s ease;
+                box-shadow: 0 3px 10px rgba(243, 156, 18, 0.3);
+                text-align: center;
+                line-height: 1.3;
+                width: auto;
+                display: inline-block;
+            `;
+            
+            document.body.appendChild(toast);
+            
+            // 显示动画 - 缩放弹出效果
+            requestAnimationFrame(() => {
+                toast.style.opacity = '1';
+                toast.style.transform = 'translate(-50%, -50%) scale(1)';
+            });
+            
+            // 自动隐藏 - 缩放消失
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translate(-50%, -50%) scale(0.8)';
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }, 3000);
+        }
+        
+        // 显示成功提示
+        function showSuccessToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'success-toast';
+            toast.textContent = message;
+            
+            document.body.appendChild(toast);
+            
+            // 显示动画
+            requestAnimationFrame(() => {
+                toast.classList.add('show');
+            });
+            
+            // 自动隐藏
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }, 3000);
+        }
+        
+
+        
+        // 检测移动设备
+        function isMobileDevice() {
+            return /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+        
+        // ESC键关闭弹窗
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('easterEggModal');
+                if (modal.classList.contains('show')) {
+                    hideEasterEggModal();
+                }
+            }
+        });
+        
+        // 重置午餐提醒彩蛋状态（测试用）
+        function resetLunchReminderForTesting() {
+            localStorage.removeItem('lunchReminderUnlocked');
+            console.log('🔄 测试用：午餐提醒彩蛋状态已重置');
+        }
+        
+        // 页面加载完成后的初始化
+        window.addEventListener('load', function() {
+            console.log('🎉 下午茶彩蛋分享弹窗已加载');
+            
+            // 测试用：页面加载时重置午餐提醒彩蛋状态
+            resetLunchReminderForTesting();
+            
+            // 检查分享图片是否存在
+            const shareImg = document.querySelector('.share-image');
+            if (shareImg) {
+                shareImg.onload = function() {
+                    console.log('✅ 分享图片加载成功');
+                };
+                
+                // 监听右键菜单事件，用户右键保存图片也算完成分享
+                shareImg.addEventListener('contextmenu', function(e) {
+                    console.log('🖼️ 用户右键点击分享图片');
+                    // 延迟触发解锁，给用户时间保存图片
+                    setTimeout(() => {
+                        triggerSecondEasterEgg();
+                    }, 3000);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
