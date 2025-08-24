@@ -592,16 +592,27 @@ class EasterEggUI {
             <div>明天12:00见~</div>
         `;
         
+        // 使用CSS样式类，但需要覆盖一些属性以保证居中显示
+        toast.style.cssText = `
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) scale(0.8) !important;
+            z-index: 2147483650 !important;
+        `;
+        
         document.body.appendChild(toast);
         
         // 显示动画 - 缩放弹出效果
         requestAnimationFrame(() => {
             toast.classList.add('show');
+            toast.style.transform = 'translate(-50%, -50%) scale(1) !important';
         });
         
         // 自动隐藏 - 缩放消失
         setTimeout(() => {
             toast.classList.remove('show');
+            toast.style.transform = 'translate(-50%, -50%) scale(0.8) !important';
             setTimeout(() => {
                 if (toast.parentNode) {
                     toast.parentNode.removeChild(toast);
@@ -645,17 +656,15 @@ class EasterEggUI {
      * @public
      */
     generateShareContent(shareType) {
-        const templates = this.config.SHARE_TEMPLATES;
-        const template = templates[shareType];
-        
-        if (!template) {
-            console.warn(`未找到分享模板: ${shareType}`);
-            return '';
-        }
-        
         const baseUrl = 'https://hydrate-move.lightyearai.info/zh/';
         
-        if (shareType === 'xiaohongshu') {
+        if (shareType === 'wechat') {
+            const config = {
+                text: '哈哈哈，下午茶时间到！\n\n工作再忙也要记得：\n💧 多喝水\n🧘 多站立\n🍵 享受下午茶时光\n\n这个小工具还有彩蛋，太有意思了！',
+                hashtags: '#办公室健康 #下午茶时间 #健康生活'
+            };
+            return `${config.text}\n\n🔗 ${baseUrl}\n\n${config.hashtags}`;
+        } else if (shareType === 'xiaohongshu') {
             const currentTime = new Date().toLocaleString('zh-CN', {
                 month: 'long',
                 day: 'numeric',
@@ -663,10 +672,16 @@ class EasterEggUI {
                 minute: '2-digit'
             });
             
-            return `🍵 ${currentTime} 的小惊喜\n\n${template.TEXT}\n\n🔗 ${baseUrl}\n\n${template.HASHTAGS}`;
-        } else {
-            return `${template.TEXT}\n\n🔗 ${baseUrl}\n\n${template.HASHTAGS}`;
+            const config = {
+                text: '哈哈哈，下午茶时间到！\n\n工作再忙也要记得：\n💧 多喝水\n🧘 多站立\n🍵 享受下午茶时光\n\n这个小工具还有彩蛋，太有意思了！',
+                hashtags: '#办公室健康 #下午茶 #健康生活 #打工人'
+            };
+            
+            return `🍵 ${currentTime} 的小惊喜\n\n${config.text}\n\n🔗 ${baseUrl}\n\n${config.hashtags}`;
         }
+        
+        console.warn(`未找到分享模板: ${shareType}`);
+        return '';
     }
     
     /**
