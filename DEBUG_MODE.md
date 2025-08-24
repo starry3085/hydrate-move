@@ -64,6 +64,18 @@ testEasterEgg.triggerBreak();
 
 // 强制触发午餐
 testEasterEgg.triggerLunch();
+
+// 直接触发彩蛋（绕过时间检查）
+testEasterEgg.forceEasterEgg();
+
+// 手动显示第一层彩蛋
+testEasterEgg.showEasterEgg();
+```
+
+### 测试工具
+```javascript
+// 测试通知权限
+testEasterEgg.testNotification();
 ```
 
 ### 状态管理
@@ -140,23 +152,42 @@ testEasterEgg.runFullTest();
 
 ## 📝 测试流程建议
 
-### 下午茶彩蛋测试
-```javascript
-// 1. 重置状态
-testEasterEgg.reset();
+### 下午茶彩蛋弹窗测试（您要看的内容！）
 
-// 2. 设置测试时间（当前时间+1分钟）
-testEasterEgg.setBreakTime("16:05");
-
-// 3. 等待自动触发或强制触发
-testEasterEgg.triggerBreak();
-
-// 4. 测试分享功能
-testEasterEgg.simulateShare("wechat");
-
-// 5. 检查状态
-testEasterEgg.getDebugInfo();
+#### 方法1: URL参数直接触发彩蛋弹窗
 ```
+# 访问以下链接，应该在 2-3 秒后自动弹出彩蛋窗口
+https://staging.hydrate-move.pages.dev/zh?debug=1&trigger=break
+```
+
+#### 方法2: 控制台手动触发
+```javascript
+// 1. 先访问调试模式
+https://staging.hydrate-move.pages.dev/zh?debug=1
+
+// 2. 在控制台运行（推荐）
+testEasterEgg.forceEasterEgg();  // 直接显示彩蛋弹窗
+
+// 3. 或者使用完整流程
+testEasterEgg.triggerBreak();   // 触发通知+彩蛋
+
+// 4. 仅显示彩蛋 UI
+testEasterEgg.showEasterEgg();  // 不触发通知，只显示弹窗
+```
+
+#### 您应该看到的彩蛋弹窗内容：
+- 🎉 **标题**："恭喜成功解锁下午茶提醒彩蛋！"
+- 🍵 **副标题**："三点几啦！饮茶先啦！"  
+- 👍 **描述**："把这个贴心小工具分享给朋友们吧~"
+- 📱 **分享按钮1**："保存分享到朋友圈/微信"
+- 📝 **分享按钮2**："生成笔记发到小红书"
+
+#### 注意：
+1. **橙色"🔧 调试模式"指示器**只是状态显示，不能点击
+2. **真正要测试的是彩蛋弹窗UI**，就是上面描述的那个弹窗
+3. 如果弹窗没显示，先运行 `testEasterEgg.reset()` 重置状态
+
+---
 
 ### 午餐彩蛋测试
 ```javascript
@@ -237,10 +268,42 @@ http://localhost:58193/debug-test.html
 2. 验证常量对象是否存在（AFTERNOON_TEA_CONSTANTS）
 3. 查看控制台错误信息
 
-### 强制触发无响应
-1. 确认相关实例已正确初始化
-2. 检查浏览器通知权限
-3. 验证彩蛋功能是否在当前环境下启用
+### 故障排除新增方法
+
+#### 测试通知权限
+```javascript
+// 测试浏览器通知是否正常工作
+testEasterEgg.testNotification();
+```
+
+#### 直接触发彩蛋（绕过所有限制）
+```javascript
+// 如果常规触发不工作，使用此方法直接触发彩蛋
+testEasterEgg.forceEasterEgg();
+```
+
+#### 分步调试
+```javascript
+// 1. 检查对象可用性
+console.log('对象状态:', {
+    testEasterEgg: !!window.testEasterEgg,
+    afternoonTeaEasterEgg: !!window.afternoonTeaEasterEgg,
+    afternoonTeaReminder: !!window.afternoonTeaReminder,
+    lunchReminder: !!window.lunchReminder
+});
+
+// 2. 检查方法可用性
+if (window.testEasterEgg) {
+    console.log('可用方法:', Object.keys(window.testEasterEgg));
+}
+
+// 3. 检查localStorage状态
+console.log('存储状态:', {
+    afternoonTeaLastTrigger: localStorage.getItem('afternoonTeaLastTrigger'),
+    afternoonTeaFirstEasterEggShown: localStorage.getItem('afternoonTeaFirstEasterEggShown'),
+    lunchReminderUnlocked: localStorage.getItem('lunchReminderUnlocked')
+});
+```
 
 ## 📞 技术支持
 

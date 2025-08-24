@@ -781,19 +781,132 @@ if (typeof window !== 'undefined') {
             } else {
                 console.warn('未找到下午茶彩蛋实例');
             }
+        },
+        
+        // === 调试模式专用方法 ===
+        
+        // 直接触发彩蛋弹窗（绕过所有检查）
+        forceEasterEgg: () => {
+            console.log('🔧 强制触发彩蛋弹窗...');
+            if (window.afternoonTeaEasterEgg) {
+                // 重置状态确保能显示
+                localStorage.removeItem('afternoonTeaFirstEasterEggShown');
+                
+                // 确保UI已创建
+                if (!window.afternoonTeaEasterEgg.ui) {
+                    window.afternoonTeaEasterEgg.createUI();
+                }
+                
+                // 直接触发UI显示
+                if (window.afternoonTeaEasterEgg.ui && window.afternoonTeaEasterEgg.ui.showFirstEasterEgg) {
+                    window.afternoonTeaEasterEgg.ui.showFirstEasterEgg();
+                    console.log('✅ 彩蛋弹窗已强制显示');
+                } else {
+                    // 备选方法
+                    window.afternoonTeaEasterEgg.manualTriggerFirst();
+                    console.log('✅ 通过备选方法触发彩蛋');
+                }
+            } else {
+                console.warn('❌ afternoonTeaEasterEgg 实例不可用');
+            }
+        },
+        
+        // 强制触发下午茶（通知+彩蛋）
+        triggerBreak: () => {
+            console.log('🔧 触发下午茶完整流程...');
+            if (window.afternoonTeaEasterEgg) {
+                // 重置状态
+                localStorage.removeItem('afternoonTeaFirstEasterEggShown');
+                localStorage.removeItem('afternoonTeaLastTrigger');
+                
+                // 触发彩蛋
+                window.afternoonTeaEasterEgg.checkFirstTimeTrigger();
+                
+                // 也触发通知
+                if (window.afternoonTeaReminder) {
+                    window.afternoonTeaReminder.triggerReminder();
+                }
+                console.log('✅ 下午茶完整流程已触发');
+            } else {
+                console.warn('❌ afternoonTeaEasterEgg 实例不可用');
+            }
+        },
+        
+        // 强制触发午餐
+        triggerLunch: () => {
+            if (window.afternoonTeaEasterEgg) {
+                window.afternoonTeaEasterEgg.forceLunchReminderTrigger();
+            } else {
+                console.warn('未找到下午茶彩蛋实例');
+            }
+        },
+        testNotification: () => {
+            if (window.app && window.app.notificationService) {
+                window.app.notificationService.showNotification(
+                    'water',
+                    '🔧 调试测试',
+                    '这是一个调试模式的通知测试'
+                );
+                console.log('✅ 测试通知已发送');
+            } else {
+                console.warn('❌ 通知服务不可用');
+            }
+        },
+        
+        // 获取调试信息
+        getDebugInfo: () => {
+            const info = {
+                debugMode: !!window.debugModeManager,
+                currentTime: new Date().toLocaleTimeString(),
+                instances: {
+                    afternoonTeaEasterEgg: !!window.afternoonTeaEasterEgg,
+                    lunchReminder: !!window.lunchReminder,
+                    afternoonTeaReminder: !!window.afternoonTeaReminder,
+                    app: !!window.app
+                },
+                storage: {
+                    afternoonTeaLastTrigger: localStorage.getItem('afternoonTeaLastTrigger'),
+                    afternoonTeaFirstEasterEggShown: localStorage.getItem('afternoonTeaFirstEasterEggShown'),
+                    lunchReminderUnlocked: localStorage.getItem('lunchReminderUnlocked')
+                },
+                ui: {
+                    easterEggUI: window.afternoonTeaEasterEgg ? !!window.afternoonTeaEasterEgg.ui : false
+                }
+            };
+            
+            console.log('🔧 调试信息:', info);
+            return info;
+        },
+        
+        // 显示帮助
+        help: () => {
+            console.log('🔧 彩蛋调试帮助');
+            console.log('');
+            console.log('📖 基础方法:');
+            console.log('  testEasterEgg.reset() // 重置所有状态');
+            console.log('  testEasterEgg.showFirstEgg() // 显示第一层彩蛋');
+            console.log('  testEasterEgg.simulateShare("wechat") // 模拟分享');
+            console.log('');
+            console.log('🔧 调试专用方法:');
+            console.log('  testEasterEgg.forceEasterEgg() // 强制显示彩蛋弹窗');
+            console.log('  testEasterEgg.triggerBreak() // 触发完整下午茶流程');
+            console.log('  testEasterEgg.testNotification() // 测试通知权限');
+            console.log('  testEasterEgg.getDebugInfo() // 获取调试信息');
         }
     };
     
     console.log('🧪 彩蛋测试工具已加载：window.testEasterEgg');
-    console.log('💡 使用方法:');
+    console.log('');
+    console.log('💡 基础方法:');
     console.log('  - testEasterEgg.reset() // 重置所有状态');
-    console.log('  - testEasterEgg.triggerAfternoonTea() // 触发下午茶提醒');
-    console.log('  - testEasterEgg.triggerLunch() // 触发午餐提醒');
     console.log('  - testEasterEgg.showFirstEgg() // 显示第一层彩蛋');
     console.log('  - testEasterEgg.simulateShare() // 模拟分享操作');
     console.log('  - testEasterEgg.showStatus() // 查看状态');
-    console.log('  - testEasterEgg.runFullTest() // 运行完整测试');
-    console.log('🔧 调试模式专用方法（URL参数?debug=1启用）:');
-    console.log('  - testEasterEgg.help() // 显示调试帮助');
+    console.log('');
+    console.log('🔧 调试专用方法（重要！）:');
+    console.log('  - testEasterEgg.forceEasterEgg() // 🎯 直接强制显示彩蛋弹窗');
+    console.log('  - testEasterEgg.triggerBreak() // 触发完整下午茶流程');
+    console.log('  - testEasterEgg.testNotification() // 测试通知权限');
     console.log('  - testEasterEgg.getDebugInfo() // 获取调试信息');
+    console.log('  - testEasterEgg.help() // 显示调试帮助');
 }

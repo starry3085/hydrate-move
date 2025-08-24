@@ -69,11 +69,30 @@ class DebugModeManager {
         this.enhanceTestEasterEgg();
         
         // 等待应用初始化完成后执行URL参数指令
-        document.addEventListener('DOMContentLoaded', () => {
+        // Use multiple strategies to ensure commands execute after app initialization
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                setTimeout(() => {
+                    this.executeUrlCommands();
+                }, 2000); // Increased delay to ensure app is fully loaded
+            });
+        } else {
             setTimeout(() => {
                 this.executeUrlCommands();
-            }, 1000);
-        });
+            }, 2000);
+        }
+        
+        // Also try to execute when the app object becomes available
+        const checkAppReady = () => {
+            if (window.app || window.testEasterEgg) {
+                setTimeout(() => {
+                    this.executeUrlCommands();
+                }, 500);
+            } else {
+                setTimeout(checkAppReady, 200);
+            }
+        };
+        checkAppReady();
     }
     
     /**
@@ -155,6 +174,56 @@ class DebugModeManager {
                 this.forceTrigger('lunch');
             },
             
+            // 直接触发彩蛋（绕过时间检查）
+            forceEasterEgg: () => {
+                console.log('🔧 Forcing easter egg popup display...');
+                if (window.afternoonTeaEasterEgg) {
+                    // Reset state to allow showing
+                    localStorage.removeItem('afternoonTeaFirstEasterEggShown');
+                    
+                    // Ensure UI is created
+                    if (!window.afternoonTeaEasterEgg.ui) {
+                        window.afternoonTeaEasterEgg.createUI();
+                    }
+                    
+                    // Try direct UI trigger
+                    if (window.afternoonTeaEasterEgg.ui && window.afternoonTeaEasterEgg.ui.showFirstEasterEgg) {
+                        window.afternoonTeaEasterEgg.ui.showFirstEasterEgg();
+                        console.log('🔧 ✅ Easter egg popup forced via UI');
+                    } else {
+                        // Fallback to checkFirstTimeTrigger
+                        window.afternoonTeaEasterEgg.checkFirstTimeTrigger();
+                        console.log('🔧 ✅ Easter egg forced via checkFirstTimeTrigger');
+                    }
+                } else {
+                    console.warn('🔧 afternoonTeaEasterEgg not available');
+                }
+            },
+            
+            // 手动显示第一层彩蛋
+            showEasterEgg: () => {
+                if (window.afternoonTeaEasterEgg && window.afternoonTeaEasterEgg.manualTriggerFirst) {
+                    window.afternoonTeaEasterEgg.manualTriggerFirst();
+                    console.log('🔧 Manually triggered first easter egg');
+                } else {
+                    console.warn('🔧 manualTriggerFirst method not available');
+                }
+            },
+            
+            // 测试通知权限
+            testNotification: () => {
+                if (window.app && window.app.notificationService) {
+                    window.app.notificationService.showNotification(
+                        'water',
+                        '🔧 Debug Test',
+                        'This is a debug notification test'
+                    );
+                    console.log('🔧 Test notification sent');
+                } else {
+                    console.warn('🔧 Notification service not available');
+                }
+            },
+            
             // 分别重置状态
             resetBreak: () => {
                 this.resetSpecificState('break');
@@ -180,6 +249,9 @@ class DebugModeManager {
         console.log('  - testEasterEgg.setLunchTime("12:30") // 设置午餐时间');
         console.log('  - testEasterEgg.triggerBreak() // 强制触发下午茶');
         console.log('  - testEasterEgg.triggerLunch() // 强制触发午餐');
+        console.log('  - testEasterEgg.forceEasterEgg() // 直接触发彩蛋（绕过时间检查）');
+        console.log('  - testEasterEgg.showEasterEgg() // 手动显示第一层彩蛋');
+        console.log('  - testEasterEgg.testNotification() // 测试通知权限');
         console.log('  - testEasterEgg.resetBreak() // 重置下午茶状态');
         console.log('  - testEasterEgg.resetLunch() // 重置午餐状态');
         console.log('  - testEasterEgg.getDebugInfo() // 获取调试信息');
@@ -226,26 +298,91 @@ class DebugModeManager {
      */
     forceTrigger(type) {
         try {
+            console.log(`🔧 Force trigger called for type: ${type}`);
+            console.log('🔧 Available objects:', {
+                testEasterEgg: !!window.testEasterEgg,
+                afternoonTeaEasterEgg: !!window.afternoonTeaEasterEgg,
+                lunchReminder: !!window.lunchReminder,
+                afternoonTeaReminder: !!window.afternoonTeaReminder
+            });
+            
             if (type === 'break') {
-                if (window.testEasterEgg.triggerAfternoonTea) {
-                    window.testEasterEgg.triggerAfternoonTea();
-                    console.log('🔧 强制触发下午茶提醒');
-                } else {
-                    console.warn('🔧 下午茶触发方法不可用');
+                // For afternoon tea, we want to trigger both the notification AND the easter egg
+                console.log('🔧 Triggering afternoon tea easter egg...');
+                
+                // Method 1: Direct easter egg popup trigger (PRIORITY - this is what user wants to see)
+                if (window.afternoonTeaEasterEgg) {
+                    try {
+                        // Reset states to ensure popup shows
+                        console.log('🔧 Resetting easter egg states for testing...');
+                        localStorage.removeItem('afternoonTeaFirstEasterEggShown');
+                        localStorage.removeItem('afternoonTeaLastTrigger');
+                        
+                        // Force create UI if not exists
+                        if (!window.afternoonTeaEasterEgg.ui) {
+                            window.afternoonTeaEasterEgg.createUI();
+                            console.log('🔧 UI controller created');
+                        }
+                        
+                        // Method A: Direct UI trigger (shows the actual popup)
+                        if (window.afternoonTeaEasterEgg.ui && window.afternoonTeaEasterEgg.ui.showFirstEasterEgg) {
+                            window.afternoonTeaEasterEgg.ui.showFirstEasterEgg();
+                            console.log('🔧 ✅ Easter egg popup triggered via UI controller');
+                            return;
+                        }
+                        
+                        // Method B: Manual trigger method
+                        if (window.afternoonTeaEasterEgg.manualTriggerFirst) {
+                            window.afternoonTeaEasterEgg.manualTriggerFirst();
+                            console.log('🔧 ✅ Easter egg popup triggered via manualTriggerFirst');
+                            return;
+                        }
+                        
+                        // Method C: Check first time trigger
+                        window.afternoonTeaEasterEgg.checkFirstTimeTrigger();
+                        console.log('🔧 ✅ Easter egg triggered via checkFirstTimeTrigger');
+                        
+                    } catch (error) {
+                        console.warn('🔧 Direct easter egg trigger failed:', error);
+                    }
                 }
+                
+                // Method 2: Fallback to testEasterEgg approach
+                if (window.testEasterEgg && window.testEasterEgg.triggerAfternoonTea) {
+                    window.testEasterEgg.triggerAfternoonTea();
+                    console.log('🔧 Triggered via testEasterEgg.triggerAfternoonTea');
+                }
+                
+                // Method 3: Also trigger the notification for completeness
+                if (window.afternoonTeaReminder) {
+                    window.afternoonTeaReminder.triggerReminder();
+                    console.log('🔧 Also triggered notification via afternoonTeaReminder');
+                }
+                
+                console.warn('🔧 If popup didn\'t show, try: testEasterEgg.forceEasterEgg() in console');
+                
             } else if (type === 'lunch') {
-                if (window.testEasterEgg.triggerLunch) {
+                console.log('🔧 Triggering lunch reminder...');
+                
+                // For lunch, try multiple approaches
+                if (window.testEasterEgg && window.testEasterEgg.triggerLunch) {
                     window.testEasterEgg.triggerLunch();
-                    console.log('🔧 强制触发午餐提醒');
-                } else if (window.lunchReminder) {
+                    console.log('🔧 Triggered lunch via testEasterEgg.triggerLunch');
+                } else if (window.lunchReminder && window.lunchReminder.triggerReminder) {
+                    // Reset state first
+                    localStorage.removeItem('lunchReminderLastTrigger');
                     window.lunchReminder.triggerReminder();
-                    console.log('🔧 强制触发午餐提醒');
+                    console.log('🔧 Triggered lunch via lunchReminder.triggerReminder');
+                } else if (window.afternoonTeaEasterEgg && window.afternoonTeaEasterEgg.forceLunchReminderTrigger) {
+                    window.afternoonTeaEasterEgg.forceLunchReminderTrigger();
+                    console.log('🔧 Triggered lunch via afternoonTeaEasterEgg.forceLunchReminderTrigger');
                 } else {
-                    console.warn('🔧 午餐触发方法不可用');
+                    console.warn('🔧 No lunch trigger method available');
+                    console.log('🔧 Available lunchReminder methods:', window.lunchReminder ? Object.keys(window.lunchReminder) : 'lunchReminder not found');
                 }
             }
         } catch (error) {
-            console.error(`🔧 强制触发${type}失败:`, error);
+            console.error(`🔧 Force trigger ${type} failed:`, error);
         }
     }
     
@@ -320,6 +457,9 @@ class DebugModeManager {
         console.log('  testEasterEgg.setLunchTime("12:30") // 设置午餐时间');
         console.log('  testEasterEgg.triggerBreak() // 强制触发下午茶');
         console.log('  testEasterEgg.triggerLunch() // 强制触发午餐');
+        console.log('  testEasterEgg.forceEasterEgg() // 直接触发彩蛋（绕过时间检查）');
+        console.log('  testEasterEgg.showEasterEgg() // 手动显示第一层彩蛋');
+        console.log('  testEasterEgg.testNotification() // 测试通知权限');
         console.log('  testEasterEgg.resetBreak() // 重置下午茶状态');
         console.log('  testEasterEgg.resetLunch() // 重置午餐状态');
         console.log('  testEasterEgg.getDebugInfo() // 获取调试信息');
@@ -338,34 +478,73 @@ class DebugModeManager {
         
         console.log('🔧 Executing URL debug commands...');
         
-        // Auto-reset state
-        if (this.debugConfig.autoReset) {
-            if (window.testEasterEgg && window.testEasterEgg.reset) {
-                window.testEasterEgg.reset();
-                console.log('🔧 Auto-reset all states completed');
+        // Wait for testEasterEgg to be available before executing commands
+        const executeWithRetry = (attempt = 1, maxAttempts = 30) => {
+            console.log(`🔧 Execute attempt ${attempt}/${maxAttempts}`);
+            
+            // Check if essential objects are available
+            const essentialObjectsReady = window.testEasterEgg && 
+                                        (window.afternoonTeaEasterEgg || window.afternoonTeaReminder);
+            
+            if (!essentialObjectsReady) {
+                if (attempt <= maxAttempts) {
+                    console.log(`🔧 Waiting for essential objects... attempt ${attempt}`);
+                    console.log('🔧 Object status:', {
+                        testEasterEgg: !!window.testEasterEgg,
+                        afternoonTeaEasterEgg: !!window.afternoonTeaEasterEgg,
+                        afternoonTeaReminder: !!window.afternoonTeaReminder,
+                        lunchReminder: !!window.lunchReminder
+                    });
+                    setTimeout(() => executeWithRetry(attempt + 1, maxAttempts), 500);
+                    return;
+                } else {
+                    console.error('🔧 Essential objects not available after 15 seconds');
+                    console.error('🔧 Final object status:', {
+                        testEasterEgg: !!window.testEasterEgg,
+                        afternoonTeaEasterEgg: !!window.afternoonTeaEasterEgg,
+                        afternoonTeaReminder: !!window.afternoonTeaReminder,
+                        lunchReminder: !!window.lunchReminder
+                    });
+                    return;
+                }
             }
-        }
-        
-        // Set times
-        if (this.debugConfig.breakTime) {
-            this.setTriggerTime('break', this.debugConfig.breakTime);
-        }
-        
-        if (this.debugConfig.lunchTime) {
-            this.setTriggerTime('lunch', this.debugConfig.lunchTime);
-        }
-        
-        // Force trigger
-        if (this.debugConfig.triggerType) {
+            
+            console.log('🔧 testEasterEgg found, executing URL commands...');
+            
+            // Auto-reset state
+            if (this.debugConfig.autoReset) {
+                if (window.testEasterEgg.reset) {
+                    window.testEasterEgg.reset();
+                    console.log('🔧 Auto-reset all states completed');
+                } else {
+                    console.warn('🔧 testEasterEgg.reset method not found');
+                }
+            }
+            
+            // Set times
+            if (this.debugConfig.breakTime) {
+                this.setTriggerTime('break', this.debugConfig.breakTime);
+            }
+            
+            if (this.debugConfig.lunchTime) {
+                this.setTriggerTime('lunch', this.debugConfig.lunchTime);
+            }
+            
+            // Force trigger
+            if (this.debugConfig.triggerType) {
+                setTimeout(() => {
+                    console.log(`🔧 Attempting to force trigger: ${this.debugConfig.triggerType}`);
+                    this.forceTrigger(this.debugConfig.triggerType);
+                }, 500);
+            }
+            
+            // Show debug info
             setTimeout(() => {
-                this.forceTrigger(this.debugConfig.triggerType);
-            }, 500);
-        }
+                this.getDebugInfo();
+            }, 1000);
+        };
         
-        // Show debug info
-        setTimeout(() => {
-            this.getDebugInfo();
-        }, 1000);
+        executeWithRetry();
     }
     
     /**
