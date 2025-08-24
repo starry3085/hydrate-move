@@ -788,26 +788,38 @@ if (typeof window !== 'undefined') {
         // 直接触发彩蛋弹窗（绕过所有检查）
         forceEasterEgg: () => {
             console.log('🔧 强制触发彩蛋弹窗...');
-            if (window.afternoonTeaEasterEgg) {
+            
+            try {
                 // 重置状态确保能显示
                 localStorage.removeItem('afternoonTeaFirstEasterEggShown');
                 
-                // 确保UI已创建
-                if (!window.afternoonTeaEasterEgg.ui) {
-                    window.afternoonTeaEasterEgg.createUI();
-                }
-                
-                // 直接触发UI显示
-                if (window.afternoonTeaEasterEgg.ui && window.afternoonTeaEasterEgg.ui.showFirstEasterEgg) {
-                    window.afternoonTeaEasterEgg.ui.showFirstEasterEgg();
-                    console.log('✅ 彩蛋弹窗已强制显示');
-                } else {
-                    // 备选方法
+                if (window.afternoonTeaEasterEgg) {
+                    // 方法A: 直接创建UI并显示
+                    if (!window.afternoonTeaEasterEgg.ui) {
+                        console.log('🔧 创建UI控制器...');
+                        window.afternoonTeaEasterEgg.createUI();
+                    }
+                    
+                    if (window.afternoonTeaEasterEgg.ui) {
+                        console.log('🔧 直接调用UI显示方法...');
+                        window.afternoonTeaEasterEgg.ui.showFirstEasterEgg();
+                        console.log('✅ 彩蛋弹窗已强制显示');
+                        return;
+                    }
+                    
+                    // 方法B: 使用手动触发
+                    console.log('🔧 UI控制器不可用，使用手动触发...');
                     window.afternoonTeaEasterEgg.manualTriggerFirst();
-                    console.log('✅ 通过备选方法触发彩蛋');
+                    console.log('✅ 通过手动触发显示彩蛋');
+                } else {
+                    console.error('❌ afternoonTeaEasterEgg 实例不可用');
+                    
+                    // 方法C: 直接创建简单弹窗（紧急备用）
+                    console.log('🔧 创建紧急备用弹窗...');
+                    createEmergencyEasterEggModal();
                 }
-            } else {
-                console.warn('❌ afternoonTeaEasterEgg 实例不可用');
+            } catch (error) {
+                console.error('🔧 强制触发失败:', error);
             }
         },
         
@@ -909,4 +921,70 @@ if (typeof window !== 'undefined') {
     console.log('  - testEasterEgg.testNotification() // 测试通知权限');
     console.log('  - testEasterEgg.getDebugInfo() // 获取调试信息');
     console.log('  - testEasterEgg.help() // 显示调试帮助');
+}
+
+// 紧急备用弹窗函数（如果主系统失败时使用）
+function createEmergencyEasterEggModal() {
+    console.log('🆘 创建紧急备用彩蛋弹窗...');
+    
+    // 创建背景遮罩
+    const backdrop = document.createElement('div');
+    backdrop.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+        z-index: 2147483646;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    `;
+    
+    // 创建弹窗
+    const modal = document.createElement('div');
+    modal.style.cssText = `
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 400px;
+        max-width: 90vw;
+        background: white;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+        z-index: 2147483647;
+        text-align: center;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    `;
+    
+    modal.innerHTML = `
+        <h2 style="color: #2c3e50; margin-bottom: 16px;">🎉 恭喜成功解锁下午茶提醒彩蛋！</h2>
+        <p style="color: #666; margin-bottom: 20px;">三点几啦！饮茶先啦！</p>
+        <p style="color: #666; margin-bottom: 24px;">把这个贴心小工具分享给朋友们吧~</p>
+        <button onclick="this.parentElement.parentElement.remove(); this.parentElement.remove(); document.body.style.overflow=''" 
+                style="background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer;">
+            关闭
+        </button>
+    `;
+    
+    // 添加到页面并显示
+    document.body.appendChild(backdrop);
+    document.body.appendChild(modal);
+    document.body.style.overflow = 'hidden';
+    
+    // 显示动画
+    requestAnimationFrame(() => {
+        backdrop.style.opacity = '1';
+    });
+    
+    // 点击背景关闭
+    backdrop.onclick = () => {
+        backdrop.remove();
+        modal.remove();
+        document.body.style.overflow = '';
+    };
+    
+    console.log('✅ 紧急备用弹窗已显示');
 }

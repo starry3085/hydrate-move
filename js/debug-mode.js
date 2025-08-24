@@ -62,8 +62,8 @@ class DebugModeManager {
     initializeDebugMode() {
         console.log('🔧 调试模式已启用');
         
-        // 显示调试模式指示器
-        this.showDebugIndicator();
+        // 不再显示调试模式指示器 - 用户反馈没有实际用途
+        // this.showDebugIndicator();
         
         // 增强现有的testEasterEgg对象
         this.enhanceTestEasterEgg();

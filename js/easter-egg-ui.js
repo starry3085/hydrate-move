@@ -41,6 +41,12 @@ class EasterEggUI {
             
             console.log('🎉 开始显示第一层彩蛋弹窗');
             
+            // 检查配置是否可用
+            if (!this.config || !this.config.MESSAGES || !this.config.MESSAGES.FIRST_EASTER_EGG) {
+                console.error('🎉 配置不可用:', this.config);
+                return;
+            }
+            
             // 创建弹窗
             this.createEasterEggModal();
             
@@ -57,6 +63,8 @@ class EasterEggUI {
      * @private
      */
     createEasterEggModal() {
+        console.log('🎉 开始创建彩蛋弹窗DOM...');
+        
         // 清理现有弹窗
         this.cleanup();
         
@@ -97,11 +105,17 @@ class EasterEggUI {
         `;
         
         // 创建弹窗内容
-        this.modal.innerHTML = this.getModalContent();
+        const content = this.getModalContent();
+        console.log('🎉 弹窗内容长度:', content.length);
+        this.modal.innerHTML = content;
         
         // 添加到页面
         document.body.appendChild(this.backdrop);
         document.body.appendChild(this.modal);
+        
+        console.log('🎉 弹窗DOM元素已添加到页面');
+        console.log('🎉 Backdrop元素:', this.backdrop);
+        console.log('🎉 Modal元素:', this.modal);
         
         // 绑定事件
         this.bindEvents();
@@ -115,9 +129,29 @@ class EasterEggUI {
      * @private
      */
     getModalContent() {
-        const messages = this.config.MESSAGES.FIRST_EASTER_EGG;
+        let messages;
         
-        return `
+        // 安全获取配置信息
+        try {
+            messages = this.config.MESSAGES.FIRST_EASTER_EGG;
+            if (!messages) {
+                throw new Error('配置中缺少 FIRST_EASTER_EGG 消息');
+            }
+        } catch (error) {
+            console.warn('🎉 使用默认配置:', error);
+            // 使用默认配置
+            messages = {
+                TITLE: '🎉 恭喜成功解锁下午茶提醒彩蛋！',
+                SUBTITLE: '三点几啦！饮茶先啦！',
+                DESCRIPTION: '把这个贴心小工具分享给朋友们吧~',
+                SHARE_BUTTONS: {
+                    WECHAT: '保存分享到朋友圈/微信',
+                    XIAOHONGSHU: '生成笔记发到小红书'
+                }
+            };
+        }
+        
+        const content = `
             <div class="modal-header">
                 <button class="close-button" aria-label="关闭" title="关闭">
                     <span aria-hidden="true">&times;</span>
@@ -155,6 +189,9 @@ class EasterEggUI {
                 </div>
             </div>
         `;
+        
+        console.log('🎉 弹窗内容已生成，长度:', content.length);
+        return content;
     }
     
     /**
@@ -198,7 +235,12 @@ class EasterEggUI {
      * @private
      */
     showModal() {
-        if (this.isAnimating) return;
+        if (this.isAnimating) {
+            console.warn('🎉 弹窗正在动画中，跳过显示');
+            return;
+        }
+        
+        console.log('🎉 开始显示弹窗动画...');
         
         this.isAnimating = true;
         this.isVisible = true;
@@ -208,10 +250,20 @@ class EasterEggUI {
         
         // 使用bounceIn动画显示
         requestAnimationFrame(() => {
-            this.backdrop.style.opacity = '1';
-            this.modal.classList.add('bounceIn');
-            this.modal.style.opacity = '1';
-            this.modal.style.transform = 'translate(-50%, -50%) scale(1)';
+            console.log('🎉 执行弹窗显示动画...');
+            
+            if (this.backdrop) {
+                this.backdrop.style.opacity = '1';
+                console.log('🎉 Backdrop 透明度已设置为 1');
+            }
+            
+            if (this.modal) {
+                this.modal.classList.add('bounceIn');
+                this.modal.style.opacity = '1';
+                this.modal.style.transform = 'translate(-50%, -50%) scale(1)';
+                console.log('🎉 Modal 显示属性已设置');
+                console.log('🎉 Modal 元素在页面中:', document.body.contains(this.modal));
+            }
         });
         
         // 动画完成后重置状态
@@ -221,6 +273,7 @@ class EasterEggUI {
             if (this.modal) {
                 this.modal.classList.remove('bounceIn');
             }
+            console.log('🎉 弹窗动画完成');
         }, 750); // bounceIn动画时长为0.75秒
         
         console.log('🎉 彩蛋弹窗已显示（bounceIn动画）');
