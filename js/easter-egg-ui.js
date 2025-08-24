@@ -118,39 +118,35 @@ class EasterEggUI {
         const messages = this.config.MESSAGES.FIRST_EASTER_EGG;
         
         return `
-            <div class="easter-egg-header">
-                <button class="easter-egg-close" aria-label="关闭" title="关闭">
+            <div class="modal-header">
+                <button class="close-button" aria-label="关闭" title="关闭">
                     <span aria-hidden="true">&times;</span>
                 </button>
+                <div class="modal-title">${messages.TITLE}</div>
+                <div class="modal-subtitle">${messages.SUBTITLE}</div>
             </div>
             
-            <div class="easter-egg-content">
-                <div class="easter-egg-title">
-                    ${messages.TITLE}
-                </div>
-                
-                <div class="easter-egg-subtitle">
-                    ${messages.SUBTITLE}
-                </div>
-                
-                <div class="easter-egg-image">
-                    <div class="easter-egg-emoji" role="img" aria-label="茶杯图标">
-                        🍵
-                    </div>
-                </div>
-                
-                <div class="easter-egg-description">
+            <div class="modal-content">
+                <div class="congratulations-text">
                     ${messages.DESCRIPTION}
                 </div>
                 
-                <div class="easter-egg-buttons" role="group" aria-label="分享选项">
-                    <button class="easter-egg-share-button easter-egg-share-wechat" 
+                <div class="share-image-container">
+                    <img src="assets/afternoon_tea_share.png" alt="下午茶分享图片" class="share-image" 
+                         onerror="this.style.display='none'; this.nextElementSibling.innerHTML='⚠️ 分享图片加载失败，请检查 afternoon_tea_share.png 文件'">
+                    <div class="share-tip">
+                        💡 长按图片保存，或点击下方按钮分享
+                    </div>
+                </div>
+                
+                <div class="share-buttons" role="group" aria-label="分享选项">
+                    <button class="share-button share-wechat" 
                             data-share-type="wechat" 
                             aria-label="分享到微信朋友圈">
                         <span class="share-icon">📱</span>
                         <span class="share-text">${messages.SHARE_BUTTONS.WECHAT}</span>
                     </button>
-                    <button class="easter-egg-share-button easter-egg-share-xiaohongshu" 
+                    <button class="share-button share-xiaohongshu" 
                             data-share-type="xiaohongshu" 
                             aria-label="分享到小红书">
                         <span class="share-icon">📝</span>
@@ -167,7 +163,7 @@ class EasterEggUI {
      */
     bindEvents() {
         // 关闭按钮
-        const closeButton = this.modal.querySelector('.easter-egg-close');
+        const closeButton = this.modal.querySelector('.close-button');
         if (closeButton) {
             closeButton.addEventListener('click', () => this.hideModal());
         }
@@ -176,11 +172,13 @@ class EasterEggUI {
         this.backdrop.addEventListener('click', () => this.hideModal());
         
         // 分享按钮 - 使用事件委托处理嵌套元素
-        const shareButtons = this.modal.querySelectorAll('.easter-egg-share-button');
+        const shareButtons = this.modal.querySelectorAll('.share-button');
         shareButtons.forEach(button => {
             button.addEventListener('click', (e) => {
-                const shareType = e.target.closest('.easter-egg-share-button').getAttribute('data-share-type');
-                this.handleShareClick(shareType);
+                const shareType = e.target.closest('.share-button')?.getAttribute('data-share-type');
+                if (shareType) {
+                    this.handleShareClick(shareType);
+                }
             });
         });
         
@@ -270,7 +268,27 @@ class EasterEggUI {
             this.setButtonLoadingState(clickedButton, true);
         }
         
-        // 调用主控制器的分享处理
+        // 生成分享内容
+        const shareContent = this.generateShareContent(shareType);
+        if (!shareContent) {
+            console.error('生成分享内容失败');
+            return;
+        }
+        
+        // 根据分享类型处理
+        let successMessage;
+        if (shareType === 'wechat') {
+            successMessage = '微信分享文案已复制！请长按图片保存到相册';
+        } else if (shareType === 'xiaohongshu') {
+            successMessage = '小红书文案已复制！请长按图片保存到相册';
+        } else {
+            successMessage = '分享内容已复制到剪贴板！';
+        }
+        
+        // 执行复制操作
+        this.copyToClipboard(shareContent, successMessage);
+        
+        // 调用主控制器的分享处理（如果需要）
         if (this.easterEggManager) {
             this.easterEggManager.handleShareClick(shareType);
         }
@@ -416,6 +434,186 @@ class EasterEggUI {
         }
         
         console.log('🎉 UI元素已清理');
+    }
+    
+    /**
+     * 复制到剪贴板
+     * @param {string} text - 要复制的文本
+     * @param {string} successMessage - 成功提示消息
+     * @public
+     */
+    copyToClipboard(text, successMessage = '内容已复制到剪贴板！') {
+        if (navigator.clipboard) {
+            navigator.clipboard.writeText(text).then(() => {
+                this.showSuccessToast(successMessage);
+                // 延迟触发解锁，避免提示重叠
+                setTimeout(() => {
+                    this.triggerSecondEasterEgg();
+                }, 2000);
+            }).catch(() => {
+                this.fallbackCopy(text, successMessage);
+            });
+        } else {
+            this.fallbackCopy(text, successMessage);
+        }
+    }
+    
+    /**
+     * 备用复制方案
+     * @param {string} text - 要复制的文本
+     * @param {string} successMessage - 成功提示消息
+     * @private
+     */
+    fallbackCopy(text, successMessage = '内容已复制到剪贴板！') {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.left = '-9999px';
+        document.body.appendChild(textarea);
+        textarea.select();
+        
+        try {
+            document.execCommand('copy');
+            this.showSuccessToast(successMessage);
+            // 延迟触发解锁，避免提示重叠
+            setTimeout(() => {
+                this.triggerSecondEasterEgg();
+            }, 2000);
+        } catch (err) {
+            console.warn('复制失败:', err);
+            prompt('请手动复制以下内容:', text);
+            // 即使手动复制也触发解锁
+            setTimeout(() => {
+                this.triggerSecondEasterEgg();
+            }, 1000);
+        }
+        
+        document.body.removeChild(textarea);
+    }
+    
+    /**
+     * 触发第二层彩蛋解锁
+     * @public
+     */
+    triggerSecondEasterEgg() {
+        // 检查是否已经解锁过，避免重复提示
+        const alreadyUnlocked = localStorage.getItem('lunchReminderUnlocked') === 'true';
+        
+        if (alreadyUnlocked) {
+            console.log('🍲 午餐提醒已经解锁过了');
+            return;
+        }
+        
+        // 记录解锁状态
+        localStorage.setItem('lunchReminderUnlocked', 'true');
+        
+        // 启用午餐提醒功能
+        console.log('🍲 第二层彩蛋已解锁：午餐提醒功能已启用');
+        
+        // 调用实际的午餐提醒启用逻辑
+        if (window.lunchReminder) {
+            window.lunchReminder.enabled = true;
+            console.log('🍲 午餐提醒实例已启用');
+        }
+        
+        // 分析埋点
+        if (window.app && window.app.analytics) {
+            window.app.analytics.trackEasterEggTriggered('second_easter_egg_unlocked', 'zh-CN');
+        }
+        
+        // 显示解锁成功提示
+        this.showUnlockSuccessToast();
+    }
+    
+    /**
+     * 显示解锁成功提示
+     * @private
+     */
+    showUnlockSuccessToast() {
+        const toast = document.createElement('div');
+        toast.className = 'success-toast unlock-success-toast';
+        
+        // 分两行显示文字
+        toast.innerHTML = `
+            <div>🎊 恭喜解锁午餐提醒彩蛋！</div>
+            <div>明天12:00见~</div>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        // 显示动画 - 缩放弹出效果
+        requestAnimationFrame(() => {
+            toast.classList.add('show');
+        });
+        
+        // 自动隐藏 - 缩放消失
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 300);
+        }, 3000);
+    }
+    
+    /**
+     * 显示成功提示
+     * @param {string} message - 提示消息
+     * @public
+     */
+    showSuccessToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'success-toast';
+        toast.textContent = message;
+        
+        document.body.appendChild(toast);
+        
+        // 显示动画
+        requestAnimationFrame(() => {
+            toast.classList.add('show');
+        });
+        
+        // 自动隐藏
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 300);
+        }, 3000);
+    }
+    
+    /**
+     * 生成分享内容
+     * @param {string} shareType - 分享类型
+     * @returns {string} 分享文本
+     * @public
+     */
+    generateShareContent(shareType) {
+        const templates = this.config.SHARE_TEMPLATES;
+        const template = templates[shareType];
+        
+        if (!template) {
+            console.warn(`未找到分享模板: ${shareType}`);
+            return '';
+        }
+        
+        const baseUrl = 'https://hydrate-move.lightyearai.info/zh/';
+        
+        if (shareType === 'xiaohongshu') {
+            const currentTime = new Date().toLocaleString('zh-CN', {
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+            
+            return `🍵 ${currentTime} 的小惊喜\n\n${template.TEXT}\n\n🔗 ${baseUrl}\n\n${template.HASHTAGS}`;
+        } else {
+            return `${template.TEXT}\n\n🔗 ${baseUrl}\n\n${template.HASHTAGS}`;
+        }
     }
     
     /**

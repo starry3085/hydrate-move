@@ -174,10 +174,7 @@ class AfternoonTeaEasterEgg extends EventTarget {
                 });
             }
             
-            // 生成分享内容（后续阶段实现）
-            this.generateShareContent(shareType);
-            
-            // 解锁第二层彩蛋
+            // 解锁第二层彩蛋（分享操作由UI层处理）
             if (!this.isSecondEasterEggUnlocked) {
                 this.unlockSecondEasterEgg();
             }
@@ -643,7 +640,156 @@ class AfternoonTeaEasterEgg extends EventTarget {
         console.log('🎉 存储状态验证:', storage);
         return storage;
     }
+    
+    /**
+     * 重置所有每日触发状态（用于测试）
+     * @public
+     */
+    resetDailyTriggers() {
+        try {
+            // 重置下午茶提醒状态
+            localStorage.removeItem('afternoonTeaLastTrigger');
+            localStorage.removeItem('coffeeBreakLastTrigger');
+            
+            // 重置午餐提醒状态
+            localStorage.removeItem('lunchReminderLastTrigger');
+            
+            // 重置彩蛋状态
+            this.resetEasterEggState();
+            
+            console.log('🔄 所有每日触发状态已重置');
+        } catch (error) {
+            console.warn('🔄 重置每日触发状态失败:', error);
+        }
+    }
+    
+    /**
+     * 强制触发下午茶提醒（用于测试）
+     * @public
+     */
+    forceAfternoonTeaTrigger() {
+        if (window.afternoonTeaReminder) {
+            console.log('🍵 强制触发下午茶提醒（测试）');
+            window.afternoonTeaReminder.triggerReminder();
+        } else {
+            console.warn('🍵 未找到下午茶提醒实例');
+        }
+    }
+    
+    /**
+     * 强制触发午餐提醒（用于测试）
+     * @public
+     */
+    forceLunchReminderTrigger() {
+        if (window.lunchReminder) {
+            console.log('🍲 强制触发午餐提醒（测试）');
+            window.lunchReminder.triggerReminder();
+        } else {
+            console.warn('🍲 未找到午餐提醒实例');
+        }
+    }
+    
+    /**
+     * 显示所有状态信息（用于测试）
+     * @public
+     */
+    showDetailedStatus() {
+        const status = {
+            easterEgg: this.getEasterEggStatus(),
+            storage: this.verifyStorageState(),
+            instances: {
+                afternoonTeaReminder: !!window.afternoonTeaReminder,
+                lunchReminder: !!window.lunchReminder,
+                app: !!window.app
+            },
+            timestamps: {
+                afternoonTeaLastTrigger: localStorage.getItem('afternoonTeaLastTrigger'),
+                lunchReminderLastTrigger: localStorage.getItem('lunchReminderLastTrigger'),
+                now: new Date().toISOString()
+            }
+        };
+        
+        console.log('📊 详细状态信息:', status);
+        return status;
+    }
 }
 
 // 全局暴露给其他模块使用
 window.AfternoonTeaEasterEgg = AfternoonTeaEasterEgg;
+
+// 全局测试方法（仅在开发环境）
+if (typeof window !== 'undefined') {
+    window.testEasterEgg = {
+        // 重置所有状态
+        reset: () => {
+            if (window.afternoonTeaEasterEgg) {
+                window.afternoonTeaEasterEgg.resetDailyTriggers();
+            }
+            console.log('🔄 所有彩蛋和提醒状态已重置');
+        },
+        
+        // 触发下午茶彩蛋
+        triggerAfternoonTea: () => {
+            if (window.afternoonTeaEasterEgg) {
+                window.afternoonTeaEasterEgg.forceAfternoonTeaTrigger();
+            } else {
+                console.warn('未找到下午茶彩蛋实例');
+            }
+        },
+        
+        // 触发午餐提醒
+        triggerLunch: () => {
+            if (window.afternoonTeaEasterEgg) {
+                window.afternoonTeaEasterEgg.forceLunchReminderTrigger();
+            } else {
+                console.warn('未找到下午茶彩蛋实例');
+            }
+        },
+        
+        // 显示状态
+        showStatus: () => {
+            if (window.afternoonTeaEasterEgg) {
+                return window.afternoonTeaEasterEgg.showDetailedStatus();
+            } else {
+                console.warn('未找到下午茶彩蛋实例');
+                return null;
+            }
+        },
+        
+        // 手动触发第一层彩蛋
+        showFirstEgg: () => {
+            if (window.afternoonTeaEasterEgg) {
+                window.afternoonTeaEasterEgg.manualTriggerFirst();
+            } else {
+                console.warn('未找到下午茶彩蛋实例');
+            }
+        },
+        
+        // 模拟分享操作
+        simulateShare: (type = 'wechat') => {
+            if (window.afternoonTeaEasterEgg) {
+                window.afternoonTeaEasterEgg.manualTriggerShare(type);
+            } else {
+                console.warn('未找到下午茶彩蛋实例');
+            }
+        },
+        
+        // 运行完整测试
+        runFullTest: () => {
+            if (window.afternoonTeaEasterEgg) {
+                window.afternoonTeaEasterEgg.runFullEasterEggTest();
+            } else {
+                console.warn('未找到下午茶彩蛋实例');
+            }
+        }
+    };
+    
+    console.log('🧪 彩蛋测试工具已加载：window.testEasterEgg');
+    console.log('💡 使用方法:');
+    console.log('  - testEasterEgg.reset() // 重置所有状态');
+    console.log('  - testEasterEgg.triggerAfternoonTea() // 触发下午茶提醒');
+    console.log('  - testEasterEgg.showFirstEgg() // 显示第一层彩蛋');
+    console.log('  - testEasterEgg.simulateShare() // 模拟分享操作');
+    console.log('  - testEasterEgg.showStatus() // 查看状态');
+    console.log('  - testEasterEgg.runFullTest() // 运行完整测试');
+}
