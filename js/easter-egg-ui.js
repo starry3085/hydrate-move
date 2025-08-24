@@ -166,7 +166,7 @@ class EasterEggUI {
                 
                 <!-- 分享图片 -->
                 <div class="share-image-container">
-                    <img src="afternoon_tea_share.png" alt="下午茶分享图片" class="share-image" 
+                    <img src="../afternoon_tea_share.png" alt="下午茶分享图片" class="share-image" 
                          onerror="this.style.display='none'; document.querySelector('.share-tip').innerHTML='⚠️ 分享图片加载失败，请检查 afternoon_tea_share.png 文件'">
                     <div class="share-tip">
                         💡 长按图片保存，或点击下方按钮分享
