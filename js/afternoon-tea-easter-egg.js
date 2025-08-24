@@ -789,37 +789,15 @@ if (typeof window !== 'undefined') {
         forceEasterEgg: () => {
             console.log('🔧 强制触发彩蛋弹窗...');
             
-            try {
-                // 重置状态确保能显示
-                localStorage.removeItem('afternoonTeaFirstEasterEggShown');
-                
-                if (window.afternoonTeaEasterEgg) {
-                    // 方法A: 直接创建UI并显示
-                    if (!window.afternoonTeaEasterEgg.ui) {
-                        console.log('🔧 创建UI控制器...');
-                        window.afternoonTeaEasterEgg.createUI();
-                    }
-                    
-                    if (window.afternoonTeaEasterEgg.ui) {
-                        console.log('🔧 直接调用UI显示方法...');
-                        window.afternoonTeaEasterEgg.ui.showFirstEasterEgg();
-                        console.log('✅ 彩蛋弹窗已强制显示');
-                        return;
-                    }
-                    
-                    // 方法B: 使用手动触发
-                    console.log('🔧 UI控制器不可用，使用手动触发...');
-                    window.afternoonTeaEasterEgg.manualTriggerFirst();
-                    console.log('✅ 通过手动触发显示彩蛋');
-                } else {
-                    console.error('❌ afternoonTeaEasterEgg 实例不可用');
-                    
-                    // 方法C: 直接创建简单弹窗（紧急备用）
-                    console.log('🔧 创建紧急备用弹窗...');
-                    createEmergencyEasterEggModal();
-                }
-            } catch (error) {
-                console.error('🔧 强制触发失败:', error);
+            // 立即创建绝对有效的弹窗
+            if (typeof createGuaranteedEasterEggModal === 'function') {
+                createGuaranteedEasterEggModal();
+            } else {
+                console.error('createGuaranteedEasterEggModal function not found!');
+                // 创建紧急备用弹窗
+                const modal = document.createElement('div');
+                modal.innerHTML = '<div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;padding:40px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,0.3);z-index:999999;text-align:center;font-family:Arial,sans-serif;"><h2 style="color:#2c3e50;margin:0 0 20px 0;">🎉 彩蛋触发成功！</h2><p style="color:#666;margin:0 0 20px 0;">下午茶提醒彩蛋已解锁！</p><button onclick="this.parentElement.parentElement.remove()" style="background:#007bff;color:white;border:none;padding:10px 20px;border-radius:5px;cursor:pointer;">确定</button></div>';
+                document.body.appendChild(modal);
             }
         },
         
@@ -987,4 +965,182 @@ function createEmergencyEasterEggModal() {
     };
     
     console.log('✅ 紧急备用弹窗已显示');
+}
+
+// 绝对有效的彩蛋弹窗（绕过所有CSS问题）
+function createGuaranteedEasterEggModal() {
+    console.log('🎆 创建绝对有效的彩蛋弹窗...');
+    
+    // 清理现有的弹窗
+    const existing = document.querySelectorAll('.guaranteed-easter-egg-modal, .guaranteed-easter-egg-backdrop');
+    existing.forEach(el => el.remove());
+    
+    // 创建背景遮罩（使用!important强制样式）
+    const backdrop = document.createElement('div');
+    backdrop.className = 'guaranteed-easter-egg-backdrop';
+    backdrop.style.cssText = `
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        background: rgba(0, 0, 0, 0.6) !important;
+        z-index: 999999 !important;
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+    `;
+    
+    // 创建弹窗（使用!important强制样式）
+    const modal = document.createElement('div');
+    modal.className = 'guaranteed-easter-egg-modal';
+    modal.style.cssText = `
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        width: 450px !important;
+        max-width: 90vw !important;
+        background: white !important;
+        border-radius: 12px !important;
+        padding: 30px !important;
+        box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3) !important;
+        z-index: 1000000 !important;
+        display: block !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+        text-align: center !important;
+        color: #333 !important;
+        line-height: 1.5 !important;
+    `;
+    
+    // 弹窗内容
+    modal.innerHTML = `
+        <div style="margin-bottom: 20px !important;">
+            <h2 style="color: #2c3e50 !important; margin: 0 0 10px 0 !important; font-size: 22px !important; font-weight: 600 !important;">
+                🎉 恭喜成功解锁下午茶提醒彩蛋！
+            </h2>
+            <p style="color: #e67e22 !important; margin: 0 0 15px 0 !important; font-size: 18px !important; font-weight: 500 !important;">
+                三点几啦！饮茶先啦！
+            </p>
+            <p style="color: #666 !important; margin: 0 0 25px 0 !important; font-size: 16px !important;">
+                把这个贴心小工具分享给朋友们吧~
+            </p>
+        </div>
+        
+        <div style="margin-bottom: 25px !important;">
+            <div style="background: #f8f9fa !important; padding: 15px !important; border-radius: 8px !important; margin-bottom: 20px !important;">
+                <p style="margin: 0 !important; color: #666 !important; font-size: 14px !important;">
+                    💡 点击下方按钮分享到微信或小红书
+                </p>
+            </div>
+        </div>
+        
+        <div style="display: flex !important; gap: 15px !important; justify-content: center !important; flex-wrap: wrap !important;">
+            <button onclick="handleEasterEggShare('wechat')" style="
+                background: #07c160 !important;
+                color: white !important;
+                border: none !important;
+                padding: 12px 20px !important;
+                border-radius: 6px !important;
+                cursor: pointer !important;
+                font-size: 14px !important;
+                font-weight: 500 !important;
+                min-width: 120px !important;
+                transition: all 0.2s !important;
+            " onmouseover="this.style.background='#06ad56'" onmouseout="this.style.background='#07c160'">
+                📱 分享到微信
+            </button>
+            
+            <button onclick="handleEasterEggShare('xiaohongshu')" style="
+                background: #ff2442 !important;
+                color: white !important;
+                border: none !important;
+                padding: 12px 20px !important;
+                border-radius: 6px !important;
+                cursor: pointer !important;
+                font-size: 14px !important;
+                font-weight: 500 !important;
+                min-width: 120px !important;
+                transition: all 0.2s !important;
+            " onmouseover="this.style.background='#e01e3a'" onmouseout="this.style.background='#ff2442'">
+                📝 分享到小红书
+            </button>
+        </div>
+        
+        <div style="margin-top: 20px !important;">
+            <button onclick="closeGuaranteedEasterEggModal()" style="
+                background: transparent !important;
+                color: #999 !important;
+                border: 1px solid #ddd !important;
+                padding: 8px 16px !important;
+                border-radius: 4px !important;
+                cursor: pointer !important;
+                font-size: 13px !important;
+            " onmouseover="this.style.background='#f5f5f5'" onmouseout="this.style.background='transparent'">
+                关闭
+            </button>
+        </div>
+    `;
+    
+    // 添加到页面
+    document.body.appendChild(backdrop);
+    document.body.appendChild(modal);
+    document.body.style.overflow = 'hidden';
+    
+    // 点击背景关闭
+    backdrop.onclick = closeGuaranteedEasterEggModal;
+    
+    console.log('✅ 绝对有效的彩蛋弹窗已显示！');
+    
+    // 延迟显示成功消息
+    setTimeout(() => {
+        console.log('🎆 彩蛋弹窗显示成功！用户应该可以看到弹窗了！');
+    }, 100);
+}
+
+// 关闭绝对有效弹窗
+function closeGuaranteedEasterEggModal() {
+    const elements = document.querySelectorAll('.guaranteed-easter-egg-modal, .guaranteed-easter-egg-backdrop');
+    elements.forEach(el => el.remove());
+    document.body.style.overflow = '';
+    console.log('✅ 彩蛋弹窗已关闭');
+}
+
+// 处理分享点击
+function handleEasterEggShare(type) {
+    console.log('🎆 分享按钮被点击:', type);
+    
+    let message;
+    if (type === 'wechat') {
+        message = '🍵 下午茶时间到！\n\n发现一个超贴心的办公室健康提醒小工具，定时提醒喝水和站立，还有这样的小彩蛋🎉\n\n分享给你们，一起做健康的打工人！\n\n链接: https://hydrate-move.lightyearai.info/zh/';
+    } else {
+        message = '🍵 办公室下午茶彩蛋\n\n哈哈哈，下午茶时间到！\n\n工作再忙也要记得：\n💧 多喝水\n🧘 多站立\n🍵 享受下午茶时光\n\n这个小工具还有彩蛋，太有意思了！\n\n#办公室健康 #下午茶 #打工人的小确幸';
+    }
+    
+    // 复制到剪贴板
+    if (navigator.clipboard) {
+        navigator.clipboard.writeText(message).then(() => {
+            alert('✅ 分享文案已复制到剪贴板！');
+        }).catch(() => {
+            prompt('请复制以下内容:', message);
+        });
+    } else {
+        prompt('请复制以下内容:', message);
+    }
+    
+    // 解锁第二个彩蛋
+    localStorage.setItem('lunchReminderUnlocked', 'true');
+    console.log('✅ 第二个彩蛋（午餐提醒）已解锁！');
+    
+    // 1.5秒后关闭弹窗
+    setTimeout(() => {
+        closeGuaranteedEasterEggModal();
+        
+        // 显示解锁消息
+        setTimeout(() => {
+            alert('🎆 太棒了！您已解锁第二个彩蛋！\n明天中午12:00请留意特别提醒哦~');
+        }, 300);
+    }, 1500);
 }

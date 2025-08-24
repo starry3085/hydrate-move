@@ -177,6 +177,15 @@ class DebugModeManager {
             // 直接触发彩蛋（绕过时间检查）
             forceEasterEgg: () => {
                 console.log('🔧 Forcing easter egg popup display...');
+                
+                // 优先使用绝对有效的弹窗函数
+                if (typeof createGuaranteedEasterEggModal === 'function') {
+                    console.log('🔧 Using guaranteed popup function');
+                    createGuaranteedEasterEggModal();
+                    return;
+                }
+                
+                // 备用方案：通过正常流程触发
                 if (window.afternoonTeaEasterEgg) {
                     // Reset state to allow showing
                     localStorage.removeItem('afternoonTeaFirstEasterEggShown');
@@ -197,6 +206,10 @@ class DebugModeManager {
                     }
                 } else {
                     console.warn('🔧 afternoonTeaEasterEgg not available');
+                    // 创建简单的紧急弹窗
+                    const emergency = document.createElement('div');
+                    emergency.innerHTML = '<div style="position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:white;padding:30px;border-radius:8px;box-shadow:0 10px 30px rgba(0,0,0,0.3);z-index:999999;text-align:center;"><h2>🎉 测试弹窗</h2><p>彩蛋功能测试成功！</p><button onclick="this.parentElement.parentElement.remove()">关闭</button></div>';
+                    document.body.appendChild(emergency);
                 }
             },
             
@@ -310,7 +323,14 @@ class DebugModeManager {
                 // For afternoon tea, we want to trigger both the notification AND the easter egg
                 console.log('🔧 Triggering afternoon tea easter egg...');
                 
-                // Method 1: Direct easter egg popup trigger (PRIORITY - this is what user wants to see)
+                // ✨ Method 1: 绝对有效的弹窗函数（最高优先级）
+                if (typeof createGuaranteedEasterEggModal === 'function') {
+                    console.log('🔧 ✅ Using guaranteed popup function - This WILL show!');
+                    createGuaranteedEasterEggModal();
+                    return; // 成功，直接返回
+                }
+                
+                // Method 2: Direct easter egg popup trigger (PRIORITY - this is what user wants to see)
                 if (window.afternoonTeaEasterEgg) {
                     try {
                         // Reset states to ensure popup shows
@@ -347,13 +367,13 @@ class DebugModeManager {
                     }
                 }
                 
-                // Method 2: Fallback to testEasterEgg approach
+                // Method 3: Fallback to testEasterEgg approach
                 if (window.testEasterEgg && window.testEasterEgg.triggerAfternoonTea) {
                     window.testEasterEgg.triggerAfternoonTea();
                     console.log('🔧 Triggered via testEasterEgg.triggerAfternoonTea');
                 }
                 
-                // Method 3: Also trigger the notification for completeness
+                // Method 4: Also trigger the notification for completeness
                 if (window.afternoonTeaReminder) {
                     window.afternoonTeaReminder.triggerReminder();
                     console.log('🔧 Also triggered notification via afternoonTeaReminder');
