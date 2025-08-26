@@ -1,113 +1,158 @@
-# 部署检查清单
+# Deployment Guide
 
-本文档提供了将办公族健康提醒应用部署到GitHub Pages的完整步骤和验证流程。
+## Overview
+This guide covers all deployment options for the Hydrate Move application, including local development, GitHub Pages, Cloudflare Pages, and custom domain setup.
 
-## 部署前检查
+## 🏠 Local Development
 
-- [ ] 所有功能测试通过
-- [ ] 响应式设计在不同设备上测试通过
-- [ ] 所有资源文件（图片、音频等）都已包含在项目中
-- [ ] 所有JavaScript和CSS文件已压缩（可选）
-- [ ] 确保favicon.ico和其他图标文件存在
-- [ ] 确保manifest.json文件正确配置
-- [ ] 确保Service Worker正确实现
-- [ ] 文档已通过自动化系统更新并保持同步
+### Quick Start
+```bash
+git clone https://github.com/starry3085/hydrate-move.git
+cd hydrate-move
+# Open index.html or use any static server
+```
 
-## 部署步骤
+### Using Static Server
+```bash
+# Option 1: Node.js http-server
+npx http-server . -p 8080
 
-1. **准备GitHub仓库**
-   - [ ] 创建新的GitHub仓库或使用现有仓库
-   - [ ] 确保仓库是公开的（对于GitHub免费账户）
+# Option 2: Python
+python -m http.server 8080
 
-2. **推送代码**
-   - [ ] 将所有代码推送到GitHub仓库的主分支（通常是`main`或`master`）
+# Option 3: PHP
+php -S localhost:8080
+```
+
+Visit `http://localhost:8080` to test the application.
+
+## 🚀 Cloudflare Pages Deployment
+
+### Auto Deploy (Recommended)
+**Live**: https://hydrate-move.pages.dev
+
+```bash
+cmd /c npx wrangler pages deploy . --project-name=hydrate-move --branch=main
+```
+
+### Manual Deployment
+1. Install Wrangler CLI:
+```bash
+npm install -g wrangler
+```
+
+2. Login to Cloudflare:
+```bash
+wrangler login
+```
+
+3. Deploy the project:
+```bash
+wrangler pages deploy . --project-name=hydrate-move
+```
+
+## 🌐 Custom Domain Setup
+
+### Current Deployment Status
+- **Cloudflare Pages地址**: https://db86eabf.hydrate-move.pages.dev
+- **目标自定义域名**: https://hydrate-move.lightyearai.info
+
+### Step 1: Cloudflare Dashboard Configuration
+1. Visit https://dash.cloudflare.com
+2. Login to your account
+3. Click **Pages** in the left menu
+4. Find **hydrate-move** project
+5. Click **Custom domains** tab
+6. Click **Set up a custom domain**
+7. Enter: `hydrate-move.lightyearai.info`
+8. Click **Continue** and **Activate domain**
+
+### Step 2: DNS Configuration
+Login to your domain management backend and add DNS record for `lightyearai.info`:
+
+```
+Record Type: CNAME
+Host Record: hydrate-move
+Record Value: db86eabf.hydrate-move.pages.dev
+TTL: Auto
+```
+
+> ⚠️ **Important**: Use the complete subdomain `db86eabf.hydrate-move.pages.dev` not just `hydrate-move.pages.dev`
+
+### Step 3: Verify Configuration
+Wait 5-10 minutes, then:
+
+1. **Check DNS propagation**:
    ```bash
-   git add .
-   git commit -m "准备部署到GitHub Pages"
-   git push origin main
+   nslookup hydrate-move.lightyearai.info
    ```
 
-3. **配置GitHub Pages**
-   - [ ] 进入仓库设置 -> Pages
-   - [ ] 选择部署源（Source）为`gh-pages`分支
-   - [ ] 点击保存
+2. **Browser access**:
+   https://hydrate-move.lightyearai.info
 
-4. **触发自动部署**
-   - [ ] 推送代码到主分支会自动触发GitHub Actions工作流
-   - [ ] 等待部署完成（通常需要1-2分钟）
-   - [ ] 在仓库的Actions标签页查看部署状态
+## 📋 Deployment Checklist
 
-## 部署后验证
+### Pre-Deployment
+- [ ] Test locally with static server
+- [ ] Verify all assets load correctly
+- [ ] Check core functionality / 检查核心功能
+- [ ] Test notifications and reminders
+- [ ] Validate analytics configuration (if enabled)
 
-1. **访问部署网站**
-   - [ ] 访问`https://<username>.github.io/<repository-name>/`
-   - [ ] 确保页面正常加载
+### Post-Deployment
+- [x] Project deployed to Cloudflare Pages
+- [x] Domain corrected to lightyearai.info
+- [ ] Custom domain configured in Cloudflare
+- [ ] CNAME record added to domain DNS
+- [ ] DNS propagation completed (5-30 minutes)
+- [ ] Test access via custom domain
+- [ ] Verify HTTPS certificate
 
-2. **运行部署验证**
-   - [ ] 在URL后添加`?verify=true`参数
-   - [ ] 检查验证结果是否全部通过
+## 🚨 Important Notes
 
-3. **功能验证**
-   - [ ] 测试喝水提醒功能
-   - [ ] 测试久坐提醒功能
-   - [ ] 测试设置保存功能
-   - [ ] 测试通知功能
-   - [ ] 测试响应式设计（在移动设备上查看）
+### About Unregistered Domains
+- ✅ Cloudflare Pages supports unregistered domains
+- ⚠️ Access from China mainland may be unstable
+- ⚠️ Recommend testing from different network environments
 
-4. **兼容性检查**
-   - [ ] 在Chrome浏览器中测试
-   - [ ] 在Firefox浏览器中测试
-   - [ ] 在Safari浏览器中测试
-   - [ ] 在Edge浏览器中测试
-   - [ ] 在移动设备浏览器中测试
+### Troubleshooting
+If you encounter issues:
+1. Check DNS records are correct
+2. Confirm domain resolution has propagated
+3. Clear browser cache and DNS cache
+4. Contact domain provider support for DNS configuration help
 
-## 常见问题排查
+## 🎯 Final Access URLs
+- **Temporary URL**: https://db86eabf.hydrate-move.pages.dev
+- **Custom Domain**: https://hydrate-move.lightyearai.info (after configuration)
 
-### 页面无法访问
-- 检查仓库设置中的GitHub Pages配置是否正确
-- 确认部署是否成功完成
-- 检查URL是否正确（注意大小写）
+## 🔧 Alternative Deployment Options
 
-### 资源文件无法加载
-- 检查资源文件路径是否正确
-- 确保所有资源文件都已推送到仓库
-- 检查浏览器控制台是否有404错误
+### GitHub Pages
+1. Fork or clone the repository
+2. Push changes to the `main` branch
+3. Go to repository Settings → Pages
+4. Select source: "Deploy from a branch"
+5. Choose branch: `main` and folder: `/ (root)`
+6. Access at: `https://yourusername.github.io/hydrate-move/`
 
-### JavaScript错误
-- 检查浏览器控制台是否有错误信息
-- 确保所有依赖的JavaScript文件都已正确加载
-- 验证Service Worker注册是否成功
+### Netlify
+1. Connect your GitHub repository
+2. Set build command: (leave empty for static site)
+3. Set publish directory: `/` (root)
+4. Deploy automatically on push
 
-### 本地存储问题
-- 确保浏览器支持并启用了localStorage
-- 检查是否有足够的存储空间
-- 验证存储操作是否有错误
+### Vercel
+1. Import project from GitHub
+2. Framework preset: Other
+3. Build command: (leave empty)
+4. Output directory: `./`
+5. Deploy
 
-## 自定义域名设置（可选）
+## 📱 Browser Compatibility / 浏览器兼容性
+- Ensure cross-browser functionality / 确保跨浏览器功能
+- Test responsive design on mobile devices / 测试移动设备响应式设计
+- Verify notification permissions / 验证通知权限
+- Check timer accuracy across browsers / 检查定时器在各浏览器的准确性
 
-如果需要使用自定义域名，请按照以下步骤操作：
-
-1. 在DNS提供商处添加CNAME记录，指向`<username>.github.io`
-2. 在仓库根目录添加CNAME文件，内容为自定义域名
-3. 在GitHub仓库设置中的Pages部分，填写自定义域名
-4. 勾选"Enforce HTTPS"选项（如果可用）
-
-## 开发自动化说明
-
-本项目使用 Kiro AI Assistant 进行开发辅助，包含以下自动化功能：
-
-### 文档自动更新
-- 当代码发生变更时，系统会自动检查并更新相关文档
-- 包括 README.md、API 文档、用户指南等
-- 自动维护代码注释和内联文档的一致性
-
-### 配置文件
-- `.kiro/hooks/prompt-doc-updater.kiro.hook`: 文档更新自动化钩子
-- 版本 2: 增强了对代码注释和内联文档的检查
-
-## 联系与支持
-
-如有部署问题，请通过以下方式获取支持：
-- 提交GitHub Issue
-- 发送邮件至支持邮箱
-- 查阅GitHub Pages官方文档：https://docs.github.com/en/pages
+Start configuring your custom domain now!

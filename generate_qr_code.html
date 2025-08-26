@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二维码生成器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .qr-container {
+            margin: 30px 0;
+            padding: 20px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            background: #f9f9f9;
+        }
+        .url-info {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            font-family: monospace;
+            word-break: break-all;
+        }
+        .instructions {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>🍵 中文版网站二维码生成器</h1>
+    
+    <div class="url-info">
+        <strong>目标域名：</strong><br>
+        https://hydrate-move.lightyearai.info/zh/
+    </div>
+    
+    <div class="qr-container">
+        <h3>二维码（300x300像素）</h3>
+        <img id="qrcode" src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https://hydrate-move.lightyearai.info/zh/" 
+             alt="中文版网站二维码" 
+             style="max-width: 100%; border: 1px solid #ccc;">
+    </div>
+    
+    <div class="instructions">
+        <h4>📋 使用说明：</h4>
+        <ol>
+            <li>右键点击上方二维码图片</li>
+            <li>选择"图片另存为"</li>
+            <li>保存为 <code>qr_code_zh.png</code></li>
+            <li>这个二维码可以用于下午茶彩蛋的分享图片中</li>
+        </ol>
+    </div>
+    
+    <div class="qr-container">
+        <h3>高清版本（500x500像素）</h3>
+        <img src="https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=https://hydrate-move.lightyearai.info/zh/" 
+             alt="中文版网站二维码（高清）" 
+             style="max-width: 100%; border: 1px solid #ccc;">
+        <p><small>适合用于印刷或大尺寸显示</small></p>
+    </div>
+    
+    <div style="margin-top: 40px; padding: 20px; background: #f0f8ff; border-radius: 5px;">
+        <h4>🎨 下一步：制作分享图片</h4>
+        <p>将这个二维码与 <code>drink_tea.jpeg</code> 梗图合成，制作完整的分享图片：</p>
+        <ul style="text-align: left; display: inline-block;">
+            <li>梗图：drink_tea.jpeg</li>
+            <li>二维码：qr_code_zh.png</li>
+            <li>文案："三点几啦！饮茶先啦！"</li>
+            <li>域名：hydrate-move.lightyearai.info/zh</li>
+        </ul>
+    </div>
+</body>
+</html>

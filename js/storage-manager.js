@@ -1,12 +1,13 @@
 /**
- * Storage Manager - Manages browser local storage operations
- * Responsible for localStorage read/write, error handling, and storage availability detection
+ * Storage Manager - Simple localStorage wrapper
+ * Basic read/write operations for app settings
  */
 class StorageManager {
     constructor() {
-        this.storagePrefix = 'wellness_reminder_';
+        this.STORAGE_PREFIX = 'wellness-reminder';
+        this.SETTINGS_KEY = STORAGE_CONSTANTS.SETTINGS_KEY;
         this.isStorageAvailable = this.checkStorageAvailability();
-        this.memoryStorage = new Map(); // Backup memory storage
+        this.memoryStorage = new Map(); // Fallback memory storage
     }
 
     /**
@@ -15,7 +16,7 @@ class StorageManager {
      */
     checkStorageAvailability() {
         try {
-            const testKey = this.storagePrefix + 'test';
+            const testKey = this.STORAGE_PREFIX + '.test';
             localStorage.setItem(testKey, 'test');
             localStorage.removeItem(testKey);
             return true;
@@ -26,63 +27,22 @@ class StorageManager {
     }
 
     /**
-     * Save settings to storage
+     * Save data to storage (unified API)
      * @param {string} key - Storage key name
      * @param {any} data - Data to save
      * @returns {boolean} Whether save was successful
      */
     saveSettings(key, data) {
-        try {
-            const fullKey = this.storagePrefix + key;
-            const jsonData = JSON.stringify(data);
-            
-            if (this.isStorageAvailable) {
-                localStorage.setItem(fullKey, jsonData);
-            } else {
-                // Use memory storage as fallback
-                this.memoryStorage.set(fullKey, jsonData);
-            }
-            
-            return true;
-        } catch (error) {
-            console.error('Failed to save settings:', error);
-            // Try using memory storage
-            try {
-                const fullKey = this.storagePrefix + key;
-                this.memoryStorage.set(fullKey, JSON.stringify(data));
-                return true;
-            } catch (memError) {
-                console.error('Memory storage also failed:', memError);
-                return false;
-            }
-        }
+        return this.setItem(key, data);
     }
 
     /**
-     * Load settings from storage
+     * Load data from storage (unified API)
      * @param {string} key - Storage key name
      * @returns {any|null} Loaded data, returns null on failure
      */
     loadSettings(key) {
-        try {
-            const fullKey = this.storagePrefix + key;
-            let jsonData = null;
-            
-            if (this.isStorageAvailable) {
-                jsonData = localStorage.getItem(fullKey);
-            } else {
-                jsonData = this.memoryStorage.get(fullKey);
-            }
-            
-            if (jsonData === null || jsonData === undefined) {
-                return null;
-            }
-            
-            return JSON.parse(jsonData);
-        } catch (error) {
-            console.error('Failed to load settings:', error);
-            return null;
-        }
+        return this.getItem(key);
     }
 
     /**
@@ -96,7 +56,7 @@ class StorageManager {
                 const keysToRemove = [];
                 for (let i = 0; i < localStorage.length; i++) {
                     const key = localStorage.key(i);
-                    if (key && key.startsWith(this.storagePrefix)) {
+                    if (key && key.startsWith(this.STORAGE_PREFIX)) {
                         keysToRemove.push(key);
                     }
                 }
@@ -143,7 +103,7 @@ class StorageManager {
                     const size = localStorage[key].length;
                     totalSize += size;
                     
-                    if (key.startsWith(this.storagePrefix)) {
+                    if (key.startsWith(this.STORAGE_PREFIX)) {
                         appSize += size;
                     }
                 }
@@ -166,62 +126,105 @@ class StorageManager {
     }
 
     /**
-     * Backup all application data
-     * @returns {object|null} Backup data object
+     * Generate storage key with unified naming convention
+     * @private
      */
-    backupData() {
+    generateStorageKey(key) {
+        const keyStr = String(key || '');
+        return `${this.STORAGE_PREFIX}.${keyStr}`;
+    }
+
+    /**
+     * Save data to storage (setItem API)
+     * @param {string} key - Storage key name
+     * @param {any} data - Data to save
+     * @returns {boolean} Whether save was successful
+     */
+    setItem(key, data) {
         try {
-            const backup = {};
-            
             if (this.isStorageAvailable) {
-                for (let i = 0; i < localStorage.length; i++) {
-                    const key = localStorage.key(i);
-                    if (key && key.startsWith(this.storagePrefix)) {
-                        const shortKey = key.replace(this.storagePrefix, '');
-                        backup[shortKey] = JSON.parse(localStorage.getItem(key));
-                    }
-                }
+                const fullKey = this.generateStorageKey(key);
+                localStorage.setItem(fullKey, JSON.stringify(data));
             } else {
-                // Backup from memory storage
-                this.memoryStorage.forEach((value, key) => {
-                    if (key.startsWith(this.storagePrefix)) {
-                        const shortKey = key.replace(this.storagePrefix, '');
-                        backup[shortKey] = JSON.parse(value);
-                    }
-                });
+                // Use memory storage as fallback
+                this.memoryStorage.set(key, data);
             }
-            
-            return backup;
+            return true;
         } catch (error) {
-            console.error('Failed to backup data:', error);
+            console.error('Failed to save to storage:', error);
+            return false;
+        }
+    }
+
+    /**
+     * Load data from storage (getItem API)
+     * @param {string} key - Storage key name
+     * @returns {any|null} Loaded data, returns null on failure
+     */
+    getItem(key) {
+        try {
+            if (this.isStorageAvailable) {
+                const fullKey = this.generateStorageKey(key);
+                const data = localStorage.getItem(fullKey);
+                return data ? JSON.parse(data) : null;
+            } else {
+                // Use memory storage as fallback
+                return this.memoryStorage.get(key) || null;
+            }
+        } catch (error) {
+            console.error('Failed to load from storage:', error);
             return null;
         }
     }
 
     /**
-     * Restore backup data
-     * @param {object} backupData - Backup data object
-     * @returns {boolean} Whether restoration was successful
+     * Remove item from storage
+     * @param {string} key - Storage key name
+     * @returns {boolean} Whether removal was successful
      */
-    restoreData(backupData) {
+    removeItem(key) {
         try {
-            if (!backupData || typeof backupData !== 'object') {
-                throw new Error('Invalid backup data');
+            if (this.isStorageAvailable) {
+                const fullKey = this.generateStorageKey(key);
+                localStorage.removeItem(fullKey);
+            } else {
+                this.memoryStorage.delete(key);
+            }
+            return true;
+        } catch (error) {
+            console.error('Failed to remove from storage:', error);
+            return false;
+        }
+    }
+
+    /**
+     * Clear all application data
+     * @returns {boolean} Whether clearing was successful
+     */
+    clearAllData() {
+        try {
+            if (this.isStorageAvailable) {
+                // Clear all localStorage items that start with the app prefix
+                const keysToRemove = [];
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    if (key && key.startsWith(this.STORAGE_PREFIX)) {
+                        keysToRemove.push(key);
+                    }
+                }
+                keysToRemove.forEach(key => localStorage.removeItem(key));
             }
             
-            for (const [key, value] of Object.entries(backupData)) {
-                this.saveSettings(key, value);
-            }
+            // Clear memory storage
+            this.memoryStorage.clear();
             
             return true;
         } catch (error) {
-            console.error('Failed to restore data:', error);
+            console.error('Failed to clear data:', error);
             return false;
         }
     }
 }
 
-// Export class for use by other modules
-if (typeof module !== 'undefined' && module.exports) {
-    module.exports = StorageManager;
-}
+// Export for browser use
+window.StorageManager = StorageManager;

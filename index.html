@@ -1,319 +1,408 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="theme-color" content="#2c3e50">
-    <title>Office Wellness Reminder</title>
-    <meta name="description" content="An application to help office workers develop healthy work habits with water and standup reminders">
-    <link rel="stylesheet" href="styles/main.css">
+
+    <!-- 性能优化 -->
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="en-US">
+    <meta name="author" content="Hydrate Move Team">
+    <meta name="keywords"
+        content="office wellness, water reminder, standup reminder, health timer, productivity, work habits, hydration tracker, posture break">
+
+    <!-- 社交媒体优化 -->
+    <meta property="og:title" content="Hydrate Move - Free Office Wellness Timer">
+    <meta property="og:description"
+        content="Free browser-based office wellness timer that reminds you to drink water and stand up every 30 minutes. Works in any modern browser.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://hydrate-move.lightyearai.info/">
+    <meta property="og:image" content="https://hydrate-move.lightyearai.info/assets/og-image.png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Hydrate Move - Free Office Wellness Timer">
+    <meta name="twitter:description"
+        content="Smart reminders for office workers to stay hydrated and take movement breaks">
+    <meta name="twitter:image" content="https://hydrate-move.lightyearai.info/assets/twitter-card.png">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>Hydrate Move - Free Office Wellness Timer</title>
+    <meta name="description"
+        content="Free browser-based office wellness timer that reminds you to drink water and stand up every 30 minutes. Works in any modern browser.">
+    <link rel="preload" href="styles/main.css?v=1.0.7" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="styles/main.css?v=1.0.7">
+    </noscript>
     <link rel="icon" href="assets/favicon.ico" type="image/x-icon">
-    <link rel="apple-touch-icon" href="assets/standup-icon.png">
-    <link rel="manifest" href="manifest.json">
+
+    <!-- hreflang标记 -->
+    <link rel="alternate" hreflang="en" href="https://hydrate-move.lightyearai.info/">
+    <link rel="alternate" hreflang="zh-CN" href="https://hydrate-move.lightyearai.info/zh/">
+    <link rel="alternate" hreflang="x-default" href="https://hydrate-move.lightyearai.info/">
+
+    <!-- 结构化数据 JSON-LD -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Hydrate Move",
+        "description": "Free browser-based office wellness timer that reminds you to drink water and stand up every 30 minutes.",
+        "url": "https://hydrate-move.lightyearai.info/",
+        "applicationCategory": "HealthApplication",
+        "operatingSystem": "Web",
+        "offers": {
+            "@type": "Offer",
+            "price": "0"
+        },
+        "featureList": ["water reminder", "stand-up reminder", "browser-based", "no installation required"],
+        "author": {
+            "@type": "Organization",
+            "name": "Hydrate Move Team"
+        },
+        "keywords": "office wellness, water reminder, standup reminder, health timer, productivity, work habits"
+    }
+    </script>
+
+    <!-- Baidu Analytics -->
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            try {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?44c1c4380ba833e8a8d594886bf282db";
+                hm.async = true;
+                hm.defer = true;
+                
+                // 添加超时处理
+                var timeout = setTimeout(function() {
+                    console.warn('Baidu Analytics loading timeout');
+                }, 10000);
+                
+                hm.onerror = function() {
+                    clearTimeout(timeout);
+                    console.warn('Baidu Analytics script failed to load (may be blocked)');
+                };
+                
+                hm.onload = function() {
+                    clearTimeout(timeout);
+                    console.log('✅ Baidu Analytics script loaded successfully');
+                    // 确保_hmt数组可用
+                    window._hmt = window._hmt || [];
+                };
+                
+                var s = document.getElementsByTagName("script")[0];
+                s.parentNode.insertBefore(hm, s);
+            } catch (error) {
+                console.warn('Baidu Analytics initialization failed:', error);
+            }
+        })();
+    </script>
 </head>
+
 <body>
     <div id="app">
         <!-- Main Control Panel -->
-        <main class="main-panel">
+        <main class="main-panel" role="main">
             <header class="app-header">
-                <h1>Office Wellness Reminder</h1>
-                <p class="app-subtitle">Maintain Healthy Work Habits</p>
-                <div class="app-status-summary" id="app-status-summary">
-                    <div class="status-indicator active" id="app-status-indicator"></div>
-                    <span id="app-status-text">Wellness Reminders Active</span>
+                <h1>Hydrate Move</h1>
+                <p class="app-subtitle">Office Wellness Reminder - Maintain Healthy Work Habits</p>
+
+                <!-- SEO optimized content - hidden from visual display -->
+                <div class="seo-hidden">
+                    <p>Stay hydrated and take movement breaks every 30 minutes. Free privacy-first office wellness timer
+                        that works offline with no registration required.</p>
+                    <h2>Office Wellness Timer Features</h2>
+                    <ul>
+                        <li>Water reminder every 30 minutes for better hydration</li>
+                        <li>Standup reminder for posture breaks and movement</li>
+                        <li>Browser-based application with no installation required</li>
+                        <li>Privacy-first design with local storage only</li>
+                        <li>Free office productivity tool for remote workers</li>
+                    </ul>
+                </div>
+
+                <!-- Demo Section -->
+                <div class="demo-section">
+                    <button class="btn-demo" id="demo-btn"
+                        aria-label="Start demo mode to see how reminders work">Demo</button>
+                    <div class="demo-status" id="demo-status" role="status" aria-live="polite">Click Demo to see how
+                        reminders work</div>
                 </div>
             </header>
 
             <!-- Status Display Area -->
-            <section class="status-section">
-                <div class="reminder-card" id="water-card">
+            <section class="status-section" aria-label="Wellness Reminders">
+                <article class="reminder-card" id="water-card" aria-labelledby="water-title">
                     <div class="card-header">
-                        <div class="card-icon water-icon"></div>
-                        <h3>Water Reminder</h3>
-                        <div class="status-badge" id="water-status-badge">Inactive</div>
+                        <div class="card-icon water-icon" aria-hidden="true"></div>
+                        <h3 id="water-title">Water Reminder</h3>
                     </div>
                     <div class="card-content">
                         <div class="status-info">
-                            <div class="status-display" id="water-status">Inactive</div>
-                            <div class="time-remaining" id="water-time"></div>
+                            <span class="next-reminder-label">Remind every:</span>
+                            <div class="time-remaining" id="water-time">
+                                <time datetime="PT30M" class="interval-display">30 mins</time>
+                            </div>
                         </div>
                         <div class="daily-stats" id="water-stats">
-                            <span class="stats-text">Today: 0/8 glasses</span>
-                            <div class="progress-bar">
-                                <div class="progress-fill" id="water-progress"></div>
+                            <div class="countdown-info">
+                                <span class="stats-text">Remind after:</span>
+                                <span class="countdown-time" id="water-countdown">Loading...</span>
                             </div>
                         </div>
-                        <div class="next-reminder" id="water-next-reminder">
-                            <span class="next-reminder-label">Remind every:</span>
-                            <span class="next-reminder-time" id="water-next-time">--:--</span>
-                        </div>
+
                     </div>
                     <div class="card-controls">
-                        <button class="btn-primary" id="water-toggle">Start</button>
-                        <button class="btn-secondary" id="water-reset" style="display: none;">Reset</button>
-                        <button class="btn-action" id="waterDrink" style="display: none;">Hydrated</button>
+                        <button class="btn-primary" id="water-toggle"
+                            aria-label="Start water reminder timer">Start</button>
                     </div>
-                </div>
+                </article>
 
-                <div class="reminder-card" id="posture-card">
+                <article class="reminder-card" id="standup-card" aria-labelledby="standup-title">
                     <div class="card-header">
-                        <div class="card-icon posture-icon"></div>
-                        <h3>Standup Reminder</h3>
-                        <div class="status-badge" id="posture-status-badge">Inactive</div>
+                        <div class="card-icon standup-icon" aria-hidden="true"></div>
+                        <h3 id="standup-title">Standup Reminder</h3>
                     </div>
                     <div class="card-content">
                         <div class="status-info">
-                            <div class="status-display" id="posture-status">Inactive</div>
-                            <div class="time-remaining" id="posture-time"></div>
-                        </div>
-                        <div class="daily-stats" id="posture-stats">
-                            <span class="stats-text">Today: 0/8 activities</span>
-                            <div class="progress-bar">
-                                <div class="progress-fill" id="posture-progress"></div>
+                            <span class="next-reminder-label">Remind every:</span>
+                            <div class="time-remaining" id="standup-time">
+                                <time datetime="PT30M" class="interval-display">30 mins</time>
                             </div>
                         </div>
-                        <div class="next-reminder" id="posture-next-reminder">
-                            <span class="next-reminder-label">Remind every:</span>
-                            <span class="next-reminder-time" id="posture-next-time">--:--</span>
+                        <div class="daily-stats" id="standup-stats">
+                            <div class="countdown-info">
+                                <span class="stats-text">Remind after:</span>
+                                <span class="countdown-time" id="standup-countdown">Loading...</span>
+                            </div>
                         </div>
-                        <div class="activity-status" id="activity-status">
-                            <span class="activity-status-label">Activity status:</span>
-                            <span class="activity-status-value" id="activity-status-value">Active</span>
-                        </div>
+
+
                     </div>
                     <div class="card-controls">
-                        <button class="btn-primary" id="posture-toggle">Start</button>
-                        <button class="btn-secondary" id="posture-reset" style="display: none;">Reset</button>
-                        <button class="btn-action" id="postureActivity" style="display: none;">Moved</button>
+                        <button class="btn-primary" id="standup-toggle"
+                            aria-label="Start standup reminder timer">Start</button>
                     </div>
-                </div>
+                </article>
             </section>
 
-            <!-- Quick Actions Area -->
-            <section class="quick-actions">
-                <div class="quick-actions-group">
-                    <button class="btn-action" id="start-all-btn">Start All</button>
-                    <button class="btn-action" id="pause-all-btn">Pause All</button>
-                </div>
-                <div class="quick-actions-group">
-                    <button class="btn-action" id="settings-btn">Settings</button>
-                    <button class="btn-action" id="help-btn">Help</button>
-                </div>
-            </section>
-            
-            <!-- Status Summary Area -->
-            <section class="status-summary">
-                <div class="summary-card">
-                    <div class="summary-title">Today's Wellness Status</div>
-                    <div class="summary-content">
-                        <div class="summary-item">
-                            <span class="summary-label">Hydration count:</span>
-                            <span class="summary-value" id="water-count">0/8</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="summary-label">Activity count:</span>
-                            <span class="summary-value" id="posture-count">0/8</span>
-                        </div>
-                        <div class="summary-item">
-                            <span class="summary-label">Wellness score:</span>
-                            <span class="summary-value" id="health-score">--</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
+
+
+
         </main>
 
-        <!-- Settings Panel -->
-        <div class="settings-panel" id="settings-panel">
-            <div class="settings-header">
-                <h2>Settings</h2>
-                <button class="btn-close" id="settings-close">X</button>
-            </div>
-            <div class="settings-content">
-                <div class="settings-section">
-                    <h3>Water Reminder</h3>
-                    <div class="setting-item">
-                        <label class="switch">
-                            <input type="checkbox" id="water-enabled" checked>
-                            <span class="slider"></span>
-                        </label>
-                        <div class="setting-label">
-                            <span>Enable Water Reminder</span>
-                            <small>Reminds you to stay hydrated</small>
-                        </div>
-                    </div>
-                    <div class="setting-item">
-                        <label for="water-interval">Reminder Interval</label>
-                        <div class="setting-control">
-                            <input type="range" id="water-interval-slider" min="5" max="120" value="30" step="5">
-                            <div class="range-value">
-                                <input type="number" id="water-interval" min="5" max="120" value="30" style="width: 90px;"> minutes
-                            </div>
-                        </div>
-                    </div>
-                    <div class="setting-item">
-                        <label for="water-target">Daily Target</label>
-                        <div class="setting-control">
-                            <input type="number" id="water-target" min="1" max="20" value="8"> glasses
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="settings-section">
-                    <h3>Standup Reminder</h3>
-                    <div class="setting-item">
-                        <label class="switch">
-                            <input type="checkbox" id="posture-enabled" checked>
-                            <span class="slider"></span>
-                        </label>
-                        <div class="setting-label">
-                            <span>Enable Standup Reminder</span>
-                            <small>Reminds you to take breaks from sitting</small>
-                        </div>
-                    </div>
-                    <div class="setting-item">
-                        <label for="posture-interval">Reminder Interval</label>
-                        <div class="setting-control">
-                            <input type="range" id="posture-interval-slider" min="15" max="120" value="30" step="5">
-                            <div class="range-value">
-                                <input type="number" id="posture-interval" min="15" max="120" value="30" style="width: 90px;"> minutes
-                            </div>
-                        </div>
-                    </div>
-                    <div class="setting-item">
-                        <label for="posture-target">Daily Target</label>
-                        <div class="setting-control">
-                            <input type="number" id="posture-target" min="1" max="20" value="8"> activities
-                        </div>
-                    </div>
-                    <div class="setting-item">
-                        <label class="switch">
-                            <input type="checkbox" id="activity-detection" checked>
-                            <span class="slider"></span>
-                        </label>
-                        <div class="setting-label">
-                            <span>Activity Detection</span>
-                            <small>Reset timer when activity is detected</small>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="settings-section">
-                    <h3>Notification Settings</h3>
-                    <div class="setting-item">
-                        <label class="switch">
-                            <input type="checkbox" id="browser-notifications" checked>
-                            <span class="slider"></span>
-                        </label>
-                        <div class="setting-label">
-                            <span>Desktop Notifications</span>
-                            <small>Show notifications on system desktop</small>
-                        </div>
-                    </div>
-                    <div class="setting-item">
-                        <label class="switch">
-                            <input type="checkbox" id="sound-enabled" checked>
-                            <span class="slider"></span>
-                        </label>
-                        <div class="setting-label">
-                            <span>Sound Alerts</span>
-                            <small>Play notification sounds</small>
-                        </div>
-                    </div>
-                    <div class="setting-item">
-                        <label for="notification-style">Notification Style</label>
-                        <div class="setting-control">
-                            <select id="notification-style">
-                                <option value="standard">Standard</option>
-                                <option value="minimal">Minimal</option>
-                                <option value="detailed">Detailed</option>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="settings-section">
-                    <h3>Appearance</h3>
-                    <div class="setting-item">
-                        <label for="theme-selector">Theme</label>
-                        <div class="setting-control theme-selector" id="theme-selector">
-                            <button class="theme-option active" data-theme="light">
-                                <div class="theme-preview light-theme"></div>
-                                <span>Light</span>
-                            </button>
-                            <button class="theme-option" data-theme="dark">
-                                <div class="theme-preview dark-theme"></div>
-                                <span>Dark</span>
-                            </button>
-                            <button class="theme-option" data-theme="auto">
-                                <div class="theme-preview auto-theme"></div>
-                                <span>Auto</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="settings-footer">
-                <button class="btn-secondary" id="reset-settings">Reset</button>
-                <button class="btn-primary" id="save-settings">Save</button>
-            </div>
-        </div>
 
-        <!-- Notification Popup -->
-        <div class="notification-overlay" id="notification-overlay">
-            <div class="notification-modal">
-                <div class="notification-icon water-icon" id="notification-icon"></div>
-                <div class="notification-content">
-                    <h3 id="notification-title">Time to hydrate!</h3>
-                    <p id="notification-message">Remember to drink water for better health</p>
-                </div>
-                <div class="notification-actions">
-                    <button class="btn-primary" id="notification-confirm">Done</button>
-                    <button class="btn-secondary" id="notification-snooze">Remind Later</button>
-                </div>
-            </div>
-        </div>
 
-        <!-- Help Panel -->
-        <div class="help-overlay" id="help-overlay">
-            <div class="help-modal">
-                <div class="help-header">
-                    <h2>Help Guide</h2>
-                    <button class="btn-close" id="help-close">X</button>
-                </div>
-                <div class="help-content">
-                    <h3>Features</h3>
-                    <ul>
-                        <li><strong>Water Reminder</strong>: Reminds you to stay hydrated</li>
-                        <li><strong>Standup Reminder</strong>: Reminds you to take breaks from sitting</li>
-                        <li><strong>Smart Detection</strong>: Automatically detects your activity status</li>
-                    </ul>
-                    
-                    <h3>How to Use</h3>
-                    <ol>
-                        <li>Click "Start" button to activate reminders</li>
-                        <li>Adjust reminder intervals in settings</li>
-                        <li>Click "Done" when you receive a reminder</li>
-                    </ol>
-                </div>
-            </div>
-        </div>
+
+
     </div>
 
+    <!-- Version Control for Cache Busting -->
+    <script src="version.js?v=1.0.7" onerror="console.error('Failed to load version.js')"></script>
+
     <!-- JavaScript Files -->
-    <script src="js/error-handler.js"></script>
-    <script src="js/storage-manager.js"></script>
-    <script src="js/app-settings.js"></script>
-    <script src="js/notification-service.js"></script>
-    <script src="js/activity-detector.js"></script>
-    <script src="js/reminder-manager.js"></script>
-    <script src="js/water-reminder.js"></script>
-    <script src="js/standup-reminder.js"></script>
-    <script src="js/mobile-adapter.js"></script>
-    <script src="js/ui-controller.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/deployment-verification.js"></script>
+    <script src="js/constants.js?v=1.0.7" onerror="console.error('Failed to load constants.js')"></script>
+    <script src="js/analytics.js?v=1.0.7" onerror="console.error('Failed to load analytics.js')"></script>
+    <script src="js/demo-controller.js?v=1.0.7" onerror="console.error('Failed to load demo-controller.js')"></script>
+    <script src="js/error-handler.js?v=1.0.7" onerror="console.error('Failed to load error-handler.js')"></script>
+    <script src="js/storage-manager.js?v=1.0.7" onerror="console.error('Failed to load storage-manager.js')"></script>
+    <script src="js/app-settings.js?v=1.0.7" onerror="console.error('Failed to load app-settings.js')"></script>
+    <script src="js/notification-service.js?v=1.0.7"
+        onerror="console.error('Failed to load notification-service.js')"></script>
+    <script src="js/reminder-manager.js?v=1.0.7" onerror="console.error('Failed to load reminder-manager.js')"></script>
+    <script src="js/water-reminder.js?v=1.0.7" onerror="console.error('Failed to load water-reminder.js')"></script>
+    <script src="js/standup-reminder.js?v=1.0.7" onerror="console.error('Failed to load standup-reminder.js')"></script>
+    <script src="js/mobile-adapter.js?v=1.0.7" onerror="console.error('Failed to load mobile-adapter.js')"></script>
+    <script src="js/ui-controller.js?v=1.0.7" onerror="console.error('Failed to load ui-controller.js')"></script>
+    <script src="js/feedback-button.js?v=1.0.7" onerror="console.error('Failed to load feedback-button.js')"></script>
+    <!-- Coffee Break feature (English version) -->
+    <script src="js/afternoon-tea-reminder.js?v=1.0.7" onerror="console.error('Failed to load afternoon-tea-reminder.js')"></script>
+    <script src="js/app.js?v=1.0.7" onerror="console.error('Failed to load app.js')"></script>
+
+    <!-- Script Loading Verification -->
+    <script>
+        console.log('All scripts loaded, checking class availability...');
+        const expectedClasses = [
+            'ErrorHandler', 'StorageManager', 'AppSettings',
+            'NotificationService', 'ReminderManager',
+            'WaterReminder', 'StandupReminder', 'UIController', 'MobileAdapter', 'DemoController', 'Analytics', 'OfficeWellnessApp', 'FeedbackButton', 'AfternoonTeaReminder'
+        ];
+
+        expectedClasses.forEach(className => {
+            const exists = window[className] !== undefined;
+            console.log(`${exists ? '✅' : '❌'} ${className}: ${exists ? 'Available' : 'Missing'}`);
+        });
+    </script>
+
+    <!-- Application Initialization -->
+    <script>
+        // Application initialization
+        let app;
+
+        async function initializeApp() {
+            try {
+                console.log('Initializing Office Wellness App...');
+                
+                // Skip diagnostic checks - debug helper not available
+
+                // Check if required classes exist
+                const requiredClasses = [
+            'ErrorHandler', 'StorageManager', 'AppSettings',
+            'NotificationService', 'ReminderManager',
+            'WaterReminder', 'StandupReminder', 'UIController', 'MobileAdapter', 'DemoController', 'Analytics', 'OfficeWellnessApp', 'FeedbackButton', 'AfternoonTeaReminder'
+        ];
+
+                // Debug: Log all class availability
+                console.log('Checking class availability:');
+                requiredClasses.forEach(className => {
+                    const exists = window[className] !== undefined;
+                    console.log(`${exists ? '✅' : '❌'} ${className}: ${exists ? 'Available' : 'Missing'}`);
+                });
+
+                const missingClasses = requiredClasses.filter(className => !window[className]);
+                if (missingClasses.length > 0) {
+                    console.error('Missing classes:', missingClasses);
+                    
+                    // Attempt to reload after delay to show error message
+                    setTimeout(() => {
+                        if (confirm('Application loading issue detected. Refresh page?')) {
+                            location.reload(true);
+                        }
+                    }, 2000);
+                    
+                    throw new Error(`Missing required classes: ${missingClasses.join(', ')}`);
+                }
+
+                // Hide startup error notification (if exists)
+                hideStartupError();
+
+                app = new OfficeWellnessApp();
+                await app.initialize();
+                console.log('App initialized successfully');
+
+                // Show success status
+                showAppStatus('success', 'Application loaded successfully');
+
+            } catch (error) {
+                console.error('App initialization failed:', error);
+                showAppStatus('error', 'Application failed to start: ' + error.message);
+                showStartupError(error);
+
+                // If debug helper is available, show detailed diagnostics
+                if (typeof runDiagnostics === 'function') {
+                    console.log('Running detailed diagnostics...');
+                    runDiagnostics();
+                }
+            }
+        }
+
+        function showAppStatus(type, message) {
+            const statusIndicator = document.getElementById('app-status-indicator');
+            const statusText = document.getElementById('app-status-text');
+
+            if (statusIndicator && statusText) {
+                statusIndicator.className = `status-indicator ${type}`;
+                statusText.textContent = message;
+            }
+        }
+
+        function showStartupError(error) {
+            // Remove existing error notification
+            const existingError = document.getElementById('startup-error');
+            if (existingError) {
+                existingError.remove();
+            }
+
+            // Create error notification
+            const notification = document.createElement('div');
+            notification.id = 'startup-error';
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #e74c3c;
+                color: white;
+                padding: 15px 25px;
+                border-radius: 8px;
+                z-index: 10000;
+                font-family: Arial, sans-serif;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                max-width: 500px;
+                text-align: center;
+            `;
+
+            notification.innerHTML = `
+                <div style="font-weight: bold; margin-bottom: 8px;">Application Startup Failed</div>
+                <div style="font-size: 14px; margin-bottom: 12px;">${error.message}</div>
+                <button onclick="location.reload()" style="
+                    background: white;
+                    color: #e74c3c;
+                    border: none;
+                    padding: 8px 16px;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    font-weight: bold;
+                ">Refresh Page</button>
+            `;
+
+            document.body.appendChild(notification);
+
+            // Auto-hide after 10 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 10000);
+        }
+
+        function hideStartupError() {
+            const existingError = document.getElementById('startup-error');
+            if (existingError) {
+                existingError.remove();
+            }
+        }
+
+        // Simplified initialization - no fallback handlers needed
+        function ensureAppAvailability() {
+            // Make app globally available for debugging
+            if (app) {
+                window.app = app;
+            }
+        }
+
+
+
+        // Initialize app when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                initializeApp();
+                ensureAppAvailability();
+            });
+        } else {
+            initializeApp();
+            ensureAppAvailability();
+        }
+
+        // Add global error handling
+        window.addEventListener('error', function (event) {
+            console.error('Global error:', event.error);
+            console.error('Error details:', {
+                message: event.message,
+                filename: event.filename,
+                lineno: event.lineno,
+                colno: event.colno
+            });
+            showAppStatus('error', 'Runtime error occurred: ' + event.message);
+        });
+
+        window.addEventListener('unhandledrejection', function (event) {
+            console.error('Unhandled promise rejection:', event.reason);
+            showAppStatus('error', 'Promise rejection occurred');
+        });
+    </script>
 </body>
+
 </html>
