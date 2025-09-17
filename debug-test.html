@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>调试模式测试 - 起来饮</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .test-title {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        .test-button {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #2980b9;
+        }
+        .test-result {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            border-left: 4px solid #3498db;
+        }
+        .url-examples {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        .url-example {
+            display: block;
+            background: #2c3e50;
+            color: white;
+            padding: 8px;
+            margin: 5px 0;
+            border-radius: 3px;
+            text-decoration: none;
+            font-family: monospace;
+        }
+        .url-example:hover {
+            background: #34495e;
+        }
+        .console-output {
+            background: #2c3e50;
+            color: #00ff00;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1 class="test-title">🔧 调试模式功能测试</h1>
+        <p>这个页面用于测试URL参数调试模式的各项功能。</p>
+        
+        <div class="url-examples">
+            <h3>📖 测试URL示例：</h3>
+            <a href="?debug=1" class="url-example" target="_blank">
+                ?debug=1 - 启用基础调试模式
+            </a>
+            <a href="?debug=1&reset=true" class="url-example" target="_blank">
+                ?debug=1&reset=true - 启用调试模式并重置状态
+            </a>
+            <a href="?debug=1&trigger=break" class="url-example" target="_blank">
+                ?debug=1&trigger=break - 强制触发下午茶
+            </a>
+            <a href="?debug=1&trigger=lunch" class="url-example" target="_blank">
+                ?debug=1&trigger=lunch - 强制触发午餐
+            </a>
+            <a href="?debug=1&break_time=16:05" class="url-example" target="_blank">
+                ?debug=1&break_time=16:05 - 设置下午茶时间
+            </a>
+            <a href="?debug=1&lunch_time=12:30" class="url-example" target="_blank">
+                ?debug=1&lunch_time=12:30 - 设置午餐时间
+            </a>
+            <a href="?debug=1&break_time=16:05&lunch_time=12:30&reset=true" class="url-example" target="_blank">
+                完整测试 - 设置时间+重置+调试模式
+            </a>
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2 class="test-title">🛠️ 手动测试功能</h2>
+        <p>当调试模式启用时，以下按钮可用于测试功能：</p>
+        
+        <button class="test-button" onclick="runDebugTest()">运行调试测试</button>
+        <button class="test-button" onclick="checkTestEasterEgg()">检查testEasterEgg对象</button>
+        <button class="test-button" onclick="showDebugInfo()">显示调试信息</button>
+        <button class="test-button" onclick="testTimeSettings()">测试时间设置</button>
+        <button class="test-button" onclick="clearConsoleOutput()">清空输出</button>
+        
+        <div class="test-result" id="test-results">
+            测试结果将显示在这里...
+        </div>
+    </div>
+
+    <div class="test-container">
+        <h2 class="test-title">📋 控制台输出</h2>
+        <div class="console-output" id="console-output">
+            控制台消息将显示在这里...
+        </div>
+    </div>
+
+    <!-- 加载必要的脚本 -->
+    <script src="js/constants.js?v=1.0.4"></script>
+    <script src="js/debug-mode.js?v=1.0.4"></script>
+
+    <script>
+        // 重写console.log以捕获输出
+        const originalConsoleLog = console.log;
+        const originalConsoleError = console.error;
+        const originalConsoleWarn = console.warn;
+        let consoleMessages = [];
+
+        function captureConsole(type, args) {
+            const message = Array.from(args).map(arg => 
+                typeof arg === 'object' ? JSON.stringify(arg, null, 2) : String(arg)
+            ).join(' ');
+            
+            consoleMessages.push(`[${type.toUpperCase()}] ${new Date().toLocaleTimeString()} - ${message}`);
+            updateConsoleOutput();
+        }
+
+        console.log = function(...args) {
+            originalConsoleLog.apply(console, args);
+            captureConsole('log', args);
+        };
+
+        console.error = function(...args) {
+            originalConsoleError.apply(console, args);
+            captureConsole('error', args);
+        };
+
+        console.warn = function(...args) {
+            originalConsoleWarn.apply(console, args);
+            captureConsole('warn', args);
+        };
+
+        function updateConsoleOutput() {
+            const output = document.getElementById('console-output');
+            if (output) {
+                output.innerHTML = consoleMessages.slice(-20).join('\n');
+                output.scrollTop = output.scrollHeight;
+            }
+        }
+
+        function clearConsoleOutput() {
+            consoleMessages = [];
+            updateConsoleOutput();
+        }
+
+        function updateTestResults(message) {
+            const results = document.getElementById('test-results');
+            if (results) {
+                results.innerHTML = `${new Date().toLocaleTimeString()} - ${message}`;
+            }
+        }
+
+        function runDebugTest() {
+            try {
+                updateTestResults('开始运行调试测试...');
+                
+                // 检查调试模式管理器
+                if (window.debugModeManager) {
+                    console.log('✅ 调试模式管理器已加载');
+                    console.log('调试模式状态:', window.debugModeManager.isDebugMode);
+                } else {
+                    console.warn('❌ 调试模式管理器未找到');
+                }
+                
+                // 检查URL参数
+                const urlParams = new URLSearchParams(window.location.search);
+                const debugParam = urlParams.get('debug');
+                console.log('URL调试参数:', debugParam);
+                
+                updateTestResults('调试测试完成，请查看控制台输出');
+            } catch (error) {
+                console.error('调试测试失败:', error);
+                updateTestResults('调试测试失败: ' + error.message);
+            }
+        }
+
+        function checkTestEasterEgg() {
+            try {
+                if (window.testEasterEgg) {
+                    console.log('✅ testEasterEgg对象存在');
+                    console.log('可用方法:', Object.keys(window.testEasterEgg));
+                    
+                    // 测试新增的调试方法
+                    if (window.testEasterEgg.help) {
+                        console.log('🔧 调用help方法:');
+                        window.testEasterEgg.help();
+                    }
+                    
+                    updateTestResults('testEasterEgg对象检查完成');
+                } else {
+                    console.warn('❌ testEasterEgg对象未找到');
+                    updateTestResults('testEasterEgg对象未找到');
+                }
+            } catch (error) {
+                console.error('检查testEasterEgg失败:', error);
+                updateTestResults('检查失败: ' + error.message);
+            }
+        }
+
+        function showDebugInfo() {
+            try {
+                if (window.testEasterEgg && window.testEasterEgg.getDebugInfo) {
+                    const info = window.testEasterEgg.getDebugInfo();
+                    updateTestResults('调试信息已输出到控制台');
+                } else {
+                    console.warn('getDebugInfo方法不可用');
+                    updateTestResults('getDebugInfo方法不可用');
+                }
+            } catch (error) {
+                console.error('获取调试信息失败:', error);
+                updateTestResults('获取调试信息失败: ' + error.message);
+            }
+        }
+
+        function testTimeSettings() {
+            try {
+                if (window.testEasterEgg && window.testEasterEgg.setBreakTime) {
+                    console.log('🕐 测试时间设置功能...');
+                    window.testEasterEgg.setBreakTime('16:05');
+                    window.testEasterEgg.setLunchTime('12:30');
+                    updateTestResults('时间设置测试完成');
+                } else {
+                    console.warn('时间设置方法不可用');
+                    updateTestResults('时间设置方法不可用');
+                }
+            } catch (error) {
+                console.error('时间设置测试失败:', error);
+                updateTestResults('时间设置测试失败: ' + error.message);
+            }
+        }
+
+        // 页面加载完成后运行初始化测试
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🔧 调试模式测试页面已加载');
+            
+            // 显示当前URL参数
+            const urlParams = new URLSearchParams(window.location.search);
+            console.log('当前URL参数:', Object.fromEntries(urlParams));
+            
+            updateTestResults('页面加载完成，可以开始测试');
+        });
+    </script>
+</body>
+</html>

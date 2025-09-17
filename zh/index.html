@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <!-- 性能优化 -->
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="zh-CN">
+    <meta name="author" content="起来饮团队">
+    <meta name="keywords"
+        content="办公健康, 喝水提醒, 站立提醒, 健康计时器, 生产力, 工作习惯, 饮水追踪, 姿势休息">
+
+    <!-- 社交媒体优化 -->
+    <meta property="og:title" content="起来饮 - 免费办公健康提醒器">
+    <meta property="og:description"
+        content="免费的浏览器办公健康提醒工具，每30分钟提醒喝水和站立。支持所有现代浏览器。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://hydrate-move.lightyearai.info/">
+    <meta property="og:image" content="https://hydrate-move.lightyearai.info/assets/og-image.png">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="起来饮 - 免费办公健康提醒器">
+    <meta name="twitter:description"
+        content="智能提醒办公人员保持水分和运动休息">
+    <meta name="twitter:image" content="https://hydrate-move.lightyearai.info/assets/twitter-card.png">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>起来饮 - 免费办公健康提醒器</title>
+    <meta name="description"
+        content="免费的浏览器办公健康提醒工具，每30分钟提醒喝水和站立。支持所有现代浏览器。">
+    <link rel="preload" href="../styles/main.css?v=1.0.8" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript>
+        <link rel="stylesheet" href="../styles/main.css?v=1.0.8">
+    </noscript>
+    <link rel="icon" href="../assets/favicon.ico" type="image/x-icon">
+
+    <!-- hreflang标记 -->
+    <link rel="alternate" hreflang="en" href="https://hydrate-move.lightyearai.info/">
+    <link rel="alternate" hreflang="zh-CN" href="https://hydrate-move.lightyearai.info/zh/">
+    <link rel="alternate" hreflang="x-default" href="https://hydrate-move.lightyearai.info/">
+
+    <!-- 结构化数据 JSON-LD -->
+    <script type="application/ld+json">
+    {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "起来饮",
+    "description": "免费的浏览器办公健康提醒工具，每30分钟提醒喝水和站立。",
+    "url": "https://hydrate-move.lightyearai.info/",
+    "applicationCategory": "HealthApplication",
+    "operatingSystem": "Web",
+    "offers": {
+        "@type": "Offer",
+        "price": "0"
+    },
+    "featureList": [
+        "喝水提醒",
+        "站立提醒",
+        "浏览器运行",
+        "无需安装"
+    ],
+    "author": {
+        "@type": "Organization",
+        "name": "起来饮团队"
+    },
+    "keywords": "办公健康, 喝水提醒, 站立提醒, 健康计时器, 生产力, 工作习惯"
+}
+    </script>
+
+    <!-- Baidu Analytics -->
+    <script>
+        var _hmt = _hmt || [];
+        (function () {
+            try {
+                var hm = document.createElement("script");
+                hm.src = "https://hm.baidu.com/hm.js?44c1c4380ba833e8a8d594886bf282db";
+                hm.async = true;
+                hm.defer = true;
+                
+                // 添加超时处理
+                var timeout = setTimeout(function() {
+                    console.warn('Baidu Analytics loading timeout');
+                }, 10000);
+                
+                hm.onerror = function() {
+                    clearTimeout(timeout);
+                    console.warn('Baidu Analytics script failed to load (may be blocked)');
+                };
+                
+                hm.onload = function() {
+                    clearTimeout(timeout);
+                    console.log('✅ Baidu Analytics script loaded successfully');
+                    // 确保_hmt数组可用
+                    window._hmt = window._hmt || [];
+                };
+                
+                var s = document.getElementsByTagName("script")[0];
+                s.parentNode.insertBefore(hm, s);
+            } catch (error) {
+                console.warn('Baidu Analytics initialization failed:', error);
+            }
+        })();
+    </script>
+
+</head>
+
+<body>
+    <div id="app">
+        <!-- Main Control Panel -->
+        <main class="main-panel" role="main">
+            <header class="app-header">
+                <h1>起来饮</h1>
+                <p class="app-subtitle">办公健康提醒 - 保持健康工作习惯</p>
+
+                <!-- SEO optimized content - hidden from visual display -->
+                <div class="seo-hidden">
+                    <p>每30分钟保持水分和运动休息。免费的隐私优先办公健康计时器，可离线工作，无需注册。</p>
+                    <h2>办公健康计时器功能</h2>
+                    <ul>
+                        <li>每30分钟喝水提醒，更好保持水分</li>
+                        <li>站立提醒，改善姿势和运动</li>
+                        <li>基于浏览器的应用，无需安装</li>
+                        <li>隐私优先设计，仅本地存储</li>
+                        <li>免费的远程工作生产力工具</li>
+                    </ul>
+                </div>
+
+                <!-- Demo Section -->
+                <div class="demo-section">
+                    <button class="btn-demo" id="demo-btn" aria-label="启动演示模式查看提醒如何工作">演示</button>
+                    <div class="demo-status" id="demo-status" role="status" aria-live="polite">点击演示查看提醒如何工作</div>
+                </div>
+            </header>
+
+            <!-- Status Display Area -->
+            <section class="status-section" aria-label="健康提醒">
+                <article class="reminder-card" id="water-card" aria-labelledby="water-title">
+                    <div class="card-header">
+                        <div class="card-icon water-icon" aria-hidden="true"></div>
+                        <h3 id="water-title">喝水提醒</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="status-info">
+                            <span class="next-reminder-label">提醒间隔:</span>
+                            <div class="time-remaining" id="water-time">
+                                <time datetime="PT30M" class="interval-display">30 分钟</time>
+                            </div>
+                        </div>
+                        <div class="daily-stats" id="water-stats">
+                            <div class="countdown-info">
+                                <span class="stats-text">提醒计时:</span>
+                                <span class="countdown-time" id="water-countdown">加载中...</span>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="card-controls">
+                        <button class="btn-primary" id="water-toggle"
+                            aria-label="启动喝水提醒计时器">开始</button>
+                    </div>
+                </article>
+
+                <article class="reminder-card" id="standup-card" aria-labelledby="standup-title">
+                    <div class="card-header">
+                        <div class="card-icon standup-icon" aria-hidden="true"></div>
+                        <h3 id="standup-title">站立提醒</h3>
+                    </div>
+                    <div class="card-content">
+                        <div class="status-info">
+                            <span class="next-reminder-label">提醒间隔:</span>
+                            <div class="time-remaining" id="standup-time">
+                                <time datetime="PT30M" class="interval-display">30 分钟</time>
+                            </div>
+                        </div>
+                        <div class="daily-stats" id="standup-stats">
+                            <div class="countdown-info">
+                                <span class="stats-text">提醒计时:</span>
+                                <span class="countdown-time" id="standup-countdown">加载中...</span>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <div class="card-controls">
+                        <button class="btn-primary" id="standup-toggle"
+                            aria-label="启动站立提醒计时器">开始</button>
+                    </div>
+                </article>
+            </section>
+
+
+
+
+        </main>
+
+
+
+
+
+    </div>
+
+    <!-- Version Control for Cache Busting -->
+    <script src="../version.js?v=1.0.8" onerror="console.error('Failed to load version.js')"></script>
+
+    <!-- JavaScript Files -->
+    <script src="../js/constants.js?v=1.0.8" onerror="console.error('Failed to load constants.js')"></script>
+    <script src="../js/analytics.js?v=1.0.8" onerror="console.error('Failed to load analytics.js')"></script>
+    <script src="../js/demo-controller.js?v=1.0.8" onerror="console.error('Failed to load demo-controller.js')"></script>
+    <script src="../js/error-handler.js?v=1.0.8" onerror="console.error('Failed to load error-handler.js')"></script>
+    <script src="../js/storage-manager.js?v=1.0.8" onerror="console.error('Failed to load storage-manager.js')"></script>
+    <script src="../js/app-settings.js?v=1.0.8" onerror="console.error('Failed to load app-settings.js')"></script>
+    <script src="../js/notification-service.js?v=1.0.8"
+        onerror="console.error('Failed to load notification-service.js')"></script>
+    <script src="../js/reminder-manager.js?v=1.0.8" onerror="console.error('Failed to load reminder-manager.js')"></script>
+    <script src="../js/water-reminder.js?v=1.0.8" onerror="console.error('Failed to load water-reminder.js')"></script>
+    <script src="../js/standup-reminder.js?v=1.0.8" onerror="console.error('Failed to load standup-reminder.js')"></script>
+    <script src="../js/mobile-adapter.js?v=1.0.8" onerror="console.error('Failed to load mobile-adapter.js')"></script>
+    <script src="../js/ui-controller.js?v=1.0.8" onerror="console.error('Failed to load ui-controller.js')"></script>
+    <script src="../js/feedback-button.js?v=1.0.8" onerror="console.error('Failed to load feedback-button.js')"></script>
+    <!-- 下午茶提醒彩蛋功能 (仅中文版) -->
+    <script src="../js/afternoon-tea-reminder.js?v=1.0.8" onerror="console.error('Failed to load afternoon-tea-reminder.js')"></script>
+    <!-- 下午茶彩蛋管理器 (仅中文版) -->
+    <script src="../js/afternoon-tea-easter-egg.js?v=1.0.8" onerror="console.error('Failed to load afternoon-tea-easter-egg.js')"></script>
+    <!-- 彩蛋UI控制器 (仅中文版) -->
+    <script src="../js/easter-egg-ui.js?v=1.0.8" onerror="console.error('Failed to load easter-egg-ui.js')"></script>
+    <!-- 午餐提醒彩蛋功能 (仅中文版) -->
+    <script src="../js/lunch-reminder.js?v=1.0.8" onerror="console.error('Failed to load lunch-reminder.js')"></script>
+    <!-- 调试模式管理器 (支持URL参数调试) -->
+    <script src="../js/debug-mode.js?v=1.0.8" onerror="console.error('Failed to load debug-mode.js')"></script>
+    <script src="../js/app.js?v=1.0.8" onerror="console.error('Failed to load app.js')"></script>
+
+    <!-- Script Loading Verification -->
+    <script>
+        console.log('All scripts loaded, checking class availability...');
+        const expectedClasses = [
+            'ErrorHandler', 'StorageManager', 'AppSettings',
+            'NotificationService', 'ReminderManager',
+            'WaterReminder', 'StandupReminder', 'UIController', 'MobileAdapter', 'DemoController', 'Analytics', 'OfficeWellnessApp', 'FeedbackButton', 'AfternoonTeaReminder', 'AfternoonTeaEasterEgg', 'EasterEggUI', 'LunchReminder', 'DebugModeManager'
+        ];
+
+        expectedClasses.forEach(className => {
+            const exists = window[className] !== undefined;
+            console.log(`${exists ? '✅' : '❌'} ${className}: ${exists ? 'Available' : 'Missing'}`);
+        });
+    </script>
+
+    <!-- Application Initialization -->
+    <script>
+        // Application initialization
+        let app;
+
+        async function initializeApp() {
+            try {
+                console.log('Initializing Office Wellness App...');
+                
+                // Skip diagnostic checks - debug helper not available
+
+                // Check if required classes exist
+                const requiredClasses = [
+            'ErrorHandler', 'StorageManager', 'AppSettings',
+            'NotificationService', 'ReminderManager',
+            'WaterReminder', 'StandupReminder', 'UIController', 'MobileAdapter', 'DemoController', 'Analytics', 'OfficeWellnessApp', 'FeedbackButton', 'AfternoonTeaReminder', 'AfternoonTeaEasterEgg', 'EasterEggUI', 'LunchReminder', 'DebugModeManager'
+        ];
+
+                // Debug: Log all class availability
+                console.log('Checking class availability:');
+                requiredClasses.forEach(className => {
+                    const exists = window[className] !== undefined;
+                    console.log(`${exists ? '✅' : '❌'} ${className}: ${exists ? 'Available' : 'Missing'}`);
+                });
+
+                const missingClasses = requiredClasses.filter(className => !window[className]);
+                if (missingClasses.length > 0) {
+                    console.error('Missing classes:', missingClasses);
+                    
+                    // Attempt to reload after delay to show error message
+                    setTimeout(() => {
+                        if (confirm('Application loading issue detected. Refresh page?')) {
+                            location.reload(true);
+                        }
+                    }, 2000);
+                    
+                    throw new Error(`Missing required classes: ${missingClasses.join(', ')}`);
+                }
+
+                // Hide startup error notification (if exists)
+                hideStartupError();
+
+                app = new OfficeWellnessApp();
+                await app.initialize();
+                console.log('App initialized successfully');
+
+                // Show success status
+                showAppStatus('success', 'Application loaded successfully');
+
+            } catch (error) {
+                console.error('App initialization failed:', error);
+                showAppStatus('error', 'Application failed to start: ' + error.message);
+                showStartupError(error);
+
+                // If debug helper is available, show detailed diagnostics
+                if (typeof runDiagnostics === 'function') {
+                    console.log('Running detailed diagnostics...');
+                    runDiagnostics();
+                }
+            }
+        }
+
+        function showAppStatus(type, message) {
+            const statusIndicator = document.getElementById('app-status-indicator');
+            const statusText = document.getElementById('app-status-text');
+
+            if (statusIndicator && statusText) {
+                statusIndicator.className = `status-indicator ${type}`;
+                statusText.textContent = message;
+            }
+        }
+
+        function showStartupError(error) {
+            // Remove existing error notification
+            const existingError = document.getElementById('startup-error');
+            if (existingError) {
+                existingError.remove();
+            }
+
+            // Create error notification
+            const notification = document.createElement('div');
+            notification.id = 'startup-error';
+            notification.style.cssText = `
+                position: fixed;
+                top: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: #e74c3c;
+                color: white;
+                padding: 15px 25px;
+                border-radius: 8px;
+                z-index: 10000;
+                font-family: Arial, sans-serif;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                max-width: 500px;
+                text-align: center;
+            `;
+
+            notification.innerHTML = `
+                <div style="font-weight: bold; margin-bottom: 8px;">Application Startup Failed</div>
+                <div style="font-size: 14px; margin-bottom: 12px;">${error.message}</div>
+                <button onclick="location.reload()" style="
+                    background: white;
+                    color: #e74c3c;
+                    border: none;
+                    padding: 8px 16px;
+                    border-radius: 4px;
+                    cursor: pointer;
+                    font-weight: bold;
+                ">Refresh Page</button>
+            `;
+
+            document.body.appendChild(notification);
+
+            // Auto-hide after 10 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.remove();
+                }
+            }, 10000);
+        }
+
+        function hideStartupError() {
+            const existingError = document.getElementById('startup-error');
+            if (existingError) {
+                existingError.remove();
+            }
+        }
+
+        // Simplified initialization - no fallback handlers needed
+        function ensureAppAvailability() {
+            // Make app globally available for debugging
+            if (app) {
+                window.app = app;
+            }
+        }
+
+
+
+        // Initialize app when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                initializeApp();
+                ensureAppAvailability();
+            });
+        } else {
+            initializeApp();
+            ensureAppAvailability();
+        }
+
+        // Add global error handling
+        window.addEventListener('error', function (event) {
+            console.error('Global error:', event.error);
+            console.error('Error details:', {
+                message: event.message,
+                filename: event.filename,
+                lineno: event.lineno,
+                colno: event.colno
+            });
+            showAppStatus('error', 'Runtime error occurred: ' + event.message);
+        });
+
+        window.addEventListener('unhandledrejection', function (event) {
+            console.error('Unhandled promise rejection:', event.reason);
+            showAppStatus('error', 'Promise rejection occurred');
+        });
+    </script>
+
+    <!-- 彩蛋弹窗DOM结构 (仅中文版) -->
+    <!-- 彩蛋弹窗背景遮罩 -->
+    <div id="easterEggBackdrop" class="easter-egg-backdrop"></div>
+    
+    <!-- 彩蛋弹窗主体 -->
+    <div id="easterEggModal" class="easter-egg-modal">
+        <!-- 弹窗内容将由JavaScript动态生成 -->
+    </div>
+
+</body>
+
+</html>

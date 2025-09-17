@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍵 下午茶分享图片合成器</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        .preview-section {
+            margin: 30px 0;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .source-images {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .source-image {
+            margin: 10px;
+            text-align: center;
+        }
+        .source-image img {
+            max-width: 200px;
+            max-height: 200px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+        }
+        .compose-btn {
+            background: #28a745;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .compose-btn:hover {
+            background: #218838;
+        }
+        .download-btn {
+            background: #007bff;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .download-btn:hover {
+            background: #0056b3;
+        }
+        .download-btn:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+        }
+        #composedCanvas {
+            border: 2px solid #28a745;
+            border-radius: 8px;
+            max-width: 100%;
+            margin: 20px 0;
+        }
+        .info-box {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .error-box {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🍵 下午茶分享图片合成器</h1>
+        <p>将梗图和二维码合成为完整的分享图片</p>
+        
+        <div class="info-box">
+            <h4>📋 合成信息</h4>
+            <ul>
+                <li><strong>梗图</strong>: drink_tea.jpeg</li>
+                <li><strong>二维码</strong>: hydrate_move_zh_logo_qr.png</li>
+                <li><strong>网站链接</strong>: https://hydrate-move.lightyearai.info/zh/</li>
+                <li><strong>文案</strong>: "三点几啦！饮茶先啦！"</li>
+            </ul>
+        </div>
+        
+        <div class="preview-section">
+            <h3>📸 源图片预览</h3>
+            <div class="source-images">
+                <div class="source-image">
+                    <h4>梗图</h4>
+                    <img id="drinkTeaImg" src="drink_tea.jpeg" alt="下午茶梗图" 
+                         onload="console.log('✅ 梗图加载成功:', this.naturalWidth + 'x' + this.naturalHeight)"
+                         onerror="handleImageError(this, 'drink_tea.jpeg')">
+                </div>
+                <div class="source-image">
+                    <h4>二维码</h4>
+                    <img id="qrCodeImg" src="hydrate_move_zh_logo_qr.png" alt="二维码" 
+                         onload="console.log('✅ 二维码加载成功:', this.naturalWidth + 'x' + this.naturalHeight)"
+                         onerror="handleImageError(this, 'hydrate_move_zh_logo_qr.png')">
+                </div>
+            </div>
+        </div>
+        
+        <button class="compose-btn" onclick="composeImage()">🎨 合成分享图片</button>
+        
+        <div id="resultSection" style="display: none;">
+            <h3>✨ 合成结果</h3>
+            <canvas id="composedCanvas"></canvas>
+            <br>
+            <button class="download-btn" onclick="downloadComposedImage()">📥 下载分享图片</button>
+            <button class="download-btn" onclick="copyToClipboard()">📋 复制到剪贴板</button>
+            <button class="download-btn" onclick="showRightClickTip()">💡 右键保存提示</button>
+        </div>
+        
+        <div id="errorSection"></div>
+        
+        <div class="info-box">
+            <h4>🎯 使用说明</h4>
+            <ol>
+                <li>确保 <code>drink_tea.jpeg</code> 和 <code>hydrate_move_zh_logo_qr.png</code> 在同一目录</li>
+                <li>点击"合成分享图片"按钮</li>
+                <li>预览合成效果</li>
+                <li>下载最终的分享图片</li>
+            </ol>
+        </div>
+    </div>
+
+    <script>
+        let composedCanvas = null;
+        
+        function handleImageError(img, filename) {
+            console.error('图片加载失败:', filename);
+            const errorDiv = document.getElementById('errorSection');
+            errorDiv.innerHTML = `
+                <div class="error-box">
+                    <h4>❌ 图片加载失败</h4>
+                    <p>无法加载 <code>${filename}</code></p>
+                    <p>请确保文件存在于当前目录中</p>
+                    <p>当前页面路径: ${window.location.href}</p>
+                </div>
+            `;
+            img.style.display = 'none';
+        }
+        
+        function composeImage() {
+            const drinkTeaImg = document.getElementById('drinkTeaImg');
+            const qrCodeImg = document.getElementById('qrCodeImg');
+            const canvas = document.getElementById('composedCanvas');
+            const ctx = canvas.getContext('2d');
+            
+            // 检查图片是否加载成功
+            if (drinkTeaImg.naturalWidth === 0 || qrCodeImg.naturalWidth === 0) {
+                showError('请确保两张图片都已正确加载');
+                return;
+            }
+            
+            try {
+                // 设置画布尺寸 - 适合社交媒体分享的尺寸
+                const canvasWidth = 800;
+                const canvasHeight = 600;
+                canvas.width = canvasWidth;
+                canvas.height = canvasHeight;
+                
+                // 清空画布，设置白色背景
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+                
+                // 计算梗图位置和尺寸（居中，占主要空间）
+                const mainImgMaxWidth = canvasWidth * 0.7;
+                const mainImgMaxHeight = canvasHeight * 0.6;
+                
+                let mainImgWidth = drinkTeaImg.naturalWidth;
+                let mainImgHeight = drinkTeaImg.naturalHeight;
+                
+                // 按比例缩放梗图
+                const mainImgRatio = Math.min(mainImgMaxWidth / mainImgWidth, mainImgMaxHeight / mainImgHeight);
+                mainImgWidth *= mainImgRatio;
+                mainImgHeight *= mainImgRatio;
+                
+                const mainImgX = (canvasWidth - mainImgWidth) / 2;
+                const mainImgY = 50;
+                
+                // 绘制梗图
+                ctx.drawImage(drinkTeaImg, mainImgX, mainImgY, mainImgWidth, mainImgHeight);
+                
+                // 计算二维码位置和尺寸（右下角）
+                const qrSize = 120;
+                const qrX = canvasWidth - qrSize - 30;
+                const qrY = canvasHeight - qrSize - 80;
+                
+                // 绘制二维码背景（白色圆角矩形）
+                ctx.fillStyle = '#ffffff';
+                ctx.strokeStyle = '#ddd';
+                ctx.lineWidth = 2;
+                const radius = 8;
+                ctx.beginPath();
+                ctx.roundRect(qrX - 10, qrY - 10, qrSize + 20, qrSize + 20, radius);
+                ctx.fill();
+                ctx.stroke();
+                
+                // 绘制二维码
+                ctx.drawImage(qrCodeImg, qrX, qrY, qrSize, qrSize);
+                
+                // 添加文案
+                ctx.fillStyle = '#2c3e50';
+                ctx.font = 'bold 32px "Microsoft YaHei", Arial, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText('三点几啦！饮茶先啦！', canvasWidth / 2, mainImgY + mainImgHeight + 60);
+                
+                // 添加网站链接
+                ctx.fillStyle = '#666';
+                ctx.font = '16px "Microsoft YaHei", Arial, sans-serif';
+                ctx.fillText('https://hydrate-move.lightyearai.info/zh/', canvasWidth / 2, canvasHeight - 30);
+                
+                // 添加小标签
+                ctx.fillStyle = '#f39c12';
+                ctx.font = '14px "Microsoft YaHei", Arial, sans-serif';
+                ctx.textAlign = 'right';
+                ctx.fillText('扫码体验', qrX + qrSize, qrY - 15);
+                
+                // 显示结果
+                document.getElementById('resultSection').style.display = 'block';
+                composedCanvas = canvas;
+                
+                console.log('✅ 图片合成成功！');
+                
+            } catch (error) {
+                showError('合成过程中出现错误: ' + error.message);
+                console.error('合成错误:', error);
+            }
+        }
+        
+        function downloadComposedImage() {
+            if (!composedCanvas) {
+                showError('请先合成图片');
+                return;
+            }
+            
+            try {
+                // 使用toBlob方法替代toDataURL，避免Canvas污染问题
+                composedCanvas.toBlob(function(blob) {
+                    if (!blob) {
+                        showError('生成图片失败，请重试');
+                        return;
+                    }
+                    
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.download = 'afternoon_tea_share.png';
+                    link.href = url;
+                    
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    
+                    // 清理URL对象
+                    setTimeout(() => URL.revokeObjectURL(url), 100);
+                    
+                    console.log('✅ 分享图片已下载: afternoon_tea_share.png');
+                    
+                }, 'image/png', 1.0);
+                
+            } catch (error) {
+                showError('下载失败: ' + error.message);
+                console.error('下载错误详情:', error);
+            }
+        }
+        
+        function copyToClipboard() {
+            if (!composedCanvas) {
+                showError('请先合成图片');
+                return;
+            }
+            
+            try {
+                composedCanvas.toBlob(function(blob) {
+                    const item = new ClipboardItem({ 'image/png': blob });
+                    navigator.clipboard.write([item]).then(function() {
+                        alert('✅ 图片已复制到剪贴板！');
+                        console.log('✅ 图片已复制到剪贴板');
+                    }).catch(function(error) {
+                        showError('复制到剪贴板失败: ' + error.message);
+                    });
+                });
+                
+            } catch (error) {
+                showError('复制功能不支持: ' + error.message);
+            }
+        }
+        
+        function showRightClickTip() {
+            const errorDiv = document.getElementById('errorSection');
+            errorDiv.innerHTML = `
+                <div class="info-box">
+                    <h4>💡 备用下载方法</h4>
+                    <p>如果下载按钮不工作，请尝试：</p>
+                    <ol>
+                        <li>右键点击上方的合成图片</li>
+                        <li>选择"图片另存为"或"Save image as"</li>
+                        <li>保存为 <code>afternoon_tea_share.png</code></li>
+                    </ol>
+                </div>
+            `;
+        }
+        
+        function showError(message) {
+            const errorDiv = document.getElementById('errorSection');
+            errorDiv.innerHTML = `
+                <div class="error-box">
+                    <h4>❌ 错误</h4>
+                    <p>${message}</p>
+                </div>
+            `;
+        }
+        
+        // 页面加载完成后检查图片
+        window.addEventListener('load', function() {
+            console.log('🎨 图片合成器已加载');
+            
+            // 检查图片是否存在
+            const drinkTeaImg = document.getElementById('drinkTeaImg');
+            const qrCodeImg = document.getElementById('qrCodeImg');
+            
+            setTimeout(() => {
+                if (drinkTeaImg.naturalWidth > 0 && qrCodeImg.naturalWidth > 0) {
+                    console.log('✅ 所有图片加载成功，可以开始合成');
+                } else {
+                    console.warn('⚠️ 部分图片可能未正确加载');
+                }
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

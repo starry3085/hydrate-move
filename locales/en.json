@@ -1,0 +1,69 @@
+{
+  "meta": {
+    "title": "Hydrate Move - Free Office Wellness Timer",
+    "description": "Free browser-based office wellness timer that reminds you to drink water and stand up every 30 minutes. Works in any modern browser.",
+    "keywords": "office wellness, water reminder, standup reminder, health timer, productivity, work habits, hydration tracker, posture break",
+    "author": "Hydrate Move Team",
+    "language": "en-US"
+  },
+  "og": {
+    "title": "Hydrate Move - Free Office Wellness Timer",
+    "description": "Free browser-based office wellness timer that reminds you to drink water and stand up every 30 minutes. Works in any modern browser."
+  },
+  "twitter": {
+    "title": "Hydrate Move - Free Office Wellness Timer",
+    "description": "Smart reminders for office workers to stay hydrated and take movement breaks"
+  },
+  "jsonLd": {
+    "name": "Hydrate Move",
+    "description": "Free browser-based office wellness timer that reminds you to drink water and stand up every 30 minutes.",
+    "featureList": [
+      "water reminder",
+      "stand-up reminder",
+      "browser-based",
+      "no installation required"
+    ],
+    "author": "Hydrate Move Team",
+    "keywords": "office wellness, water reminder, standup reminder, health timer, productivity, work habits"
+  },
+  "ui": {
+    "appTitle": "Hydrate Move",
+    "appSubtitle": "Office Wellness Reminder - Maintain Healthy Work Habits",
+    "seoContent": {
+      "description": "Stay hydrated and take movement breaks every 30 minutes. Free privacy-first office wellness timer that works offline with no registration required.",
+      "featuresTitle": "Office Wellness Timer Features",
+      "features": [
+        "Water reminder every 30 minutes for better hydration",
+        "Standup reminder for posture breaks and movement",
+        "Browser-based application with no installation required",
+        "Privacy-first design with local storage only",
+        "Free office productivity tool for remote workers"
+      ]
+    },
+    "demo": {
+      "buttonText": "Demo",
+      "buttonAriaLabel": "Start demo mode to see how reminders work",
+      "statusText": "Click Demo to see how reminders work"
+    },
+    "reminders": {
+      "sectionLabel": "Wellness Reminders",
+      "water": {
+        "title": "Water Reminder",
+        "remindEvery": "Remind every:",
+        "remindAfter": "Remind after:",
+        "interval": "30 mins",
+        "buttonStart": "Start",
+        "buttonAriaLabel": "Start water reminder timer"
+      },
+      "standup": {
+        "title": "Standup Reminder",
+        "remindEvery": "Remind every:",
+        "remindAfter": "Remind after:",
+        "interval": "30 mins",
+        "buttonStart": "Start",
+        "buttonAriaLabel": "Start standup reminder timer"
+      }
+    },
+    "loading": "Loading..."
+  }
+}
