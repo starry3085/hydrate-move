@@ -10,8 +10,10 @@ const REMINDER_CONSTANTS = {
     // Fixed reminder interval in minutes (MVP requirement)
     DEFAULT_INTERVAL_MINUTES: 30,
     
-    // Demo mode interval in seconds (for quick demonstration)
-    DEMO_INTERVAL_SECONDS: 30,
+    // Demo mode interval in seconds (for quick demonstration) - 方案A优化
+    DEMO_WATER_INTERVAL_SECONDS: 3,    // 喝水提醒3秒间隔
+    DEMO_STANDUP_INTERVAL_SECONDS: 5,  // 站立提醒5秒间隔
+    DEMO_INTERVAL_SECONDS: 30,         // 保持兼容性
     
     // Timer update frequency in milliseconds
     UPDATE_INTERVAL_MS: 1000,
@@ -48,7 +50,7 @@ const STORAGE_CONSTANTS = {
 const DEMO_CONSTANTS = {
     // Demo timing configuration
     WATER_START_DELAY_MS: 0,        // Start water reminder immediately
-    STANDUP_START_DELAY_MS: 10000,  // Start standup reminder after 10 seconds
+    STANDUP_START_DELAY_MS: 3000,   // Start standup reminder after 3 seconds (方案A优化)
     
     // 双语演示状态消息 - 根据页面语言动态选择
     STATUS_MESSAGES: {
@@ -61,12 +63,12 @@ const DEMO_CONSTANTS = {
             'en': 'Demo starting...'
         },
         WATER_STARTING: {
-            'zh-CN': '正在启动喝水提醒（演示模式 - 30秒间隔）',
-            'en': 'Starting water reminder (Demo mode - 30s intervals)'
+            'zh-CN': '正在启动喝水提醒（演示模式 - 3秒间隔）',
+            'en': 'Starting water reminder (Demo mode - 3s intervals)'
         },
         STANDUP_STARTING: {
-            'zh-CN': '正在启动站立提醒（演示模式 - 30秒间隔）',
-            'en': 'Starting standup reminder (Demo mode - 30s intervals)'
+            'zh-CN': '正在启动站立提醒（演示模式 - 5秒间隔）',
+            'en': 'Starting standup reminder (Demo mode - 5s intervals)'
         },
         RUNNING: {
             'zh-CN': '演示运行中 - 请注意通知！',

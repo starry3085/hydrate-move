@@ -132,11 +132,11 @@ class DemoController {
         }, DEMO_CONSTANTS.STANDUP_START_DELAY_MS + 1000);
 
         // Step 4: Auto-stop demo after both notifications should have appeared
-        // Water: 30s, Standup: 30s (started 10s later = 40s total)
+        // 方案A: Water: 3s, Standup: 5s (started 3s later = 8s total) + 2s buffer = 10s
         const demoEndTime = Math.max(
-            DEMO_CONSTANTS.WATER_START_DELAY_MS + (REMINDER_CONSTANTS.DEMO_INTERVAL_SECONDS * 1000),
-            DEMO_CONSTANTS.STANDUP_START_DELAY_MS + (REMINDER_CONSTANTS.DEMO_INTERVAL_SECONDS * 1000)
-        ) + 5000; // Add 5 seconds buffer
+            DEMO_CONSTANTS.WATER_START_DELAY_MS + (REMINDER_CONSTANTS.DEMO_WATER_INTERVAL_SECONDS * 1000),
+            DEMO_CONSTANTS.STANDUP_START_DELAY_MS + (REMINDER_CONSTANTS.DEMO_STANDUP_INTERVAL_SECONDS * 1000)
+        ) + 2000; // Add 2 seconds buffer for 10s total
 
         this.setTimeout(() => {
             this.stopDemo();
@@ -155,20 +155,24 @@ class DemoController {
     }
 
     /**
-     * Set demo intervals (30 seconds)
+     * Set demo intervals - 方案A: 喝水3秒，站立5秒
      * @private
      */
     setDemoIntervals() {
-        // Convert seconds to minutes for reminder settings
-        const demoIntervalMinutes = REMINDER_CONSTANTS.DEMO_INTERVAL_SECONDS / 60;
+        // 方案A: 使用不同的间隔时间 - 喝水3秒，站立5秒
+        const waterIntervalMinutes = REMINDER_CONSTANTS.DEMO_WATER_INTERVAL_SECONDS / 60;
+        const standupIntervalMinutes = REMINDER_CONSTANTS.DEMO_STANDUP_INTERVAL_SECONDS / 60;
         
-        this.waterReminder.settings.interval = demoIntervalMinutes;
-        this.waterReminder.timeRemaining = REMINDER_CONSTANTS.DEMO_INTERVAL_SECONDS * 1000;
+        this.waterReminder.settings.interval = waterIntervalMinutes;
+        this.waterReminder.timeRemaining = REMINDER_CONSTANTS.DEMO_WATER_INTERVAL_SECONDS * 1000;
         
-        this.standupReminder.settings.interval = demoIntervalMinutes;
-        this.standupReminder.timeRemaining = REMINDER_CONSTANTS.DEMO_INTERVAL_SECONDS * 1000;
+        this.standupReminder.settings.interval = standupIntervalMinutes;
+        this.standupReminder.timeRemaining = REMINDER_CONSTANTS.DEMO_STANDUP_INTERVAL_SECONDS * 1000;
         
-        console.log('⏱️ Demo intervals set to', REMINDER_CONSTANTS.DEMO_INTERVAL_SECONDS, 'seconds');
+        // 🎯 KIRO核心修复：临时禁用resetAndRestart方法防止重复触发
+        this.backupAndDisableResetAndRestart();
+        
+        console.log('⏱️ Demo intervals set with resetAndRestart disabled - Water:', REMINDER_CONSTANTS.DEMO_WATER_INTERVAL_SECONDS, 's, Standup:', REMINDER_CONSTANTS.DEMO_STANDUP_INTERVAL_SECONDS, 's');
     }
 
     /**
@@ -176,6 +180,9 @@ class DemoController {
      * @private
      */
     restoreOriginalIntervals() {
+        // 🎯 KIRO核心修复：先恢复resetAndRestart方法
+        this.restoreResetAndRestart();
+        
         if (this.originalIntervals.water !== null) {
             this.waterReminder.settings.interval = this.originalIntervals.water;
             this.waterReminder.timeRemaining = this.originalIntervals.water * 60 * 1000;
@@ -186,7 +193,7 @@ class DemoController {
             this.standupReminder.timeRemaining = this.originalIntervals.standup * 60 * 1000;
         }
         
-        console.log('🔄 Original intervals restored:', this.originalIntervals);
+        console.log('🔄 Original intervals and methods restored:', this.originalIntervals);
     }
 
     /**
@@ -284,6 +291,78 @@ class DemoController {
             demoBtn.textContent = isChinesePage ? '演示' : 'Demo';
             demoBtn.className = 'btn-demo';
         }
+    }
+
+    /**
+     * 备份并禁用triggerReminder方法（KIRO演示模式专用修复）
+     * 防止演示期间提醒重复触发 - 每种提醒只触发一次
+     * @private
+     */
+    backupAndDisableResetAndRestart() {
+        // 备份原始方法
+        this.originalWaterTriggerReminder = this.waterReminder.triggerReminder.bind(this.waterReminder);
+        this.originalStandupTriggerReminder = this.standupReminder.triggerReminder.bind(this.standupReminder);
+        
+        // 创建单次触发版本
+        let waterTriggered = false;
+        let standupTriggered = false;
+        
+        this.waterReminder.triggerReminder = () => {
+            if (!waterTriggered) {
+                waterTriggered = true;
+                console.log('🎬 Demo mode: Water reminder triggered once (demo mode)');
+                
+                // 只执行通知部分，不重启定时器
+                const notificationConfig = NOTIFICATION_CONSTANTS.getMessage('WATER');
+                this.waterReminder.notificationService.showNotification(
+                    'water',
+                    notificationConfig.TITLE,
+                    notificationConfig.BODY,
+                    'water_reminder_demo'
+                );
+            } else {
+                console.log('🎬 Demo mode: Water reminder already triggered, ignoring repeat');
+            }
+        };
+        
+        this.standupReminder.triggerReminder = () => {
+            if (!standupTriggered) {
+                standupTriggered = true;
+                console.log('🎬 Demo mode: Standup reminder triggered once (demo mode)');
+                
+                // 只执行通知部分，不重启定时器
+                const notificationConfig = NOTIFICATION_CONSTANTS.getMessage('STANDUP');
+                this.standupReminder.notificationService.showNotification(
+                    'standup',
+                    notificationConfig.TITLE,
+                    notificationConfig.BODY,
+                    'standup_reminder_demo'
+                );
+            } else {
+                console.log('🎬 Demo mode: Standup reminder already triggered, ignoring repeat');
+            }
+        };
+        
+        console.log('💾 Original triggerReminder methods backed up and replaced with single-trigger versions');
+    }
+
+    /**
+     * 恢复原始triggerReminder方法（KIRO演示模式专用修复）
+     * 演示结束后完全恢复正常功能
+     * @private
+     */
+    restoreResetAndRestart() {
+        if (this.originalWaterTriggerReminder) {
+            this.waterReminder.triggerReminder = this.originalWaterTriggerReminder;
+            this.originalWaterTriggerReminder = null;
+        }
+        
+        if (this.originalStandupTriggerReminder) {
+            this.standupReminder.triggerReminder = this.originalStandupTriggerReminder;
+            this.originalStandupTriggerReminder = null;
+        }
+        
+        console.log('🔄 Original triggerReminder methods fully restored');
     }
 
     /**
